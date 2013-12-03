@@ -1,4 +1,4 @@
-package com.personal.rents.listeners;
+package com.personal.rents.listener;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -20,6 +20,7 @@ public class DatabaseSessionManager implements ServletContextListener {
 	
 	// database configuration resources
 	private final String DATABASE_PROPERTIES_FILE = "database/database.properties";
+
 	private final String DATABASE_CONFIGURATION_FILE = "database/mybatis-config.xml";
 	
 	private static Logger logger = Logger.getLogger(DatabaseSessionManager.class);
