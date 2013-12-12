@@ -16,22 +16,25 @@ import org.apache.log4j.Logger;
  * Server startup listener that creates the sql session factory and returns it
  * whenever it's requested
  */
-public class DatabaseSessionManager implements ServletContextListener {
+public class ApplicationManager implements ServletContextListener {
 	
 	// database configuration resources
 	private final String DATABASE_PROPERTIES_FILE = "database/database.properties";
 
 	private final String DATABASE_CONFIGURATION_FILE = "database/mybatis-config.xml";
 	
-	private static Logger logger = Logger.getLogger(DatabaseSessionManager.class);
+	private static Logger logger = Logger.getLogger(ApplicationManager.class);
 	
 	private static SqlSessionFactory sqlSessionFactory;
 	
+	// paths
+	private static String appRealPath;
+
 	/**
-	 * Creates and configures the sql session factory
+	 * Creates and configures the sql session factory and store application paths.
 	 */
 	@Override
-	public void contextInitialized(ServletContextEvent arg0) {
+	public void contextInitialized(ServletContextEvent event) {
 		logger.info("Create database session factory");
 		try {
 			Properties databaseProperties = Resources.getResourceAsProperties(
@@ -47,6 +50,10 @@ public class DatabaseSessionManager implements ServletContextListener {
 			logger.warn("Cannot successfully create database session factory. " +
 				"Create database session factory terminated abnormally.");
 		}
+		
+		logger.info("Store application paths");
+		appRealPath = event.getServletContext().getRealPath("/");
+
 	}
 	
 	/**
@@ -62,5 +69,12 @@ public class DatabaseSessionManager implements ServletContextListener {
 	 */
 	public static SqlSessionFactory getSqlSessionFactory() {
 		return sqlSessionFactory;
+	}
+	
+	/**
+	 * Returns application real path.
+	 */
+	public static String getAppRealPath() {
+		return appRealPath;
 	}
 }

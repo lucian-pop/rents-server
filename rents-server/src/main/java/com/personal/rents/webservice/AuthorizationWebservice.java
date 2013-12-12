@@ -14,7 +14,7 @@ import com.personal.rents.webservice.util.AuthorizationUtil;
 public class AuthorizationWebservice {
 
 	@GET
-	public Response isAuthorized(@QueryParam("accountId") int accountId, 
+	public Response authorize(@QueryParam("accountId") int accountId, 
 			@Context HttpServletRequest request) {
 		
 		if(AuthorizationUtil.isAuthorized(request, accountId)) {

@@ -4,4 +4,11 @@ public final class ContextConstants {
 	
 	public static final String TOKEN_KEY = "tokenKey";
 
+	public static final String IMAGES_PATH = "images";
+	
+	public static final String FILE_SEPARATOR;
+	
+	static {
+		FILE_SEPARATOR = System.getProperty("file.separator");
+	}
 }

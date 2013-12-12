@@ -5,13 +5,13 @@ import java.util.Date;
 import org.apache.ibatis.session.SqlSession;
 
 import com.personal.rents.dao.AccountDAO;
-import com.personal.rents.listener.DatabaseSessionManager;
+import com.personal.rents.listener.ApplicationManager;
 import com.personal.rents.model.Account;
 
 public final class AccountManager {
 	
 	public static Account createAccount(Account account) {
-		SqlSession session = DatabaseSessionManager.getSqlSessionFactory().openSession();
+		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
 		try {
 			AccountDAO accountMapper = session.getMapper(AccountDAO.class);
 			accountMapper.insertAccount(account);
@@ -31,7 +31,7 @@ public final class AccountManager {
 	}
 
 	public static Account login(String email, String password) {
-		SqlSession session = DatabaseSessionManager.getSqlSessionFactory().openSession();
+		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
 		Account account = null;
 		try {
 			AccountDAO accountDAO = session.getMapper(AccountDAO.class);
@@ -50,7 +50,7 @@ public final class AccountManager {
 	public static String changePassword(String email, String password, String newPassword) {
 		String tokenKey = null;
 		
-		SqlSession session = DatabaseSessionManager.getSqlSessionFactory().openSession();
+		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
 		try {
 			AccountDAO accountDAO = session.getMapper(AccountDAO.class);
 			

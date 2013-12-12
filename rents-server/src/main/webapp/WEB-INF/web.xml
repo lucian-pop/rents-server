@@ -4,7 +4,7 @@
 	
 	<!-- Internal listeners -->
 	<listener>
-		<listener-class>com.personal.rents.listener.DatabaseSessionManager</listener-class>
+		<listener-class>com.personal.rents.listener.ApplicationManager</listener-class>
 	</listener>
 	
     <!-- External servlets -->
@@ -17,7 +17,7 @@
 		</init-param>
 		<init-param>
     		<param-name>javax.ws.rs.Application</param-name>
-    		<param-value>com.personal.rents.MyApp</param-value>
+    		<param-value>com.personal.rents.ResourcesRegistrar</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>

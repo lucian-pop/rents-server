@@ -6,7 +6,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.log4j.Logger;
 
 import com.personal.rents.dao.TokenDAO;
-import com.personal.rents.listener.DatabaseSessionManager;
+import com.personal.rents.listener.ApplicationManager;
 import com.personal.rents.model.Token;
 
 public final class TokenManager {
@@ -24,7 +24,7 @@ public final class TokenManager {
 		token.setCreationDate(new Date());
 		
 		// insert token into database
-		SqlSession session = DatabaseSessionManager.getSqlSessionFactory().openSession();
+		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
 		try{
 			TokenDAO tokenDAO = session.getMapper(TokenDAO.class);
 			tokenDAO.insertToken(token);
@@ -37,7 +37,7 @@ public final class TokenManager {
 	}
 	
 	public static String getAuthToken(int accountId) {
-		SqlSession session = DatabaseSessionManager.getSqlSessionFactory().openSession();
+		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
 		String tokenKey = null;
 		try {
 			TokenDAO tokenDAO = session.getMapper(TokenDAO.class);

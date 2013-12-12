@@ -4,7 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.personal.rents.logic.TokenManager;
 
-public class AuthorizationUtil {
+public final class AuthorizationUtil {
 	
 	public static boolean isAuthorized(HttpServletRequest request, int accountId) {
 		String reqTokenKey = request.getHeader(ContextConstants.TOKEN_KEY);

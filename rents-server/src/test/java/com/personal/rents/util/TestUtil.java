@@ -14,11 +14,16 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.log4j.Logger;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
 import com.personal.rents.dao.AccountDAO;
+import com.personal.rents.dao.AddressDAO;
+import com.personal.rents.dao.RentDAO;
 import com.personal.rents.dao.TokenDAO;
 import com.personal.rents.logic.TokenGenerator;
 import com.personal.rents.model.Account;
+import com.personal.rents.model.Address;
+import com.personal.rents.model.Rent;
 import com.personal.rents.model.Token;
 import com.personal.rents.webservice.jsonprovider.GsonMessageBodyHandler;
 
@@ -97,15 +102,7 @@ public class TestUtil {
 		
 		return account;
 	}
-	
-	public static WebTarget buildWebTarget() {
-		final Client client = ClientBuilder.newBuilder().register(GsonMessageBodyHandler.class)
-				.build();
-		WebTarget target = client.target(BASE_URI);
-		
-		return target;
-	}
-	
+
 	public static Account createAccountWithoutToken() {
 		//Insert account into database
 				Date date = new Date();
@@ -141,6 +138,110 @@ public class TestUtil {
 		} finally {
 			session.close();
 		}
+	}
+	
+	public static Address addAddress() {
+		Address address = new Address();
+		address.setStreetNo("68A");
+		address.setStreetName("Observatorului");
+		address.setNeighbourhood("Zorilor");
+		address.setLocality("Cluj-Napoca");
+		address.setAdmAreaL1("Cluj");
+		address.setCountry("Romania");
+		address.setLatitude(46.7667);
+		address.setLongitude(23.5833);
+		address.setBuilding("C3");
+		address.setStaircase("2A");
+		address.setFloor((short) 4);
+		address.setAp("12B");
+		
+		SqlSession session = getSqlSessionFactory().openSession();
+		try {
+			AddressDAO addressDAO = session.getMapper(AddressDAO.class);
+			addressDAO.insertAddress(address);
+			session.commit();
+		} finally {
+			session.close();
+		}
+
+		return address;
+	}
+	
+	public static void deleteAddress(Address address) {
+		SqlSession session = getSqlSessionFactory().openSession();
+		try {
+			AddressDAO addressDAO = session.getMapper(AddressDAO.class);
+			addressDAO.deleteAddress(address.getId());
+			session.commit();
+		} finally {
+			session.close();
+		}
+	}
+	
+	public static Rent addRent(int accountId) {
+		Address address = addAddress();
+		
+		Rent rent = new Rent();
+		rent.setAccountId(accountId);
+		rent.setAddress(address);
+		rent.setPrice(500);
+		rent.setSurface(120);
+		rent.setRooms((short) 3);
+		rent.setBaths((short) 3);
+		rent.setParty((byte) 1);
+		rent.setRentType((byte) 1);
+		rent.setArchitecture((byte) 1);
+		rent.setAge((short) 10);
+		rent.setDescription("some dummy text here");
+		rent.setPetsAllowed(true);
+		rent.setPhone("0750110440");
+		rent.setCreationDate(new Date());
+		rent.setRentStatus((byte) 0);
+		
+		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
+		try {
+			RentDAO rentDAO = session.getMapper(RentDAO.class);
+			rentDAO.insertRent(rent);
+			session.commit();
+		} finally {
+			session.close();
+		}
+		
+		return rent;
+	}
+	
+	public static void deleteRent(Rent rent) {
+		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
+		try {
+			RentDAO rentDAO = session.getMapper(RentDAO.class);
+			rentDAO.deleteRent(rent.getId());
+			
+			AddressDAO addressDAO = session.getMapper(AddressDAO.class);
+			addressDAO.deleteAddress(rent.getAddress().getId());
+
+			session.commit();
+		} finally {
+			session.close();
+		}
+	}
+
+	public static WebTarget buildWebTarget() {
+		final Client client = ClientBuilder.newBuilder()
+				.register(GsonMessageBodyHandler.class)
+				.build();
+		WebTarget target = client.target(BASE_URI);
+		
+		return target;
+	}
+	
+	public static WebTarget buildMultiPartWebTarget() {
+		final Client client = ClientBuilder.newBuilder()
+				.register(GsonMessageBodyHandler.class)
+				.register(MultiPartFeature.class)
+				.build();
+		WebTarget target = client.target(BASE_URI);
+		
+		return target;
 	}
 
 }
