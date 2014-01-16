@@ -33,34 +33,34 @@ public class AddRentWebserviceTest extends TestCase {
 		target = TestUtil.buildWebTarget();
 		
 		Address address = new Address();
-		address.setStreetNo("68A");
-		address.setStreetName("Observatorului");
-		address.setNeighbourhood("Zorilor");
-		address.setLocality("Cluj-Napoca");
-		address.setAdmAreaL1("Cluj");
-		address.setCountry("Romania");
-		address.setLatitude(46.7667);
-		address.setLongitude(23.5833);
-		address.setBuilding("C3");
-		address.setStaircase("2A");
-		address.setFloor((short) 4);
-		address.setAp("12B");
+		address.setAddressStreetNo("68A");
+		address.setAddressStreetName("Observatorului");
+		address.setAddressNeighbourhood("Zorilor");
+		address.setAddressLocality("Cluj-Napoca");
+		address.setAddressAdmAreaL1("Cluj");
+		address.setAddressCountry("Romania");
+		address.setAddressLatitude(46.7667);
+		address.setAddressLongitude(23.5833);
+		address.setAddressBuilding("C3");
+		address.setAddressStaircase("2A");
+		address.setAddressFloor((short) 4);
+		address.setAddressAp("12B");
 		
 		rent = new Rent();
-		rent.setAccountId(account.getId());
+		rent.setAccountId(account.getAccountId());
 		rent.setAddress(address);
-		rent.setPrice(500);
-		rent.setSurface(120);
-		rent.setRooms((short) 3);
-		rent.setBaths((short) 3);
-		rent.setParty((byte) 1);
+		rent.setRentPrice(500);
+		rent.setRentSurface(120);
+		rent.setRentRooms((short) 3);
+		rent.setRentBaths((short) 3);
+		rent.setRentParty((byte) 1);
 		rent.setRentType((byte) 1);
-		rent.setArchitecture((byte) 1);
-		rent.setAge((short) 10);
-		rent.setDescription("some dummy text here");
-		rent.setPetsAllowed(true);
-		rent.setPhone("0750110440");
-		rent.setCreationDate(new Date());
+		rent.setRentArchitecture((byte) 1);
+		rent.setRentAge((short) 10);
+		rent.setRentDescription("some dummy text here");
+		rent.setRentPetsAllowed(true);
+		rent.setRentPhone("0750110440");
+		rent.setRentAddDate(new Date());
 		rent.setRentStatus((byte) 0);
 	}
 
@@ -87,7 +87,7 @@ public class AddRentWebserviceTest extends TestCase {
 		imageURIs.add("/images/1/123456789/4.jpg");
 		imageURIs.add("/images/1/123456789/5.jpg");
 		
-		rent.setImageURIs(imageURIs);
+		rent.setRentImageURIs(imageURIs);
 		
 		Response response = target.path("addrent").request(MediaType.APPLICATION_JSON).post(Entity.json(rent));
 		rent = response.readEntity(Rent.class);

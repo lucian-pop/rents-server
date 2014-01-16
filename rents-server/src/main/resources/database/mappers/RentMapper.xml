@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="RentResultMaps">
+
+   <resultMap id="LightRentMap" type="com.personal.rents.model.Rent">
+   		<constructor>
+   			<idArg column="rentId" javaType="int"/>
+   		</constructor>
+        <id property="rentId" column="rentId"/>
+        <result property="rentPrice" column="rentPrice"/>
+        <result property="rentSurface" column="rentSurface"/>
+        <result property="rentRooms" column="rentRooms"/>
+        <result property="rentBaths" column="rentBaths"/>
+        <result property="rentParty" column="rentParty"/>
+        <result property="rentType" column="rentType"/>
+        <result property="rentArchitecture" column="rentArchitecture"/>
+        <result property="rentAge" column="rentAge"/>
+        <result property="rentAddDate" column="rentAddDate"/>
+        <association property="address" javaType="com.personal.rents.model.Address">
+            <id property="addressId" column="addressId"/>
+            <result property="addressStreetNo" column="addressStreetNo"/>
+            <result property="addressStreetName" column="addressStreetName"/>
+            <result property="addressLatitude" column="addressLatitude"/>
+            <result property="addressLongitude" column="addressLongitude"/>
+        </association>
+        <collection property="rentImageURIs" javaType="java.util.List" 
+        	ofType="java.lang.String">
+        	<result property="rentImageURI" column="rentImageURI"/>
+        </collection>
+    </resultMap>
+
+</mapper>

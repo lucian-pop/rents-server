@@ -5,46 +5,53 @@ import java.util.List;
 
 public class Rent {
 	
-	private Integer id;
+	private Integer rentId;
 	
 	private Integer accountId;
 	
 	private Address address;
 	
-	private Integer price;
+	private Integer rentPrice;
 	
-	private Integer surface;
+	private Integer rentSurface;
 	
-	private Short rooms;
+	private Short rentRooms;
 	
-	private Short baths;
+	private Short rentBaths;
 	
-	private Byte party;
+	private Byte rentParty;
 	
 	private Byte rentType;
 	
-	private Byte architecture;
+	private Byte rentArchitecture;
 	
-	private Short age;
+	private Short rentAge;
 	
-	private String description;
+	private String rentDescription;
 	
-	private boolean petsAllowed;
+	private boolean rentPetsAllowed;
 	
-	private String phone;
+	private String rentPhone;
 	
-	private Date creationDate;
+	private Date rentAddDate;
 	
 	private Byte rentStatus;
 	
-	private List<String> imageURIs;
-
-	public Integer getId() {
-		return id;
+	private List<String> rentImageURIs;
+	
+	public Rent() {
+	}
+	
+	public Rent(Integer rentId) {
+		this.rentId = rentId;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public Integer getRentId() {
+		return rentId;
+	}
+
+	public void setRentId(Integer rentId) {
+		this.rentId = rentId;
 	}
 
 	public Integer getAccountId() {
@@ -55,56 +62,56 @@ public class Rent {
 		this.accountId = accountId;
 	}
 
-	public Integer getAddressId() {
-		return address.getId();
-	}
-
 	public Address getAddress() {
 		return address;
+	}
+	
+	public Integer getAddressId() {
+		return address.getAddressId();
 	}
 
 	public void setAddress(Address address) {
 		this.address = address;
 	}
 
-	public Integer getPrice() {
-		return price;
+	public Integer getRentPrice() {
+		return rentPrice;
 	}
 
-	public void setPrice(Integer price) {
-		this.price = price;
+	public void setRentPrice(Integer rentPrice) {
+		this.rentPrice = rentPrice;
 	}
 
-	public Integer getSurface() {
-		return surface;
+	public Integer getRentSurface() {
+		return rentSurface;
 	}
 
-	public void setSurface(Integer surface) {
-		this.surface = surface;
+	public void setRentSurface(Integer rentSurface) {
+		this.rentSurface = rentSurface;
 	}
 
-	public Short getRooms() {
-		return rooms;
+	public Short getRentRooms() {
+		return rentRooms;
 	}
 
-	public void setRooms(Short rooms) {
-		this.rooms = rooms;
+	public void setRentRooms(Short rentRooms) {
+		this.rentRooms = rentRooms;
 	}
 
-	public Short getBaths() {
-		return baths;
+	public Short getRentBaths() {
+		return rentBaths;
 	}
 
-	public void setBaths(Short baths) {
-		this.baths = baths;
+	public void setRentBaths(Short rentBaths) {
+		this.rentBaths = rentBaths;
 	}
 
-	public Byte getParty() {
-		return party;
+	public Byte getRentParty() {
+		return rentParty;
 	}
 
-	public void setParty(Byte party) {
-		this.party = party;
+	public void setRentParty(Byte rentParty) {
+		this.rentParty = rentParty;
 	}
 
 	public Byte getRentType() {
@@ -115,52 +122,52 @@ public class Rent {
 		this.rentType = rentType;
 	}
 
-	public Byte getArchitecture() {
-		return architecture;
+	public Byte getRentArchitecture() {
+		return rentArchitecture;
 	}
 
-	public void setArchitecture(Byte architecture) {
-		this.architecture = architecture;
+	public void setRentArchitecture(Byte rentArchitecture) {
+		this.rentArchitecture = rentArchitecture;
 	}
 
-	public Short getAge() {
-		return age;
+	public Short getRentAge() {
+		return rentAge;
 	}
 
-	public void setAge(Short age) {
-		this.age = age;
+	public void setRentAge(Short rentAge) {
+		this.rentAge = rentAge;
 	}
 
-	public String getDescription() {
-		return description;
+	public String getRentDescription() {
+		return rentDescription;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
+	public void setRentDescription(String rentDescription) {
+		this.rentDescription = rentDescription;
 	}
 
-	public boolean isPetsAllowed() {
-		return petsAllowed;
+	public boolean isRentPetsAllowed() {
+		return rentPetsAllowed;
 	}
 
-	public void setPetsAllowed(boolean petsAllowed) {
-		this.petsAllowed = petsAllowed;
+	public void setRentPetsAllowed(boolean rentPetsAllowed) {
+		this.rentPetsAllowed = rentPetsAllowed;
 	}
 
-	public String getPhone() {
-		return phone;
+	public String getRentPhone() {
+		return rentPhone;
 	}
 
-	public void setPhone(String phone) {
-		this.phone = phone;
+	public void setRentPhone(String rentPhone) {
+		this.rentPhone = rentPhone;
 	}
 
-	public Date getCreationDate() {
-		return creationDate;
+	public Date getRentAddDate() {
+		return rentAddDate;
 	}
 
-	public void setCreationDate(Date creationDate) {
-		this.creationDate = creationDate;
+	public void setRentAddDate(Date rentAddDate) {
+		this.rentAddDate = rentAddDate;
 	}
 
 	public Byte getRentStatus() {
@@ -171,12 +178,12 @@ public class Rent {
 		this.rentStatus = rentStatus;
 	}
 
-	public List<String> getImageURIs() {
-		return imageURIs;
+	public List<String> getRentImageURIs() {
+		return rentImageURIs;
 	}
 
-	public void setImageURIs(List<String> imageURIs) {
-		this.imageURIs = imageURIs;
+	public void setRentImageURIs(List<String> rentImageURIs) {
+		this.rentImageURIs = rentImageURIs;
 	}
-
+	
 }

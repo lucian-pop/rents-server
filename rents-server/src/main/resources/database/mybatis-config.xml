@@ -34,7 +34,7 @@
 	</environments>
 	
 	<mappers>
-  		<package name="com.personal.rents.dao"/>
+  		<mapper resource="database/mappers/RentMapper.xml"/>
 	</mappers>
 
 </configuration>

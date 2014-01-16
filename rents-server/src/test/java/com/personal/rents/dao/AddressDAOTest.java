@@ -12,18 +12,18 @@ public class AddressDAOTest extends TestCase {
 	public void testInsertAddress() {
 		
 		Address address = new Address();
-		address.setStreetNo("68A");
-		address.setStreetName("Observatorului");
-		address.setNeighbourhood("Zorilor");
-		address.setLocality("Cluj-Napoca");
-		address.setAdmAreaL1("Cluj");
-		address.setCountry("Romania");
-		address.setLatitude(46.7667);
-		address.setLongitude(23.5833);
-		address.setBuilding("C3");
-		address.setStaircase("2A");
-		address.setFloor((short) 4);
-		address.setAp("12B");
+		address.setAddressStreetNo("68A");
+		address.setAddressStreetName("Observatorului");
+		address.setAddressNeighbourhood("Zorilor");
+		address.setAddressLocality("Cluj-Napoca");
+		address.setAddressAdmAreaL1("Cluj");
+		address.setAddressCountry("Romania");
+		address.setAddressLatitude(46.7667);
+		address.setAddressLongitude(23.5833);
+		address.setAddressBuilding("C3");
+		address.setAddressStaircase("2A");
+		address.setAddressFloor((short) 4);
+		address.setAddressAp("12B");
 		
 		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
 		int result = -1;
@@ -41,7 +41,7 @@ public class AddressDAOTest extends TestCase {
 		session = TestUtil.getSqlSessionFactory().openSession();
 		try {
 			AddressDAO addressDAO = session.getMapper(AddressDAO.class);
-			addressDAO.deleteAddress(address.getId());
+			addressDAO.deleteAddress(address.getAddressId());
 			session.commit();
 		} finally {
 			session.close();

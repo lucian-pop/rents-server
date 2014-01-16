@@ -32,13 +32,13 @@ public class SignupWebserviceTest extends TestCase {
 		
 		account = new Account();
 		account.setAccountType((byte) 0);
-		account.setExternalId("sadsadkjhfsdfsdfsdddddddddddddddf");
-		account.setEmail("initial.account@gmail.com");
-		account.setPassword("account password");
-		account.setFirstname("account firstname");
-		account.setLastname("account lastname");
-		account.setPhone("+4 0100900900");
-		account.setSignupDate(date);
+		account.setAccountExternalId("sadsadkjhfsdfsdfsdddddddddddddddf");
+		account.setAccountEmail("initial.account@gmail.com");
+		account.setAccountPassword("account password");
+		account.setAccountFirstname("account firstname");
+		account.setAccountLastname("account lastname");
+		account.setAccountPhone("+4 0100900900");
+		account.setAccountSignupDate(date);
     }
 	
 	@After

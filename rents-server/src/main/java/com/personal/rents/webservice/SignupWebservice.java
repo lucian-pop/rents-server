@@ -24,8 +24,8 @@ public class SignupWebservice {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Account signup(Account account) {
-		logger.info("An sign-up request was received from " + account.getFirstname() + " " 
-				+ account.getLastname() + " with email " + account.getEmail());
+		logger.info("An sign-up request was received from " + account.getAccountFirstname() + " " 
+				+ account.getAccountLastname() + " with email " + account.getAccountEmail());
 
 		account = AccountManager.createAccount(account);
 		

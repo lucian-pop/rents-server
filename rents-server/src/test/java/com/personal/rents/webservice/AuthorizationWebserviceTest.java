@@ -34,14 +34,14 @@ public class AuthorizationWebserviceTest extends TestCase {
 	}
 
 	public void testIsAuthorizedForAuthorizedRequest() {
-		Response response = target.path("auth").queryParam("accountId", account.getId()).request()
+		Response response = target.path("auth").queryParam("accountId", account.getAccountId()).request()
 				.header(ContextConstants.TOKEN_KEY, account.getTokenKey()).get();
 		
 		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
 	}
 	
 	public void testIsAuthorizedForUnauthorizedRequest() {
-		Response response = target.path("auth").queryParam("accountId", account.getId()).request()
+		Response response = target.path("auth").queryParam("accountId", account.getAccountId()).request()
 				.header(ContextConstants.TOKEN_KEY, TokenGenerator.generateToken()).get();
 		
 		assertTrue(response.getStatus() == WebserviceResponseStatus.UNAUTHORIZED.getCode());

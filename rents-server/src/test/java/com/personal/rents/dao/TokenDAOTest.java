@@ -31,9 +31,9 @@ public class TokenDAOTest extends TestCase {
 	
 	public void testAddToken() {
 		Token token = new Token();
-		token.setAccountId(account.getId());
+		token.setAccountId(account.getAccountId());
 		token.setTokenKey(TokenGenerator.generateToken());
-		token.setCreationDate(new Date());
+		token.setTokenCreationDate(new Date());
 		
 		int result = -1;
 		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
@@ -51,9 +51,9 @@ public class TokenDAOTest extends TestCase {
 	public void testGetTokenKey() {
 		// Add token first.
 		Token token = new Token();
-		token.setAccountId(account.getId());
+		token.setAccountId(account.getAccountId());
 		token.setTokenKey(TokenGenerator.generateToken());
-		token.setCreationDate(new Date());
+		token.setTokenCreationDate(new Date());
 		
 		String tokenKey = null;
 		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
@@ -63,7 +63,7 @@ public class TokenDAOTest extends TestCase {
 			session.commit();
 			
 			// Get token key.
-			tokenKey = tokenDAO.getTokenKey(account.getId());
+			tokenKey = tokenDAO.getTokenKey(account.getAccountId());
 		} finally {
 			session.close();
 		}

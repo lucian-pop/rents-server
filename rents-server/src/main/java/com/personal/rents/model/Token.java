@@ -4,20 +4,20 @@ import java.util.Date;
 
 public class Token {
 	
-	private Integer id;
+	private Integer tokenId;
 	
 	private Integer accountId;
 	
 	private String tokenKey;
 	
-	private Date creationDate;
+	private Date tokenCreationDate;
 
-	public Integer getId() {
-		return id;
+	public Integer getTokenId() {
+		return tokenId;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public void setTokenId(Integer tokenId) {
+		this.tokenId = tokenId;
 	}
 
 	public Integer getAccountId() {
@@ -36,12 +36,12 @@ public class Token {
 		this.tokenKey = tokenKey;
 	}
 
-	public Date getCreationDate() {
-		return creationDate;
+	public Date getTokenCreationDate() {
+		return tokenCreationDate;
 	}
 
-	public void setCreationDate(Date creationDate) {
-		this.creationDate = creationDate;
+	public void setTokenCreationDate(Date tokenCreationDate) {
+		this.tokenCreationDate = tokenCreationDate;
 	}
 	
 }

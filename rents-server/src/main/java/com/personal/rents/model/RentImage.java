@@ -2,18 +2,18 @@ package com.personal.rents.model;
 
 public class RentImage {
 
-	private Integer id;
+	private Integer rentImageId;
 	
 	private Integer rentId;
 	
-	private String imageURI;
+	private String rentImageURI;
 
-	public Integer getId() {
-		return id;
+	public Integer getRentImageId() {
+		return rentImageId;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public void setRentImageId(Integer rentImageId) {
+		this.rentImageId = rentImageId;
 	}
 
 	public Integer getRentId() {
@@ -24,12 +24,12 @@ public class RentImage {
 		this.rentId = rentId;
 	}
 
-	public String getImageURI() {
-		return imageURI;
+	public String getRentImageURI() {
+		return rentImageURI;
 	}
 
-	public void setImageURI(String imageURI) {
-		this.imageURI = imageURI;
+	public void setRentImageURI(String rentImageURI) {
+		this.rentImageURI = rentImageURI;
 	}
 
 }

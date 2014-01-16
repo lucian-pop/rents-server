@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import com.personal.rents.dao.AddressDAO;
 import com.personal.rents.dao.RentDAO;
 import com.personal.rents.dao.RentImageDAO;
+import com.personal.rents.dto.RentsCounter;
 import com.personal.rents.listener.ApplicationManager;
 import com.personal.rents.model.Rent;
 import com.personal.rents.model.RentImage;
@@ -27,13 +28,13 @@ public class RentManager {
 			session.commit();
 			
 			// add rent images in batches.
-			if((rent.getImageURIs() != null) && (rent.getImageURIs().size() > 0)) {
+			if((rent.getRentImageURIs() != null) && (rent.getRentImageURIs().size() > 0)) {
 				RentImageDAO rentImageDAO = session.getMapper(RentImageDAO.class);
 				RentImage rentImage = null;
-				for(String imageURI : rent.getImageURIs()) {
+				for(String imageURI : rent.getRentImageURIs()) {
 					rentImage = new RentImage();
-					rentImage.setRentId(rent.getId());
-					rentImage.setImageURI(imageURI);
+					rentImage.setRentId(rent.getRentId());
+					rentImage.setRentImageURI(imageURI);
 					
 					rentImageDAO.insertRentImage(rentImage);
 				}
@@ -50,4 +51,22 @@ public class RentManager {
 
 		return rent;
 	}
+	
+	public static RentsCounter getRentsByMapBoundaries(double minLatitude, double maxLatitude,
+			double minLongitude, double maxLongitude) {
+		RentsCounter rentsCounter = new RentsCounter();
+		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
+		try {
+			RentDAO rentDAO = session.getMapper(RentDAO.class);
+			rentsCounter.counter = rentDAO.getNoOfRentsByMapBoundaries(minLatitude, maxLatitude,
+					minLongitude, maxLongitude);
+			rentsCounter.rents = rentDAO.getRentsByMapBoundaries(minLatitude, maxLatitude,
+					minLongitude, maxLongitude);
+		} finally {
+			session.close();
+		}
+		
+		return rentsCounter;
+	}
+
 }

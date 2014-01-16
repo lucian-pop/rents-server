@@ -21,10 +21,10 @@ public final class AccountManager {
 		}
 		
 		// Set password field to null. We use the token for authorization.
-		account.setPassword(null);
+		account.setAccountPassword(null);
 		
 		// Generate token and save in db for later authorization.
-		String tokenKey = TokenManager.createAuthToken(account.getId());
+		String tokenKey = TokenManager.createAuthToken(account.getAccountId());
 		account.setTokenKey(tokenKey);
 		
 		return account;
@@ -41,7 +41,7 @@ public final class AccountManager {
 		}
 
 		// Make sure the account gets a valid authorization token.
-		String tokenKey = TokenManager.getValidToken(account.getTokenKey(), account.getId());
+		String tokenKey = TokenManager.getValidToken(account.getTokenKey(), account.getAccountId());
 		account.setTokenKey(tokenKey);
 		
 		return account;

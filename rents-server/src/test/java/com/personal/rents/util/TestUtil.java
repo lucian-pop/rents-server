@@ -19,6 +19,7 @@ import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import com.personal.rents.dao.AccountDAO;
 import com.personal.rents.dao.AddressDAO;
 import com.personal.rents.dao.RentDAO;
+import com.personal.rents.dao.RentImageDAO;
 import com.personal.rents.dao.TokenDAO;
 import com.personal.rents.logic.TokenGenerator;
 import com.personal.rents.model.Account;
@@ -51,6 +52,13 @@ public class TestUtil {
 					DATABASE_CONFIGURATION_FILE);
 				sqlSessionFactory = new SqlSessionFactoryBuilder().build(databaseConfiguration, 
 						DATABASE_ENV, databaseProperties);
+				
+				// Add mappers.
+				sqlSessionFactory.getConfiguration().addMapper(AccountDAO.class);
+				sqlSessionFactory.getConfiguration().addMapper(AddressDAO.class);
+				sqlSessionFactory.getConfiguration().addMapper(RentDAO.class);
+				sqlSessionFactory.getConfiguration().addMapper(RentImageDAO.class);
+				sqlSessionFactory.getConfiguration().addMapper(TokenDAO.class);
 
 				logger.info("Test database session factory created succesfully");
 			} catch (IOException e) {
@@ -69,13 +77,13 @@ public class TestUtil {
 		
 		Account account = new Account();
 		account.setAccountType((byte) 0);
-		account.setExternalId("sadsadkjhfsdfsdfsdddddddddddddddf");
-		account.setEmail("initial.account@gmail.com");
-		account.setPassword("account password");
-		account.setFirstname("account firstname");
-		account.setLastname("account lastname");
-		account.setPhone("+4 0100900900");
-		account.setSignupDate(date);
+		account.setAccountExternalId("sadsadkjhfsdfsdfsdddddddddddddddf");
+		account.setAccountEmail("initial.account@gmail.com");
+		account.setAccountPassword("account password");
+		account.setAccountFirstname("account firstname");
+		account.setAccountLastname("account lastname");
+		account.setAccountPhone("+4 0100900900");
+		account.setAccountSignupDate(date);
 
 		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
 		try {
@@ -86,9 +94,9 @@ public class TestUtil {
 			// Generate token
 			String tokenKey = TokenGenerator.generateToken();
 			Token token = new Token();
-			token.setAccountId(account.getId());
+			token.setAccountId(account.getAccountId());
 			token.setTokenKey(tokenKey);
-			token.setCreationDate(new Date());
+			token.setTokenCreationDate(new Date());
 					
 			// insert token into database
 			TokenDAO tokenDAO = session.getMapper(TokenDAO.class);
@@ -109,13 +117,13 @@ public class TestUtil {
 				
 				Account account = new Account();
 				account.setAccountType((byte) 0);
-				account.setExternalId("sadsadkjhfsdfsdfsdddddddddddddddf");
-				account.setEmail("initial.account@gmail.com");
-				account.setPassword("account password");
-				account.setFirstname("account firstname");
-				account.setLastname("account lastname");
-				account.setPhone("+4 0100900900");
-				account.setSignupDate(date);
+				account.setAccountExternalId("sadsadkjhfsdfsdfsdddddddddddddddf");
+				account.setAccountEmail("initial.account@gmail.com");
+				account.setAccountPassword("account password");
+				account.setAccountFirstname("account firstname");
+				account.setAccountLastname("account lastname");
+				account.setAccountPhone("+4 0100900900");
+				account.setAccountSignupDate(date);
 
 				SqlSession session = TestUtil.getSqlSessionFactory().openSession();
 				try {
@@ -133,7 +141,7 @@ public class TestUtil {
 		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
 		try {
 			AccountDAO accountMapper = session.getMapper(AccountDAO.class);
-			accountMapper.deleteAccount(account.getId());
+			accountMapper.deleteAccount(account.getAccountId());
 			session.commit();	
 		} finally {
 			session.close();
@@ -142,18 +150,18 @@ public class TestUtil {
 	
 	public static Address addAddress() {
 		Address address = new Address();
-		address.setStreetNo("68A");
-		address.setStreetName("Observatorului");
-		address.setNeighbourhood("Zorilor");
-		address.setLocality("Cluj-Napoca");
-		address.setAdmAreaL1("Cluj");
-		address.setCountry("Romania");
-		address.setLatitude(46.7667);
-		address.setLongitude(23.5833);
-		address.setBuilding("C3");
-		address.setStaircase("2A");
-		address.setFloor((short) 4);
-		address.setAp("12B");
+		address.setAddressStreetNo("68A");
+		address.setAddressStreetName("Observatorului");
+		address.setAddressNeighbourhood("Zorilor");
+		address.setAddressLocality("Cluj-Napoca");
+		address.setAddressAdmAreaL1("Cluj");
+		address.setAddressCountry("Romania");
+		address.setAddressLatitude(46.7457380);
+		address.setAddressLongitude(23.5833123);
+		address.setAddressBuilding("C3");
+		address.setAddressStaircase("2A");
+		address.setAddressFloor((short) 4);
+		address.setAddressAp("12B");
 		
 		SqlSession session = getSqlSessionFactory().openSession();
 		try {
@@ -171,7 +179,7 @@ public class TestUtil {
 		SqlSession session = getSqlSessionFactory().openSession();
 		try {
 			AddressDAO addressDAO = session.getMapper(AddressDAO.class);
-			addressDAO.deleteAddress(address.getId());
+			addressDAO.deleteAddress(address.getAddressId());
 			session.commit();
 		} finally {
 			session.close();
@@ -184,18 +192,18 @@ public class TestUtil {
 		Rent rent = new Rent();
 		rent.setAccountId(accountId);
 		rent.setAddress(address);
-		rent.setPrice(500);
-		rent.setSurface(120);
-		rent.setRooms((short) 3);
-		rent.setBaths((short) 3);
-		rent.setParty((byte) 1);
+		rent.setRentPrice(500);
+		rent.setRentSurface(120);
+		rent.setRentRooms((short) 3);
+		rent.setRentBaths((short) 3);
+		rent.setRentParty((byte) 1);
 		rent.setRentType((byte) 1);
-		rent.setArchitecture((byte) 1);
-		rent.setAge((short) 10);
-		rent.setDescription("some dummy text here");
-		rent.setPetsAllowed(true);
-		rent.setPhone("0750110440");
-		rent.setCreationDate(new Date());
+		rent.setRentArchitecture((byte) 1);
+		rent.setRentAge((short) 10);
+		rent.setRentDescription("some dummy text here");
+		rent.setRentPetsAllowed(true);
+		rent.setRentPhone("0750110440");
+		rent.setRentAddDate(new Date());
 		rent.setRentStatus((byte) 0);
 		
 		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
@@ -214,10 +222,10 @@ public class TestUtil {
 		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
 		try {
 			RentDAO rentDAO = session.getMapper(RentDAO.class);
-			rentDAO.deleteRent(rent.getId());
+			rentDAO.deleteRent(rent.getRentId());
 			
 			AddressDAO addressDAO = session.getMapper(AddressDAO.class);
-			addressDAO.deleteAddress(rent.getAddress().getId());
+			addressDAO.deleteAddress(rent.getAddress().getAddressId());
 
 			session.commit();
 		} finally {

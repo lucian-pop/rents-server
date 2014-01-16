@@ -2,144 +2,144 @@ package com.personal.rents.model;
 
 public class Address {
 
-	private Integer id;
+	private Integer addressId;
 	
-	private String streetNo;
+	private String addressStreetNo;
 	
-	private String streetName;
+	private String addressStreetName;
 	
-	private String neighbourhood;
+	private String addressNeighbourhood;
 	
-	private String sublocality;
+	private String addressSublocality;
 	
-	private String locality;
+	private String addressLocality;
 	
-	private String admAreaL1;
+	private String addressAdmAreaL1;
 	
-	private String country;
+	private String addressCountry;
 	
-	private double latitude;
+	private double addressLatitude;
 	
-	private double longitude;
+	private double addressLongitude;
 	
-	private String building;
+	private String addressBuilding;
 	
-	private String staircase;
+	private String addressStaircase;
 	
-	private Short floor;
+	private Short addressFloor;
 	
-	private String ap;
+	private String addressAp;
 
-	public Integer getId() {
-		return id;
+	public Integer getAddressId() {
+		return addressId;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public void setAddressId(Integer addressId) {
+		this.addressId = addressId;
 	}
 
-	public String getStreetNo() {
-		return streetNo;
+	public String getAddressStreetNo() {
+		return addressStreetNo;
 	}
 
-	public void setStreetNo(String streetNo) {
-		this.streetNo = streetNo;
+	public void setAddressStreetNo(String addressStreetNo) {
+		this.addressStreetNo = addressStreetNo;
 	}
 
-	public String getStreetName() {
-		return streetName;
+	public String getAddressStreetName() {
+		return addressStreetName;
 	}
 
-	public void setStreetName(String streetName) {
-		this.streetName = streetName;
+	public void setAddressStreetName(String addressStreetName) {
+		this.addressStreetName = addressStreetName;
 	}
 
-	public String getNeighbourhood() {
-		return neighbourhood;
+	public String getAddressNeighbourhood() {
+		return addressNeighbourhood;
 	}
 
-	public void setNeighbourhood(String neighbourhood) {
-		this.neighbourhood = neighbourhood;
+	public void setAddressNeighbourhood(String addressNeighbourhood) {
+		this.addressNeighbourhood = addressNeighbourhood;
 	}
 
-	public String getSublocality() {
-		return sublocality;
+	public String getAddressSublocality() {
+		return addressSublocality;
 	}
 
-	public void setSublocality(String sublocality) {
-		this.sublocality = sublocality;
+	public void setAddressSublocality(String addressSublocality) {
+		this.addressSublocality = addressSublocality;
 	}
 
-	public String getLocality() {
-		return locality;
+	public String getAddressLocality() {
+		return addressLocality;
 	}
 
-	public void setLocality(String locality) {
-		this.locality = locality;
+	public void setAddressLocality(String addressLocality) {
+		this.addressLocality = addressLocality;
 	}
 
-	public String getAdmAreaL1() {
-		return admAreaL1;
+	public String getAddressAdmAreaL1() {
+		return addressAdmAreaL1;
 	}
 
-	public void setAdmAreaL1(String admAreaL1) {
-		this.admAreaL1 = admAreaL1;
+	public void setAddressAdmAreaL1(String addressAdmAreaL1) {
+		this.addressAdmAreaL1 = addressAdmAreaL1;
 	}
 
-	public String getCountry() {
-		return country;
+	public String getAddressCountry() {
+		return addressCountry;
 	}
 
-	public void setCountry(String country) {
-		this.country = country;
+	public void setAddressCountry(String addressCountry) {
+		this.addressCountry = addressCountry;
 	}
 
-	public double getLatitude() {
-		return latitude;
+	public double getAddressLatitude() {
+		return addressLatitude;
 	}
 
-	public void setLatitude(double latitude) {
-		this.latitude = latitude;
+	public void setAddressLatitude(double addressLatitude) {
+		this.addressLatitude = addressLatitude;
 	}
 
-	public double getLongitude() {
-		return longitude;
+	public double getAddressLongitude() {
+		return addressLongitude;
 	}
 
-	public void setLongitude(double longitude) {
-		this.longitude = longitude;
+	public void setAddressLongitude(double addressLongitude) {
+		this.addressLongitude = addressLongitude;
 	}
 
-	public String getBuilding() {
-		return building;
+	public String getAddressBuilding() {
+		return addressBuilding;
 	}
 
-	public void setBuilding(String building) {
-		this.building = building;
+	public void setAddressBuilding(String addressBuilding) {
+		this.addressBuilding = addressBuilding;
 	}
 
-	public String getStaircase() {
-		return staircase;
+	public String getAddressStaircase() {
+		return addressStaircase;
 	}
 
-	public void setStaircase(String staircase) {
-		this.staircase = staircase;
+	public void setAddressStaircase(String addressStaircase) {
+		this.addressStaircase = addressStaircase;
 	}
 
-	public Short getFloor() {
-		return floor;
+	public Short getAddressFloor() {
+		return addressFloor;
 	}
 
-	public void setFloor(Short floor) {
-		this.floor = floor;
+	public void setAddressFloor(Short addressFloor) {
+		this.addressFloor = addressFloor;
 	}
 
-	public String getAp() {
-		return ap;
+	public String getAddressAp() {
+		return addressAp;
 	}
 
-	public void setAp(String ap) {
-		this.ap = ap;
+	public void setAddressAp(String addressAp) {
+		this.addressAp = addressAp;
 	}
-
+	
 }

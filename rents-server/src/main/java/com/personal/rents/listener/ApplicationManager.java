@@ -12,6 +12,12 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.log4j.Logger;
 
+import com.personal.rents.dao.AccountDAO;
+import com.personal.rents.dao.AddressDAO;
+import com.personal.rents.dao.RentDAO;
+import com.personal.rents.dao.RentImageDAO;
+import com.personal.rents.dao.TokenDAO;
+
 /**
  * Server startup listener that creates the sql session factory and returns it
  * whenever it's requested
@@ -43,6 +49,13 @@ public class ApplicationManager implements ServletContextListener {
 				DATABASE_CONFIGURATION_FILE);
 			sqlSessionFactory = new SqlSessionFactoryBuilder().build(databaseConfiguration,
 				databaseProperties);
+			
+			// Add mappers.
+			sqlSessionFactory.getConfiguration().addMapper(AccountDAO.class);
+			sqlSessionFactory.getConfiguration().addMapper(AddressDAO.class);
+			sqlSessionFactory.getConfiguration().addMapper(RentDAO.class);
+			sqlSessionFactory.getConfiguration().addMapper(RentImageDAO.class);
+			sqlSessionFactory.getConfiguration().addMapper(TokenDAO.class);
 			
 			logger.info("Database session factory created succesfully");
 		} catch (IOException e) {

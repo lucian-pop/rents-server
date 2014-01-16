@@ -34,13 +34,13 @@ public class AccountDAOTest extends TestCase {
 		
 		Account testAccount = new Account();
 		testAccount.setAccountType((byte) 0);
-		testAccount.setExternalId("sadsadkjhsadas2dsa5dasd4asd5a5232323");
-		testAccount.setEmail("test@gmail.com");
-		testAccount.setPassword("dummypassword");
-		testAccount.setFirstname("Dummy firstname");
-		testAccount.setLastname("Dummy lastname");
-		testAccount.setPhone("+4 0100800800");
-		testAccount.setSignupDate(date);
+		testAccount.setAccountExternalId("sadsadkjhsadas2dsa5dasd4asd5a5232323");
+		testAccount.setAccountEmail("test@gmail.com");
+		testAccount.setAccountPassword("dummypassword");
+		testAccount.setAccountFirstname("Dummy firstname");
+		testAccount.setAccountLastname("Dummy lastname");
+		testAccount.setAccountPhone("+4 0100800800");
+		testAccount.setAccountSignupDate(date);
 
 		int result = -1;
 		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
@@ -58,7 +58,7 @@ public class AccountDAOTest extends TestCase {
 		session = TestUtil.getSqlSessionFactory().openSession();
 		try {
 			AccountDAO accountMapper = session.getMapper(AccountDAO.class);
-			accountMapper.deleteAccount(testAccount.getId());
+			accountMapper.deleteAccount(testAccount.getAccountId());
 			session.commit();
 		} finally {
 			session.close();
@@ -72,7 +72,7 @@ public class AccountDAOTest extends TestCase {
 		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
 		try {
 			AccountDAO accountMapper = session.getMapper(AccountDAO.class);
-			testAccount = accountMapper.getAccountById(account.getId());
+			testAccount = accountMapper.getAccountById(account.getAccountId());
 			session.commit();
 		} finally {
 			session.close();
@@ -83,8 +83,8 @@ public class AccountDAOTest extends TestCase {
 
 	public void testLogin() {
 		Account testAccount = null;
-		String email = account.getEmail();
-		String password = account.getPassword();
+		String email = account.getAccountEmail();
+		String password = account.getAccountPassword();
 		
 		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
 		try {
@@ -104,14 +104,14 @@ public class AccountDAOTest extends TestCase {
 		Integer accountId = null;
 		try {
 			AccountDAO accountDAO = session.getMapper(AccountDAO.class);
-			accountId = accountDAO.getAccountId(account.getEmail(), account.getPassword());
+			accountId = accountDAO.getAccountId(account.getAccountEmail(), account.getAccountPassword());
 		} finally {
 			session.close();
 		}
 		
 		assertNotNull(accountId);
-		System.out.println("Account id is: " + account.getId());
-		assertTrue((int) accountId == account.getId());
+		System.out.println("Account id is: " + account.getAccountId());
+		assertTrue((int) accountId == account.getAccountId());
 	}
 	
 	public void testUpdatePassword() {
@@ -120,16 +120,16 @@ public class AccountDAOTest extends TestCase {
 		String tokenKey = TokenGenerator.generateToken();
 		try {
 			AccountDAO accountDAO = session.getMapper(AccountDAO.class);
-			accountDAO.updatePassword(account.getId(), newPassword, tokenKey, new Date());
+			accountDAO.updatePassword(account.getAccountId(), newPassword, tokenKey, new Date());
 			session.commit();
 			
 			// Get the updated account.
-			account = accountDAO.getAccountById(account.getId());
+			account = accountDAO.getAccountById(account.getAccountId());
 		} finally {
 			session.close();
 		}
 		
-		assertTrue(account.getPassword().equals(newPassword));
+		assertTrue(account.getAccountPassword().equals(newPassword));
 		assertTrue(account.getTokenKey().equals(tokenKey));
 	}
 }

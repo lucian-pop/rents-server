@@ -4,32 +4,32 @@ import java.util.Date;
 
 public class Account {
 	
-	private Integer id;
+	private Integer accountId;
 	
 	private Byte accountType;
 	
-	private String externalId;
+	private String accountExternalId;
 	
-	private String email;
+	private String accountEmail;
 	
-	private String password;
+	private String accountPassword;
 	
-	private String firstname;
+	private String accountFirstname;
 	
-	private String lastname;
+	private String accountLastname;
 	
-	private String phone;
+	private String accountPhone;
 	
-	private Date signupDate;
+	private Date accountSignupDate;
 	
 	private String tokenKey;
 
-	public Integer getId() {
-		return id;
+	public Integer getAccountId() {
+		return accountId;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public void setAccountId(Integer accountId) {
+		this.accountId = accountId;
 	}
 
 	public Byte getAccountType() {
@@ -40,60 +40,60 @@ public class Account {
 		this.accountType = accountType;
 	}
 
-	public String getExternalId() {
-		return externalId;
+	public String getAccountExternalId() {
+		return accountExternalId;
 	}
 
-	public void setExternalId(String externalId) {
-		this.externalId = externalId;
+	public void setAccountExternalId(String accountExternalId) {
+		this.accountExternalId = accountExternalId;
 	}
 
-	public String getEmail() {
-		return email;
+	public String getAccountEmail() {
+		return accountEmail;
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
+	public void setAccountEmail(String accountEmail) {
+		this.accountEmail = accountEmail;
 	}
 
-	public String getPassword() {
-		return password;
+	public String getAccountPassword() {
+		return accountPassword;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
+	public void setAccountPassword(String accountPassword) {
+		this.accountPassword = accountPassword;
 	}
 
-	public String getFirstname() {
-		return firstname;
+	public String getAccountFirstname() {
+		return accountFirstname;
 	}
 
-	public void setFirstname(String firstname) {
-		this.firstname = firstname;
+	public void setAccountFirstname(String accountFirstname) {
+		this.accountFirstname = accountFirstname;
 	}
 
-	public String getLastname() {
-		return lastname;
+	public String getAccountLastname() {
+		return accountLastname;
 	}
 
-	public void setLastname(String lastname) {
-		this.lastname = lastname;
+	public void setAccountLastname(String accountLastname) {
+		this.accountLastname = accountLastname;
 	}
 
-	public String getPhone() {
-		return phone;
+	public String getAccountPhone() {
+		return accountPhone;
 	}
 
-	public void setPhone(String phone) {
-		this.phone = phone;
+	public void setAccountPhone(String accountPhone) {
+		this.accountPhone = accountPhone;
 	}
 
-	public Date getSignupDate() {
-		return signupDate;
+	public Date getAccountSignupDate() {
+		return accountSignupDate;
 	}
 
-	public void setSignupDate(Date signupDate) {
-		this.signupDate = signupDate;
+	public void setAccountSignupDate(Date accountSignupDate) {
+		this.accountSignupDate = accountSignupDate;
 	}
 
 	public String getTokenKey() {

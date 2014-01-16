@@ -36,8 +36,8 @@ public class LoginWebserviceTest extends TestCase {
 
 	public void testLogin() {
 		Form form = new Form();
-		form.param("email", account.getEmail());
-		form.param("password", account.getPassword());
+		form.param("email", account.getAccountEmail());
+		form.param("password", account.getAccountPassword());
 		Response response = target.path("login").request(MediaType.APPLICATION_JSON).post(Entity.entity(form,
 				MediaType.APPLICATION_FORM_URLENCODED));
 		
@@ -45,7 +45,7 @@ public class LoginWebserviceTest extends TestCase {
 		
 		Account loginResult = response.readEntity(Account.class);
 		
-		assertTrue(loginResult.getEmail().equals(account.getEmail()));
+		assertTrue(loginResult.getAccountEmail().equals(account.getAccountEmail()));
 		assertNotNull(loginResult.getTokenKey());
 		assertTrue(loginResult.getTokenKey().equals(account.getTokenKey()));
 	}

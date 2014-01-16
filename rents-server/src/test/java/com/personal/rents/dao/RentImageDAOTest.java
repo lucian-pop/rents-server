@@ -20,7 +20,7 @@ public class RentImageDAOTest extends TestCase {
 		super.setUp();
 		
 		account = TestUtil.createAccount();
-		rent = TestUtil.addRent(account.getId());
+		rent = TestUtil.addRent(account.getAccountId());
 	}
 
 	@Override
@@ -33,8 +33,8 @@ public class RentImageDAOTest extends TestCase {
 
 	public void testInsertRentImage() {
 		RentImage rentImage = new RentImage();
-		rentImage.setRentId(rent.getId());
-		rentImage.setImageURI("\\images\\1\\13123123213\\1.jpg");
+		rentImage.setRentId(rent.getRentId());
+		rentImage.setRentImageURI("\\images\\1\\13123123213\\1.jpg");
 		
 		int result = -1;
 		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
@@ -52,7 +52,7 @@ public class RentImageDAOTest extends TestCase {
 		session = TestUtil.getSqlSessionFactory().openSession();
 		try {
 			RentImageDAO rentImageDAO = session.getMapper(RentImageDAO.class);
-			rentImageDAO.deleteRentImage(rentImage.getId());
+			rentImageDAO.deleteRentImage(rentImage.getRentImageId());
 			session.commit();
 		} finally {
 			session.close();

@@ -21,7 +21,7 @@ public final class TokenManager {
 		Token token = new Token();
 		token.setAccountId(accountId);
 		token.setTokenKey(tokenKey);
-		token.setCreationDate(new Date());
+		token.setTokenCreationDate(new Date());
 		
 		// insert token into database
 		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();

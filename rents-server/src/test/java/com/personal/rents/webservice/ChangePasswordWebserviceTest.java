@@ -35,8 +35,8 @@ public class ChangePasswordWebserviceTest extends TestCase {
 
 	public void testChangePassword() {
 		Form form = new Form();
-		form.param("email", account.getEmail());
-		form.param("password", account.getPassword());
+		form.param("email", account.getAccountEmail());
+		form.param("password", account.getAccountPassword());
 		form.param("newPassword", "some new password");
 		
 		Response response = target.path("changepassword").request(MediaType.APPLICATION_JSON).post(Entity.entity(form,
