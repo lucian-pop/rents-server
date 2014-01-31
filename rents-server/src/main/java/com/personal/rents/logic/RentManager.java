@@ -1,5 +1,8 @@
 package com.personal.rents.logic;
 
+import java.util.Date;
+import java.util.List;
+
 import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.log4j.Logger;
@@ -53,7 +56,7 @@ public class RentManager {
 	}
 	
 	public static RentsCounter getRentsByMapBoundaries(double minLatitude, double maxLatitude,
-			double minLongitude, double maxLongitude) {
+			double minLongitude, double maxLongitude, int pageSize) {
 		RentsCounter rentsCounter = new RentsCounter();
 		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
 		try {
@@ -61,7 +64,7 @@ public class RentManager {
 			rentsCounter.counter = rentDAO.getNoOfRentsByMapBoundaries(minLatitude, maxLatitude,
 					minLongitude, maxLongitude);
 			rentsCounter.rents = rentDAO.getRentsByMapBoundaries(minLatitude, maxLatitude,
-					minLongitude, maxLongitude);
+					minLongitude, maxLongitude, pageSize);
 		} finally {
 			session.close();
 		}
@@ -69,4 +72,19 @@ public class RentManager {
 		return rentsCounter;
 	}
 
+	public static List<Rent> getRentsNextPageByMapBoundaries(double minLatitude, double maxLatitude,
+			double minLongitude, double maxLongitude, Date lastRentDate, int lastRentId,
+			int pageSize) {
+		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
+		List<Rent> result = null;
+		try {
+			RentDAO rentDAO = session.getMapper(RentDAO.class);
+			result = rentDAO.getRentsNextPageByMapBoundaries(minLatitude, maxLatitude, minLongitude,
+					maxLongitude, lastRentDate, lastRentId, pageSize);
+		} finally {
+			session.close();
+		}
+		
+		return result;
+	}
 }

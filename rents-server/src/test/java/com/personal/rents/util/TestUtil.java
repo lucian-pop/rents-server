@@ -32,6 +32,8 @@ public class TestUtil {
 
 	public static final String BASE_URI = "http://localhost:8080/rents-server/ws/";
 	
+	public static final int PAGE_SIZE = 50;
+	
 	private static final String DATABASE_PROPERTIES_FILE = "database/database.properties";
 
 	private static final String DATABASE_CONFIGURATION_FILE = "database/mybatis-config.xml";
