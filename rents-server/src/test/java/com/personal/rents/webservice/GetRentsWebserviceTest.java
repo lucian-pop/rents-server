@@ -19,14 +19,6 @@ import com.personal.rents.webservice.util.GeneralConstants;
 import junit.framework.TestCase;
 
 public class GetRentsWebserviceTest extends TestCase {
-
-	private static final double MIN_LATITUDE = 46.7379424563698;
-
-	private static final double MAX_LATITUDE = 46.76499396368981;
-
-	private static final double MIN_LONGITUDE = 23.56791313737631;
-	
-	private static final double MAX_LONGITUDE = 23.59537862241268;
 	
 	private static final int NO_RENTS = 6;
 	
@@ -63,9 +55,12 @@ public class GetRentsWebserviceTest extends TestCase {
 	}
 
 	public void testGetRentsByMapBoundaries() {
-		Response response = target.path("rents/light").queryParam("minLatitude", MIN_LATITUDE)
-				.queryParam("maxLatitude", MAX_LATITUDE).queryParam("minLongitude", MIN_LONGITUDE)
-				.queryParam("maxLongitude", MAX_LONGITUDE).queryParam("pageSize", TestUtil.PAGE_SIZE)
+		Response response = target.path("rents/map")
+				.queryParam("minLatitude", TestUtil.MIN_LATITUDE)
+				.queryParam("maxLatitude", TestUtil.MAX_LATITUDE)
+				.queryParam("minLongitude", TestUtil.MIN_LONGITUDE)
+				.queryParam("maxLongitude", TestUtil.MAX_LONGITUDE)
+				.queryParam("pageSize", TestUtil.PAGE_SIZE)
 				.request(MediaType.APPLICATION_JSON).get();
 		
 		assertTrue(response.getStatus()==WebserviceResponseStatus.OK.getCode());
@@ -81,14 +76,16 @@ public class GetRentsWebserviceTest extends TestCase {
 	
 	public void testGetRentsNextPageByMapBoundaries() {
 		String date = (new SimpleDateFormat(GeneralConstants.DATE_FORMAT)).format(new Date());
-		System.out.println("*********Date is: " + date);
-		Response response = target.path("rents/light/page").queryParam("minLatitude", MIN_LATITUDE)
-				.queryParam("maxLatitude", MAX_LATITUDE).queryParam("minLongitude", MIN_LONGITUDE)
-				.queryParam("maxLongitude", MAX_LONGITUDE).queryParam("lastRentDate", date)
-				.queryParam("lastRentId", 10000).queryParam("pageSize", TestUtil.PAGE_SIZE)
+		Response response = target.path("rents/map/page")
+				.queryParam("minLatitude", TestUtil.MIN_LATITUDE)
+				.queryParam("maxLatitude", TestUtil.MAX_LATITUDE)
+				.queryParam("minLongitude", TestUtil.MIN_LONGITUDE)
+				.queryParam("maxLongitude", TestUtil.MAX_LONGITUDE).queryParam("lastRentDate", date)
+				.queryParam("lastRentId", Integer.MAX_VALUE)
+				.queryParam("pageSize", TestUtil.PAGE_SIZE)
 				.request(MediaType.APPLICATION_JSON).get();
 		
 		assertTrue(response.getStatus()==WebserviceResponseStatus.OK.getCode());
 	}
-	
+
 }

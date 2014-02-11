@@ -29,7 +29,7 @@ public class Rent {
 	
 	private String rentDescription;
 	
-	private boolean rentPetsAllowed;
+	private Boolean rentPetsAllowed;
 	
 	private String rentPhone;
 	
@@ -146,11 +146,11 @@ public class Rent {
 		this.rentDescription = rentDescription;
 	}
 
-	public boolean isRentPetsAllowed() {
+	public Boolean isRentPetsAllowed() {
 		return rentPetsAllowed;
 	}
 
-	public void setRentPetsAllowed(boolean rentPetsAllowed) {
+	public void setRentPetsAllowed(Boolean rentPetsAllowed) {
 		this.rentPetsAllowed = rentPetsAllowed;
 	}
 

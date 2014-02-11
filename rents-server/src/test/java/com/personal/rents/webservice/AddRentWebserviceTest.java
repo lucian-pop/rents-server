@@ -73,7 +73,8 @@ public class AddRentWebserviceTest extends TestCase {
 	}
 
 	public void testAddRentWithoutImages() {
-		Response response = target.path("addrent").request(MediaType.APPLICATION_JSON).post(Entity.json(rent));
+		Response response = target.path("addrent").request(MediaType.APPLICATION_JSON)
+				.post(Entity.json(rent));
 		rent = response.readEntity(Rent.class);
 
 		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
@@ -89,7 +90,8 @@ public class AddRentWebserviceTest extends TestCase {
 		
 		rent.setRentImageURIs(imageURIs);
 		
-		Response response = target.path("addrent").request(MediaType.APPLICATION_JSON).post(Entity.json(rent));
+		Response response = target.path("addrent").request(MediaType.APPLICATION_JSON)
+				.post(Entity.json(rent));
 		rent = response.readEntity(Rent.class);
 
 		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());

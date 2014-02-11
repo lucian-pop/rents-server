@@ -18,13 +18,14 @@ import javax.ws.rs.core.MediaType;
 import com.personal.rents.dto.RentsCounter;
 import com.personal.rents.logic.RentManager;
 import com.personal.rents.model.Rent;
+import com.personal.rents.model.RentStatus;
 import com.personal.rents.webservice.response.WebserviceResponseStatus;
 import com.personal.rents.webservice.util.GeneralConstants;
 
 @Path("rents")
 public class GetRentsWebservice {
 
-	@Path("light")
+	@Path("map")
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -32,20 +33,13 @@ public class GetRentsWebservice {
 			@QueryParam("maxLatitude") double maxLatitude, 
 			@QueryParam("minLongitude") double minLongitude,
 			@QueryParam("maxLongitude") double maxLongitude, @QueryParam("pageSize") int pageSize) {
-		
-		try {
-			Thread.sleep(5000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		
 		RentsCounter rentsCounter = RentManager.getRentsByMapBoundaries(minLatitude, maxLatitude,
-				minLongitude, maxLongitude, pageSize);
+				minLongitude, maxLongitude, RentStatus.AVAILABLE.getStatus(), pageSize);
 		
 		return rentsCounter;
 	}
 	
-	@Path("light/page")
+	@Path("map/page")
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -67,11 +61,10 @@ public class GetRentsWebservice {
 		}
 
 		List<Rent> rents = RentManager.getRentsNextPageByMapBoundaries(minLatitude, maxLatitude,
-				minLongitude, maxLongitude, date, lastRentId, pageSize);
+				minLongitude, maxLongitude, date, lastRentId, RentStatus.AVAILABLE.getStatus(),
+				pageSize);
 		
-		System.out.println("Total number of retrieved rents is: " + rents.size());
 		return rents;
-
 	}
 
 }

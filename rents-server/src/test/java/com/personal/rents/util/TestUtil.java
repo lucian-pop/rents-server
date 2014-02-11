@@ -32,7 +32,19 @@ public class TestUtil {
 
 	public static final String BASE_URI = "http://localhost:8080/rents-server/ws/";
 	
+	public static final double MIN_LATITUDE = 46.7379424563698;
+
+	public static final double MAX_LATITUDE = 46.76499396368981;
+
+	public static final double MIN_LONGITUDE = 23.56791313737631;
+	
+	public static final double MAX_LONGITUDE = 23.59537862241268;
+	
 	public static final int PAGE_SIZE = 50;
+	
+	private static final double LATITUDE = 46.7457380;
+	
+	private static final double LONGITUDE = 23.5833123;
 	
 	private static final String DATABASE_PROPERTIES_FILE = "database/database.properties";
 
@@ -158,8 +170,8 @@ public class TestUtil {
 		address.setAddressLocality("Cluj-Napoca");
 		address.setAddressAdmAreaL1("Cluj");
 		address.setAddressCountry("Romania");
-		address.setAddressLatitude(46.7457380);
-		address.setAddressLongitude(23.5833123);
+		address.setAddressLatitude(LATITUDE);
+		address.setAddressLongitude(LONGITUDE);
 		address.setAddressBuilding("C3");
 		address.setAddressStaircase("2A");
 		address.setAddressFloor((short) 4);
