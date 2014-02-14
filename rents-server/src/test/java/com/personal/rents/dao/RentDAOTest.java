@@ -30,6 +30,7 @@ public class RentDAOTest extends TestCase {
 	private Account account;
 	
 	private Address address;
+	
 
 	@Override
 	protected void setUp() throws Exception {
@@ -325,5 +326,51 @@ public class RentDAOTest extends TestCase {
 			assertTrue(address.getAddressLongitude() >= MIN_LONGITUDE);
 			assertTrue(address.getAddressLongitude() <= MAX_LONGITUDE);
 		}
+	}
+	
+	public void testGetRentDetails() {
+		Rent rent = TestUtil.addRent(account.getAccountId());
+		
+		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
+		Rent resultRent = null;
+		try {
+			RentDAO rentDAO = session.getMapper(RentDAO.class);
+			resultRent = rentDAO.getDetailedRent(rent.getRentId());
+		} finally {
+			session.close();
+		}
+		
+		assertTrue(resultRent != null);
+		assertTrue(resultRent.getAccountId() == account.getAccountId());
+		assertTrue(resultRent.getRentPrice() != null);
+		assertTrue(resultRent.getRentSurface() != null);
+		assertTrue(resultRent.getRentRooms() != null);
+		assertTrue(resultRent.getRentBaths() != null);
+		assertTrue(resultRent.getRentParty() != null);
+		assertTrue(resultRent.getRentType() != null);
+		assertTrue(resultRent.getRentArchitecture() != null);
+		assertTrue(resultRent.getRentAge() != null);
+		assertTrue(resultRent.getRentDescription() != null);
+		assertTrue(resultRent.isRentPetsAllowed() != null);
+		assertTrue(resultRent.getRentPhone() != null);
+		assertTrue(resultRent.getRentAddDate() != null);
+		assertTrue(resultRent.getRentStatus() != null);
+		
+		Address resultAddress = rent.getAddress();
+		assertTrue(resultAddress != null);
+		assertTrue(resultAddress.getAddressStreetNo() != null);
+		assertTrue(resultAddress.getAddressStreetName() != null);
+		assertTrue(resultAddress.getAddressNeighbourhood() != null);
+		assertTrue(resultAddress.getAddressLocality() != null);
+		assertTrue(resultAddress.getAddressAdmAreaL1() != null);
+		assertTrue(resultAddress.getAddressCountry() != null);
+		assertTrue(resultAddress.getAddressLatitude() != null);
+		assertTrue(resultAddress.getAddressLongitude() != null);
+		assertTrue(resultAddress.getAddressBuilding() != null);
+		assertTrue(resultAddress.getAddressStaircase() != null);
+		assertTrue(resultAddress.getAddressFloor() != null);
+		assertTrue(resultAddress.getAddressAp() != null);
+
+		TestUtil.deleteRent(rent);
 	}
 }

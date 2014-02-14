@@ -56,6 +56,19 @@ public class RentManager {
 		return rent;
 	}
 	
+	public static Rent getDetailedRent(int rentId) {
+		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
+		Rent rent = null;
+		try {
+			RentDAO rentDAO = session.getMapper(RentDAO.class);
+			rent = rentDAO.getDetailedRent(rentId);
+		} finally {
+			session.close();
+		}
+		
+		return rent;
+	}
+	
 	public static RentsCounter getRentsByMapBoundaries(double minLatitude, double maxLatitude,
 			double minLongitude, double maxLongitude, int rentStatus,int pageSize) {
 		RentsCounter rentsCounter = new RentsCounter();

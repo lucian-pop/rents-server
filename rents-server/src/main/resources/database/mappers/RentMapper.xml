@@ -33,5 +33,46 @@
         	<result property="rentImageURI" column="rentImageURI"/>
         </collection>
     </resultMap>
+    
+    <resultMap id="FullRentMap" type="com.personal.rents.model.Rent">
+   		<constructor>
+   			<idArg column="rentId" javaType="int"/>
+   		</constructor>
+        <id property="rentId" column="rentId"/>
+        <result property="accountId" column="accountId"/>
+        <result property="rentPrice" column="rentPrice"/>
+        <result property="rentSurface" column="rentSurface"/>
+        <result property="rentRooms" column="rentRooms"/>
+        <result property="rentBaths" column="rentBaths"/>
+        <result property="rentParty" column="rentParty"/>
+        <result property="rentType" column="rentType"/>
+        <result property="rentArchitecture" column="rentArchitecture"/>
+        <result property="rentAge" column="rentAge"/>
+        <result property="rentDescription" column="rentDescription"/>
+        <result property="rentPetsAllowed" column="rentPetsAllowed"/>
+        <result property="rentPhone" column="rentPhone"/>
+        <result property="rentAddDate" column="rentAddDate"/>
+        <result property="rentStatus" column="rentStatus"/>
+        <association property="address" javaType="com.personal.rents.model.Address">
+            <id property="addressId" column="addressId"/>
+            <result property="addressStreetNo" column="addressStreetNo"/>
+            <result property="addressStreetName" column="addressStreetName"/>
+            <result property="addressNeighbourhood" column="addressNeighbourhood"/>
+            <result property="addressSublocality" column="addressSublocality"/>
+            <result property="addressLocality" column="addressLocality"/>
+            <result property="addressAdmAreaL1" column="addressAdmAreaL1"/>
+            <result property="addressCountry" column="addressCountry"/>
+            <result property="addressLatitude" column="addressLatitude"/>
+            <result property="addressLongitude" column="addressLongitude"/>
+            <result property="addressBuilding" column="addressBuilding"/>
+            <result property="addressStaircase" column="addressStaircase"/>
+            <result property="addressFloor" column="addressFloor"/>
+            <result property="addressAp" column="addressAp"/>
+        </association>
+        <collection property="rentImageURIs" javaType="java.util.List" 
+        	ofType="java.lang.String">
+        	<result property="rentImageURI" column="rentImageURI"/>
+        </collection>
+    </resultMap>
 
 </mapper>

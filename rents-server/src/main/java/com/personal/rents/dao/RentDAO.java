@@ -21,9 +21,14 @@ public interface RentDAO {
 			+ "#{rentBaths}, #{rentParty}, #{rentType}, #{rentArchitecture}, #{rentAge},"
 			+ "#{rentDescription}, #{rentPetsAllowed}, #{rentPhone}, #{rentAddDate}, #{rentStatus})";
 	
+	public static final String EAGER_SELECT_RENT_BY_ID= "select rent.*, address.*, rentImageURI from rent"
+			+ " inner join address on rent.addressId=address.addressId"
+			+ "	left join rent_image on rent.rentId=rent_image.rentId"
+			+ " where rent.rentId = #{rentId}";
+	
 	public static final String DELETE_BY_ID = "delete from rent where rent.rentId=#{rentId}";
 	
-	public static final String LIGHT_PROJECTION = "select rent.rentId, rentPrice,"
+	public static final String LIGHT_PROJECTION = "select rent.rentId, rent.rentPrice,"
 			+ "rentSurface, rentRooms, rentBaths, rentParty, rentType, rentArchitecture, rentAge,"
 			+ "rentPetsAllowed, rentAddDate, rentStatus,"
 			+ "address.addressId, addressStreetNo, addressStreetName, addressLatitude,"
@@ -104,6 +109,10 @@ public interface RentDAO {
 	@Insert(INSERT)
 	@Options(useGeneratedKeys = true, keyProperty="rentId")
 	public int insertRent(Rent rent);
+	
+	@Select(EAGER_SELECT_RENT_BY_ID)
+	@ResultMap("RentResultMaps.FullRentMap")
+	public Rent getDetailedRent(@Param("rentId") int rentId);
 	
 	@Delete(DELETE_BY_ID)
 	public int deleteRent(@Param("rentId") int rentId);

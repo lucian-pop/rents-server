@@ -18,9 +18,9 @@ public class Address {
 	
 	private String addressCountry;
 	
-	private double addressLatitude;
+	private Double addressLatitude;
 	
-	private double addressLongitude;
+	private Double addressLongitude;
 	
 	private String addressBuilding;
 	
@@ -94,19 +94,19 @@ public class Address {
 		this.addressCountry = addressCountry;
 	}
 
-	public double getAddressLatitude() {
+	public Double getAddressLatitude() {
 		return addressLatitude;
 	}
 
-	public void setAddressLatitude(double addressLatitude) {
+	public void setAddressLatitude(Double addressLatitude) {
 		this.addressLatitude = addressLatitude;
 	}
 
-	public double getAddressLongitude() {
+	public Double getAddressLongitude() {
 		return addressLongitude;
 	}
 
-	public void setAddressLongitude(double addressLongitude) {
+	public void setAddressLongitude(Double addressLongitude) {
 		this.addressLongitude = addressLongitude;
 	}
 
