@@ -3,7 +3,7 @@ package com.personal.rents.webservice;
 import java.io.IOException;
 import java.io.InputStream;	
 
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -16,8 +16,9 @@ import org.glassfish.jersey.media.multipart.FormDataParam;
 
 import com.google.gson.Gson;
 import com.personal.rents.logic.ImageManager;
-import com.personal.rents.webservice.response.WebserviceResponseStatus;
-
+import com.personal.rents.webservice.exception.OperationStoppedException;
+import com.personal.rents.webservice.exception.UnauthorizedException;
+import com.personal.rents.webservice.util.AuthorizationUtil;
 
 @Path("uploadimage")
 public class UploadImageWebservice {
@@ -29,20 +30,20 @@ public class UploadImageWebservice {
 	@Produces(MediaType.APPLICATION_JSON)
 	public String uploadImage(@FormDataParam("image") InputStream inputStream, 
 			@FormDataParam("filename") String filename, @FormDataParam("accountId") String accountId,
-			@FormDataParam("datetime") String datetime, @Context HttpServletResponse response) {
+			@FormDataParam("datetime") String datetime, @Context HttpServletRequest request) {
+		if(!AuthorizationUtil.isAuthorized(request, Integer.parseInt(accountId))) {
+			throw new UnauthorizedException();
+		}
+
 		String imageURI = null;
 		try {
 			imageURI = ImageManager.saveImage(inputStream, filename, accountId, datetime);
 		} catch (IOException ioe) {
 			logger.error("An error occured while uploading image '" + filename + "'", ioe);
-			response.setStatus(WebserviceResponseStatus.OPERATION_STOPPED.getCode());
-			
-			return null;
+
+			throw new OperationStoppedException();
 		}
-		
-		response.setStatus(WebserviceResponseStatus.OK.getCode());
 
 		return new Gson().toJson(imageURI);
 	}
-
 }

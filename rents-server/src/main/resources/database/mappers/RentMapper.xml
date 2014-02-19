@@ -3,7 +3,7 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  
-<mapper namespace="RentResultMaps">
+<mapper namespace="RentMapper">
 
    <resultMap id="LightRentMap" type="com.personal.rents.model.Rent">
    		<constructor>
@@ -74,5 +74,12 @@
         	<result property="rentImageURI" column="rentImageURI"/>
         </collection>
     </resultMap>
+    
+    <update id="updateRentsStatus" parameterType="com.personal.rents.dao.param.RentsStatus" >
+    	update rent set rentStatus=#{status} where rentId in
+    	<foreach collection="rentIds" item="item" index="index" open="(" close=")" separator=",">
+    		#{item}
+    	</foreach>
+    </update>
 
 </mapper>

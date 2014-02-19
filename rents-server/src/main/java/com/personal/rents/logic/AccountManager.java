@@ -39,6 +39,9 @@ public final class AccountManager {
 		} finally {
 			session.close();
 		}
+		
+		// Set password field to null. We use the token for authorization.
+				account.setAccountPassword(null);
 
 		// Make sure the account gets a valid authorization token.
 		String tokenKey = TokenManager.getValidToken(account.getTokenKey(), account.getAccountId());

@@ -68,9 +68,7 @@ public class GetRentsWebserviceTest extends TestCase {
 		RentsCounter rentsCounter = response.readEntity(RentsCounter.class);
 
 		assertTrue(rentsCounter.rents.size() > 0);
-		
 		assertTrue(rentsCounter.rents.size() <= TestUtil.PAGE_SIZE);
-		
 		assertTrue(rentsCounter.counter >= rentsCounter.rents.size());
 	}
 	

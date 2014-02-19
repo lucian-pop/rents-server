@@ -3,7 +3,6 @@ package com.personal.rents.webservice;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
@@ -14,10 +13,9 @@ import com.personal.rents.webservice.util.AuthorizationUtil;
 public class AuthorizationWebservice {
 
 	@GET
-	public Response authorize(@QueryParam("accountId") int accountId, 
-			@Context HttpServletRequest request) {
+	public Response authorize(@Context HttpServletRequest request) {
 		
-		if(AuthorizationUtil.isAuthorized(request, accountId)) {
+		if(AuthorizationUtil.isAuthorized(request)) {
 			return Response.status(WebserviceResponseStatus.OK.getCode()).build();
 		}
 		

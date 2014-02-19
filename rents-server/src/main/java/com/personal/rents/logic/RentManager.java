@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import com.personal.rents.dao.AddressDAO;
 import com.personal.rents.dao.RentDAO;
 import com.personal.rents.dao.RentImageDAO;
+import com.personal.rents.dao.param.RentsStatus;
 import com.personal.rents.dto.RentsCounter;
 import com.personal.rents.listener.ApplicationManager;
 import com.personal.rents.model.Rent;
@@ -70,7 +71,7 @@ public class RentManager {
 	}
 	
 	public static RentsCounter getRentsByMapBoundaries(double minLatitude, double maxLatitude,
-			double minLongitude, double maxLongitude, int rentStatus,int pageSize) {
+			double minLongitude, double maxLongitude, byte rentStatus, int pageSize) {
 		RentsCounter rentsCounter = new RentsCounter();
 		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
 		try {
@@ -88,7 +89,7 @@ public class RentManager {
 
 	public static List<Rent> getRentsNextPageByMapBoundaries(double minLatitude, double maxLatitude,
 			double minLongitude, double maxLongitude, Date lastRentDate, int lastRentId,
-			int rentStatus, int pageSize) {
+			byte rentStatus, int pageSize) {
 		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
 		List<Rent> result = null;
 		try {
@@ -182,5 +183,51 @@ public class RentManager {
 		}
 
 		return result;
+	}
+	
+	public static RentsCounter getUserAddedRents(int accountId, byte rentStatus, int pageSize) {
+		RentsCounter rentsCounter = new RentsCounter();
+		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
+		try {
+			RentDAO rentDAO = session.getMapper(RentDAO.class);
+			rentsCounter.counter = rentDAO.getNoOfUserAddedRents(accountId, rentStatus);
+			rentsCounter.rents = rentDAO.getUserAddedRents(accountId, rentStatus, pageSize);
+		} finally {
+			session.close();
+		}
+		
+		return rentsCounter;
+	}
+	
+	public static List<Rent> getUserAddedRentsNextPage(int accountId, byte rentStatus,
+			Date lastRentDate, int lastRentId, int pageSize) {
+		List<Rent> result = null;
+		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
+		try {
+			RentDAO rentDAO = session.getMapper(RentDAO.class);
+			result = rentDAO.getUserAddedRentsNextPage(accountId, rentStatus, lastRentDate,
+					lastRentId, pageSize);
+		} finally {
+			session.close();
+		}
+
+		return result;
+	}
+	
+	public static int updateRentsStatus(List<Integer> rentIds, int rentStatus) {
+		RentsStatus rentsStatus = new RentsStatus();
+		rentsStatus.status = rentStatus;
+		rentsStatus.rentIds = rentIds;
+
+		int noOfUpdates = -1;
+		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
+		try {
+			noOfUpdates = session.update("RentMapper.updateRentsStatus", rentsStatus);
+			session.commit();
+		} finally {
+			session.close();
+		}
+
+		return noOfUpdates;
 	}
 }

@@ -40,7 +40,7 @@ public interface RentDAO {
 	public static final String DATE_PAGINATION_CONDITION = "rent.rentAddDate <= #{lastRentDate}"
 			+ " and (rent.rentId < #{lastRentId} or rent.rentAddDate < #{lastRentDate})";
 	
-	public static final String DATE_RESTRICTION = "group by rent.rentId"
+	public static final String DATE_RESTRICTION = " group by rent.rentId"
 			+ " order by rent.rentAddDate desc, rent.rentId desc limit #{pageSize}";
 	
 	public static final String SELECT_COUNT_BY_MAP_BOUNDARIES = "select count(*) from rent "
@@ -53,13 +53,13 @@ public interface RentDAO {
 			+ " where address.addressLatitude between #{minLatitude} and #{maxLatitude}"
 			+ " and address.addressLongitude between #{minLongitude} and #{maxLongitude}"
 			+ " and rentStatus=#{rentStatus}"
-			+ " " + DATE_RESTRICTION;
+			+ DATE_RESTRICTION;
 	
 	public static final String SELECT_NEXT_PAGE_BY_MAP_BOUNDARIES = LIGHT_PROJECTION
 			+ " where address.addressLatitude between #{minLatitude} and #{maxLatitude}"
 			+ " and address.addressLongitude between #{minLongitude} and #{maxLongitude}"
 			+ " and rentStatus=#{rentStatus}"
-			+ " and " + DATE_PAGINATION_CONDITION + " " + DATE_RESTRICTION;
+			+ " and " + DATE_PAGINATION_CONDITION + DATE_RESTRICTION;
 	
 	public static final String SELECT_COUNT_BY_CRITERIA = "select count(*) from rent "
 			+ " inner join address on rent.addressId=address.addressId"
@@ -89,7 +89,7 @@ public interface RentDAO {
 			+ " and rentAge between #{minAge} and #{maxAge}"
 			+ " and rentPetsAllowed=#{rentPetsAllowed}"
 			+ " and rentStatus=#{rentStatus}"
-			+ " " + DATE_RESTRICTION;
+			+ DATE_RESTRICTION;
 	
 	public static final String SELECT_NEXT_PAGE_BY_CRITERIA = LIGHT_PROJECTION 
 			+ " where address.addressLatitude between #{minLatitude} and #{maxLatitude}"
@@ -104,14 +104,25 @@ public interface RentDAO {
 			+ " and rentAge between #{minAge} and #{maxAge}"
 			+ " and rentPetsAllowed=#{rentPetsAllowed}"
 			+ " and rentStatus=#{rentStatus}"
-			+ " and " + DATE_PAGINATION_CONDITION + " " + DATE_RESTRICTION;
+			+ " and " + DATE_PAGINATION_CONDITION + DATE_RESTRICTION;
+	
+	public static final String SELECT_COUNT_USER_ADDED_RENTS = "select count(*) from rent"
+			+ " where rent.accountId=#{accountId} and rent.rentStatus=#{rentStatus}";
+	
+	public static final String SELECT_USER_ADDED_RENTS = LIGHT_PROJECTION
+			+ " where rent.accountId=#{accountId} and rent.rentStatus=#{rentStatus}"
+			+ DATE_RESTRICTION;
+	
+	public static final String SELECT_USER_ADDED_RENTS_NEXT_PAGE = LIGHT_PROJECTION
+			+ " where rent.accountId=#{accountId} and rent.rentStatus=#{rentStatus}"
+			+ " and " + DATE_PAGINATION_CONDITION + DATE_RESTRICTION;
 
 	@Insert(INSERT)
 	@Options(useGeneratedKeys = true, keyProperty="rentId")
 	public int insertRent(Rent rent);
 	
 	@Select(EAGER_SELECT_RENT_BY_ID)
-	@ResultMap("RentResultMaps.FullRentMap")
+	@ResultMap("RentMapper.FullRentMap")
 	public Rent getDetailedRent(@Param("rentId") int rentId);
 	
 	@Delete(DELETE_BY_ID)
@@ -120,21 +131,21 @@ public interface RentDAO {
 	@Select(SELECT_COUNT_BY_MAP_BOUNDARIES)
 	public int getNoOfRentsByMapBoundaries(@Param("minLatitude") double minLatitude,
 			@Param("maxLatitude") double maxLatitude, @Param("minLongitude") double minLongitude,
-			@Param("maxLongitude") double maxLongitude, @Param("rentStatus") int rentStatus);
+			@Param("maxLongitude") double maxLongitude, @Param("rentStatus") byte rentStatus);
 	
 	@Select(SELECT_BY_MAP_BOUNDARIES)
-	@ResultMap("RentResultMaps.LightRentMap")
+	@ResultMap("RentMapper.LightRentMap")
 	public List<Rent> getRentsByMapBoundaries(@Param("minLatitude") double minLatitude,
 			@Param("maxLatitude") double maxLatitude, @Param("minLongitude") double minLongitude,
-			@Param("maxLongitude") double maxLongitude, @Param("rentStatus") int rentStatus,
+			@Param("maxLongitude") double maxLongitude, @Param("rentStatus") byte rentStatus,
 			@Param("pageSize") int pageSize);
 	
 	@Select(SELECT_NEXT_PAGE_BY_MAP_BOUNDARIES)
-	@ResultMap("RentResultMaps.LightRentMap")
+	@ResultMap("RentMapper.LightRentMap")
 	public List<Rent> getRentsNextPageByMapBoundaries(@Param("minLatitude") double minLatitude,
 			@Param("maxLatitude") double maxLatitude, @Param("minLongitude") double minLongitude,
 			@Param("maxLongitude") double maxLongitude, @Param("lastRentDate") Date lastRentDate, 
-			@Param("lastRentId") int lastRentId, @Param("rentStatus") int rentStatus, 
+			@Param("lastRentId") int lastRentId, @Param("rentStatus") byte rentStatus, 
 			@Param("pageSize") int pageSize);
 	
 	@Select(SELECT_COUNT_BY_CRITERIA)
@@ -152,7 +163,7 @@ public interface RentDAO {
 			@Param("rentStatus") byte rentStatus);
 	
 	@Select(SELECT_BY_CRITERIA)
-	@ResultMap("RentResultMaps.LightRentMap")
+	@ResultMap("RentMapper.LightRentMap")
 	public List<Rent> search(@Param("minLatitude") double minLatitude,
 			@Param("maxLatitude") double maxLatitude, @Param("minLongitude") double minLongitude,
 			@Param("maxLongitude") double maxLongitude, @Param("minPrice") int minPrice, 
@@ -167,7 +178,7 @@ public interface RentDAO {
 			@Param("rentStatus") byte rentStatus, @Param("pageSize") int pageSize);
 	
 	@Select(SELECT_NEXT_PAGE_BY_CRITERIA)
-	@ResultMap("RentResultMaps.LightRentMap")
+	@ResultMap("RentMapper.LightRentMap")
 	public List<Rent> searchNextPage(@Param("minLatitude") double minLatitude,
 			@Param("maxLatitude") double maxLatitude, @Param("minLongitude") double minLongitude,
 			@Param("maxLongitude") double maxLongitude, @Param("minPrice") int minPrice, 
@@ -179,6 +190,21 @@ public interface RentDAO {
 			@Param("maxType") byte maxType, @Param("minArchitecture") byte minArchitecture,
 			@Param("maxArchitecture") byte maxArchitecture, @Param("minAge") short minAge,
 			@Param("maxAge") short maxAge, @Param("rentPetsAllowed") boolean rentPetsAllowed,
+			@Param("rentStatus") byte rentStatus, @Param("lastRentDate") Date lastRentDate, 
+			@Param("lastRentId") int lastRentId, @Param("pageSize") int pageSize);
+	
+	@Select(SELECT_COUNT_USER_ADDED_RENTS)
+	public int getNoOfUserAddedRents(@Param("accountId") int accountId, 
+			@Param("rentStatus") byte rentStatus);
+	
+	@Select(SELECT_USER_ADDED_RENTS)
+	@ResultMap("RentMapper.LightRentMap")
+	public List<Rent> getUserAddedRents(@Param("accountId") int accountId, 
+			@Param("rentStatus") byte rentStatus, @Param("pageSize") int pageSize) ;
+	
+	@Select(SELECT_USER_ADDED_RENTS_NEXT_PAGE)
+	@ResultMap("RentMapper.LightRentMap")
+	public List<Rent> getUserAddedRentsNextPage(@Param("accountId") int accountId, 
 			@Param("rentStatus") byte rentStatus, @Param("lastRentDate") Date lastRentDate, 
 			@Param("lastRentId") int lastRentId, @Param("pageSize") int pageSize);
 } 

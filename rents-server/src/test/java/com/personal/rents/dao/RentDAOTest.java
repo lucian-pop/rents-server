@@ -1,10 +1,11 @@
 package com.personal.rents.dao;
 
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
 
+import com.personal.rents.dao.param.RentsStatus;
 import com.personal.rents.model.Account;
 import com.personal.rents.model.Address;
 import com.personal.rents.model.Rent;
@@ -49,44 +50,9 @@ public class RentDAOTest extends TestCase {
 	}
 
 	public void testInsertRent() {
-		Rent rent = new Rent();
-		rent.setAccountId(account.getAccountId());
-		rent.setAddress(address);
-		rent.setRentPrice(500);
-		rent.setRentSurface(120);
-		rent.setRentRooms((short) 3);
-		rent.setRentBaths((short) 3);
-		rent.setRentParty((byte) 1);
-		rent.setRentType((byte) 1);
-		rent.setRentArchitecture((byte) 1);
-		rent.setRentAge((short) 10);
-		rent.setRentDescription("some dummy text here");
-		rent.setRentPetsAllowed(true);
-		rent.setRentPhone("0750110440");
-		rent.setRentAddDate(new Date());
-		rent.setRentStatus((byte) 0);
+		Rent rent = TestUtil.addRent(account.getAccountId());
 		
-		int result = -1;
-		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
-		try {
-			RentDAO rentDAO = session.getMapper(RentDAO.class);
-			result = rentDAO.insertRent(rent);
-			session.commit();
-		} finally {
-			session.close();
-		}
-		
-		assertTrue(result == 1);
-		
-		// delete the added rent
-		session = TestUtil.getSqlSessionFactory().openSession();
-		try {
-			RentDAO rentDAO = session.getMapper(RentDAO.class);
-			rentDAO.deleteRent(rent.getRentId());
-			session.commit();
-		} finally {
-			session.close();
-		}
+		TestUtil.deleteRent(rent);
 	}
 	
 	public void testGetRentsByMapBoundaries() {
@@ -373,4 +339,116 @@ public class RentDAOTest extends TestCase {
 
 		TestUtil.deleteRent(rent);
 	}
+	
+	public void testGetNoOfUserAddedRents() {
+		Rent rent = TestUtil.addRent(account.getAccountId());
+		
+		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
+		int result = -1;
+		try {
+			RentDAO rentDAO = session.getMapper(RentDAO.class);
+			result = rentDAO.getNoOfUserAddedRents(account.getAccountId(), RentStatus.AVAILABLE.getStatus());
+		} finally {
+			session.close();
+		}
+		
+		assertTrue(result > 0);
+		
+		TestUtil.deleteRent(rent);
+	}
+	
+	public void testGetUserAddedRents() {
+		List<Rent> userAddedRents = new ArrayList<Rent>(TestUtil.PAGE_SIZE + 1);
+		for(int i = 0; i < TestUtil.PAGE_SIZE + 1; i++) {
+			Rent rent = TestUtil.addRent(account.getAccountId());
+			userAddedRents.add(rent);
+		}
+		
+		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
+		List<Rent> result = null;
+		try {
+			RentDAO rentDAO = session.getMapper(RentDAO.class);
+			result = rentDAO.getUserAddedRents(account.getAccountId(), 
+					RentStatus.AVAILABLE.getStatus(), TestUtil.PAGE_SIZE);
+		} finally {
+			session.close();
+		}
+		
+		assertTrue(result.size() > 0);
+		assertTrue(result.size() <= TestUtil.PAGE_SIZE);
+		
+		for(Rent rent : userAddedRents) {
+			TestUtil.deleteRent(rent);
+		}
+	}
+	
+	public void testGetUserAddedRentsNextPage() {
+		List<Rent> userAddedRents = new ArrayList<Rent>(TestUtil.PAGE_SIZE + 1);
+		for(int i = 0; i < TestUtil.PAGE_SIZE + 1; i++) {
+			Rent rent = TestUtil.addRent(account.getAccountId());
+			userAddedRents.add(rent);
+		}
+		
+		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
+		List<Rent> result = null;
+		try {
+			RentDAO rentDAO = session.getMapper(RentDAO.class);
+			result = rentDAO.getUserAddedRents(account.getAccountId(), 
+					RentStatus.AVAILABLE.getStatus(), TestUtil.PAGE_SIZE);
+		} finally {
+			session.close();
+		}
+		
+		assertTrue(result.size() > 0);
+		assertTrue(result.size() <= TestUtil.PAGE_SIZE);
+		
+		Rent lastRent = result.get(result.size() - 1);
+		session = TestUtil.getSqlSessionFactory().openSession();
+		List<Rent> nextPageResult = null;
+		try { 
+			RentDAO rentDAO = session.getMapper(RentDAO.class);
+			nextPageResult = rentDAO.getUserAddedRentsNextPage(account.getAccountId(),
+					RentStatus.AVAILABLE.getStatus(), lastRent.getRentAddDate(),
+					lastRent.getRentId(), TestUtil.PAGE_SIZE);
+		} finally {
+			session.close();
+		}
+		
+		assertTrue(nextPageResult.size() > 0);
+		assertTrue(nextPageResult.size() <= TestUtil.PAGE_SIZE);
+		
+		Rent pageFirstRent = nextPageResult.get(0);
+		assertTrue(pageFirstRent.getRentAddDate().getTime() <= lastRent.getRentAddDate().getTime());
+		assertTrue((pageFirstRent.getRentAddDate().getTime() < lastRent.getRentAddDate().getTime())
+				|| (pageFirstRent.getRentId() < lastRent.getRentId()));
+		
+		for(Rent rent : userAddedRents) {
+			TestUtil.deleteRent(rent);
+		}
+	}
+	
+	public void testUpdateRentsStatus() {
+		Rent firstRent = TestUtil.addRent(account.getAccountId());
+		Rent secondRent = TestUtil.addRent(account.getAccountId());
+
+		List<Integer> rentIds = new ArrayList<Integer>();
+		rentIds.add(firstRent.getRentId());
+		rentIds.add(secondRent.getRentId());
+		
+		RentsStatus  param = new RentsStatus();
+		param.status = RentStatus.AVAILABLE.getStatus();
+		param.rentIds = rentIds;
+
+		int updated = -1;
+		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
+		try {
+			updated = session.update("RentMapper.updateRentsStatus", param);
+			session.commit();
+		} finally {
+			session.close();
+		}
+		
+		assertTrue(updated == 2);
+	}
+
 }

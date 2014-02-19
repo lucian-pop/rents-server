@@ -19,7 +19,7 @@ import com.personal.rents.dto.RentsCounter;
 import com.personal.rents.logic.RentManager;
 import com.personal.rents.model.Rent;
 import com.personal.rents.model.RentStatus;
-import com.personal.rents.webservice.response.WebserviceResponseStatus;
+import com.personal.rents.webservice.exception.InvalidDataException;
 import com.personal.rents.webservice.util.GeneralConstants;
 
 @Path("rents")
@@ -55,9 +55,7 @@ public class GetRentsWebservice {
 		try {
 			date = dateFormat.parse(lastRentDate);
 		} catch (ParseException e) {
-			response.setStatus(WebserviceResponseStatus.INVALID_DATA.getCode());
-			
-			return null;
+			throw new InvalidDataException();
 		}
 
 		List<Rent> rents = RentManager.getRentsNextPageByMapBoundaries(minLatitude, maxLatitude,

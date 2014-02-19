@@ -110,7 +110,6 @@ public class AccountDAOTest extends TestCase {
 		}
 		
 		assertNotNull(accountId);
-		System.out.println("Account id is: " + account.getAccountId());
 		assertTrue((int) accountId == account.getAccountId());
 	}
 	

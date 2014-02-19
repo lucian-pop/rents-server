@@ -9,6 +9,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.personal.rents.logic.TokenGenerator;
 import com.personal.rents.model.Account;
 import com.personal.rents.model.Address;
 import com.personal.rents.model.Rent;
@@ -66,18 +67,24 @@ public class AddRentWebserviceTest extends TestCase {
 
 	@Override
 	protected void tearDown() throws Exception {
-		TestUtil.deleteRent(rent);
+		if(rent.getRentId() != null) {
+			TestUtil.deleteRent(rent);
+		}
 		TestUtil.deleteAccount(account);
 		
 		super.tearDown();
 	}
 
 	public void testAddRentWithoutImages() {
+		rent.setRentImageURIs(null);
 		Response response = target.path("addrent").request(MediaType.APPLICATION_JSON)
+				.header("tokenKey", account.getTokenKey())
 				.post(Entity.json(rent));
-		rent = response.readEntity(Rent.class);
 
 		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
+
+		rent = response.readEntity(Rent.class);
+		assertTrue(rent.getAccountId() == account.getAccountId());
 	}
 	
 	public void testAddRentWithImages() {
@@ -91,9 +98,19 @@ public class AddRentWebserviceTest extends TestCase {
 		rent.setRentImageURIs(imageURIs);
 		
 		Response response = target.path("addrent").request(MediaType.APPLICATION_JSON)
+				.header("tokenKey", account.getTokenKey())
 				.post(Entity.json(rent));
-		rent = response.readEntity(Rent.class);
-
 		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
+
+		rent = response.readEntity(Rent.class);
+		assertTrue(rent.getAccountId() == account.getAccountId());
+	}
+	
+	public void testAddRentWithoutPrivileges() {
+		Response response = target.path("addrent").request(MediaType.APPLICATION_JSON)
+				.header("tokenKey", TokenGenerator.generateToken())
+				.post(Entity.json(rent));
+
+		assertTrue(response.getStatus() == WebserviceResponseStatus.UNAUTHORIZED.getCode());
 	}
 }

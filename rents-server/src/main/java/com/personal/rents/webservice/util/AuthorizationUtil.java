@@ -20,4 +20,10 @@ public final class AuthorizationUtil {
 
 		return true;
 	}
+	
+	public static boolean isAuthorized(HttpServletRequest request) {
+		int accountId = Integer.parseInt(request.getHeader(ContextConstants.ACCOUNT_ID));
+
+		return isAuthorized(request, accountId);
+	}
 }

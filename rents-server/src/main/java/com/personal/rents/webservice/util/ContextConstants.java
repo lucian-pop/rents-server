@@ -3,6 +3,8 @@ package com.personal.rents.webservice.util;
 public final class ContextConstants {
 	
 	public static final String TOKEN_KEY = "tokenKey";
+	
+	public static final String ACCOUNT_ID = "accountId";
 
 	public static final String IMAGES_PATH = "images";
 	

@@ -12,7 +12,7 @@ import javax.ws.rs.core.MediaType;
 import org.apache.log4j.Logger;
 
 import com.personal.rents.logic.AccountManager;
-import com.personal.rents.webservice.response.WebserviceResponseStatus;
+import com.personal.rents.webservice.exception.ForbiddenException;
 
 @Path("changepassword")
 public class ChangePasswordWebservice {
@@ -29,7 +29,7 @@ public class ChangePasswordWebservice {
 		
 		String tokenKey = AccountManager.changePassword(email, password, newPassword);
 		if(tokenKey == null) {
-			response.setStatus(WebserviceResponseStatus.FORBIDDEN.getCode());
+			throw new ForbiddenException();
 		}
 
 		return tokenKey;
