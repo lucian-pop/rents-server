@@ -8,22 +8,26 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-import com.personal.rents.logic.RentManager;
-import com.personal.rents.model.Rent;
+import com.personal.rents.logic.RentFavoritesManager;
 import com.personal.rents.webservice.exception.UnauthorizedException;
 import com.personal.rents.webservice.util.AuthorizationUtil;
+import com.personal.rents.webservice.util.ContextConstants;
 
-@Path("addrent")
-public class AddRentWebservice {
+@Path("rentfavorites")
+public class RentFavoritesWebservice {
 	
+	@Path("addrent")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Rent addRent(Rent rent, @Context HttpServletRequest request) {
-		if(!AuthorizationUtil.isAuthorized(request, rent.getAccountId())) {
+	public boolean addRentToFavorites(int rentId, @Context HttpServletRequest request) {
+		if(!AuthorizationUtil.isAuthorized(request)) {
 			throw new UnauthorizedException();
 		}
 		
-		return RentManager.addRent(rent);
+		int accountId = request.getIntHeader(ContextConstants.ACCOUNT_ID);
+		
+		return RentFavoritesManager.addRentToFavorites(accountId, rentId);
 	}
+
 }

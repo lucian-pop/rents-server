@@ -22,7 +22,7 @@ public final class AuthorizationUtil {
 	}
 	
 	public static boolean isAuthorized(HttpServletRequest request) {
-		int accountId = Integer.parseInt(request.getHeader(ContextConstants.ACCOUNT_ID));
+		int accountId = request.getIntHeader(ContextConstants.ACCOUNT_ID);
 
 		return isAuthorized(request, accountId);
 	}

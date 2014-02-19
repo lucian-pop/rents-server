@@ -15,6 +15,7 @@ import com.personal.rents.model.Address;
 import com.personal.rents.model.Rent;
 import com.personal.rents.util.TestUtil;
 import com.personal.rents.webservice.response.WebserviceResponseStatus;
+import com.personal.rents.webservice.util.ContextConstants;
 
 import junit.framework.TestCase;
 
@@ -78,7 +79,7 @@ public class AddRentWebserviceTest extends TestCase {
 	public void testAddRentWithoutImages() {
 		rent.setRentImageURIs(null);
 		Response response = target.path("addrent").request(MediaType.APPLICATION_JSON)
-				.header("tokenKey", account.getTokenKey())
+				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
 				.post(Entity.json(rent));
 
 		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
@@ -98,7 +99,7 @@ public class AddRentWebserviceTest extends TestCase {
 		rent.setRentImageURIs(imageURIs);
 		
 		Response response = target.path("addrent").request(MediaType.APPLICATION_JSON)
-				.header("tokenKey", account.getTokenKey())
+				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
 				.post(Entity.json(rent));
 		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
 
@@ -108,7 +109,7 @@ public class AddRentWebserviceTest extends TestCase {
 	
 	public void testAddRentWithoutPrivileges() {
 		Response response = target.path("addrent").request(MediaType.APPLICATION_JSON)
-				.header("tokenKey", TokenGenerator.generateToken())
+				.header(ContextConstants.TOKEN_KEY, TokenGenerator.generateToken())
 				.post(Entity.json(rent));
 
 		assertTrue(response.getStatus() == WebserviceResponseStatus.UNAUTHORIZED.getCode());

@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import com.personal.rents.dao.AccountDAO;
 import com.personal.rents.dao.AddressDAO;
 import com.personal.rents.dao.RentDAO;
+import com.personal.rents.dao.RentFavoritesDAO;
 import com.personal.rents.dao.RentImageDAO;
 import com.personal.rents.dao.TokenDAO;
 
@@ -55,6 +56,7 @@ public class ApplicationManager implements ServletContextListener {
 			sqlSessionFactory.getConfiguration().addMapper(AddressDAO.class);
 			sqlSessionFactory.getConfiguration().addMapper(RentDAO.class);
 			sqlSessionFactory.getConfiguration().addMapper(RentImageDAO.class);
+			sqlSessionFactory.getConfiguration().addMapper(RentFavoritesDAO.class);
 			sqlSessionFactory.getConfiguration().addMapper(TokenDAO.class);
 			
 			logger.info("Database session factory created succesfully");

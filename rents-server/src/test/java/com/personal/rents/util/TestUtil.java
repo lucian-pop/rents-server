@@ -19,6 +19,7 @@ import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import com.personal.rents.dao.AccountDAO;
 import com.personal.rents.dao.AddressDAO;
 import com.personal.rents.dao.RentDAO;
+import com.personal.rents.dao.RentFavoritesDAO;
 import com.personal.rents.dao.RentImageDAO;
 import com.personal.rents.dao.TokenDAO;
 import com.personal.rents.logic.TokenGenerator;
@@ -72,6 +73,7 @@ public class TestUtil {
 				sqlSessionFactory.getConfiguration().addMapper(AddressDAO.class);
 				sqlSessionFactory.getConfiguration().addMapper(RentDAO.class);
 				sqlSessionFactory.getConfiguration().addMapper(RentImageDAO.class);
+				sqlSessionFactory.getConfiguration().addMapper(RentFavoritesDAO.class);
 				sqlSessionFactory.getConfiguration().addMapper(TokenDAO.class);
 
 				logger.info("Test database session factory created succesfully");
@@ -241,6 +243,28 @@ public class TestUtil {
 			AddressDAO addressDAO = session.getMapper(AddressDAO.class);
 			addressDAO.deleteAddress(rent.getAddress().getAddressId());
 
+			session.commit();
+		} finally {
+			session.close();
+		}
+	}
+	
+	public static void addRentFavorite(int accountId, int rentId) {
+		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
+		try {
+			RentFavoritesDAO rentFavoritesDAO = session.getMapper(RentFavoritesDAO.class);
+			rentFavoritesDAO.addEntry(accountId, rentId);
+			session.commit();
+		} finally {
+			session.close();
+		}
+	}
+	
+	public static void deleteRentFavorite(int accountId, int rentId) {
+		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
+		try {
+			RentFavoritesDAO rentFavoritesDAO = session.getMapper(RentFavoritesDAO.class);
+			rentFavoritesDAO.deleteEntry(accountId, rentId);
 			session.commit();
 		} finally {
 			session.close();
