@@ -20,12 +20,13 @@ public final class AccountManager {
 			session.close();
 		}
 		
-		// Set password field to null. We use the token for authorization.
-		account.setAccountPassword(null);
-		
 		// Generate token and save in db for later authorization.
 		String tokenKey = TokenManager.createAuthToken(account.getAccountId());
 		account.setTokenKey(tokenKey);
+		
+		// Set password field to null. We use the token for authorization.
+		account.setAccountId(null);
+		account.setAccountPassword(null);
 		
 		return account;
 	}
@@ -39,13 +40,14 @@ public final class AccountManager {
 		} finally {
 			session.close();
 		}
-		
-		// Set password field to null. We use the token for authorization.
-				account.setAccountPassword(null);
 
 		// Make sure the account gets a valid authorization token.
 		String tokenKey = TokenManager.getValidToken(account.getTokenKey(), account.getAccountId());
 		account.setTokenKey(tokenKey);
+		
+		// Set password field to null. We use the token for authorization.
+		account.setAccountId(null);
+		account.setAccountPassword(null);
 		
 		return account;
 	}

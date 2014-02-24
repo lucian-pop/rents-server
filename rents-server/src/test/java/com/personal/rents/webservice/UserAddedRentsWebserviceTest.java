@@ -21,7 +21,7 @@ import com.personal.rents.webservice.util.GeneralConstants;
 
 import junit.framework.TestCase;
 
-public class UserRentsWebserviceTest extends TestCase {
+public class UserAddedRentsWebserviceTest extends TestCase {
 
 	private Account account;
 	
@@ -56,7 +56,6 @@ public class UserRentsWebserviceTest extends TestCase {
 	
 	public void testGetUserAddedRentsForAuthorizedUser() {
 		Response response = target.path("rents/useradded")
-				.queryParam("accountId", account.getAccountId())
 				.queryParam("pageSize", TestUtil.PAGE_SIZE)
 				.request(MediaType.APPLICATION_JSON)
 				.header(ContextConstants.TOKEN_KEY, account.getTokenKey()).get();
@@ -72,7 +71,6 @@ public class UserRentsWebserviceTest extends TestCase {
 	
 	public void testGetUserAddedRentsForUnauthorizedUser() {
 		Response response = target.path("rents/useradded")
-				.queryParam("accountId", account.getAccountId())
 				.queryParam("pageSize", TestUtil.PAGE_SIZE)
 				.request(MediaType.APPLICATION_JSON)
 				.header(ContextConstants.TOKEN_KEY, TokenGenerator.generateToken()).get();
@@ -83,7 +81,6 @@ public class UserRentsWebserviceTest extends TestCase {
 	public void testGetUserAddedRentsNextPage() {
 		String date = (new SimpleDateFormat(GeneralConstants.DATE_FORMAT)).format(new Date());
 		Response response = target.path("rents/useradded/page")
-				.queryParam("accountId", account.getAccountId())
 				.queryParam("lastRentDate", date)
 				.queryParam("lastRentId", Integer.MAX_VALUE)
 				.queryParam("pageSize", TestUtil.PAGE_SIZE)
@@ -96,7 +93,6 @@ public class UserRentsWebserviceTest extends TestCase {
 	public void testGetUserAddedRentsNextPageForUnauthorizedUser() {
 		String date = (new SimpleDateFormat(GeneralConstants.DATE_FORMAT)).format(new Date());
 		Response response = target.path("rents/useradded/page")
-				.queryParam("accountId", account.getAccountId())
 				.queryParam("lastRentDate", date)
 				.queryParam("lastRentId", Integer.MAX_VALUE)
 				.queryParam("pageSize", TestUtil.PAGE_SIZE)
@@ -114,7 +110,6 @@ public class UserRentsWebserviceTest extends TestCase {
 		
 		Response response = target.path("rents/useradded/delete")
 				.request(MediaType.APPLICATION_JSON)
-				.header("accountId", account.getAccountId())
 				.header("tokenKey", account.getTokenKey())
 				.post(Entity.json(rentIds));
 		

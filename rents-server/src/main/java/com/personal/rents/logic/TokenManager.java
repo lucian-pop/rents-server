@@ -36,17 +36,17 @@ public final class TokenManager {
 		return tokenKey;
 	}
 	
-	public static String getAuthToken(int accountId) {
+	public static Token getToken(String tokenKey) {
 		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
-		String tokenKey = null;
+		Token token = null;
 		try {
 			TokenDAO tokenDAO = session.getMapper(TokenDAO.class);
-			tokenKey = tokenDAO.getTokenKey(accountId);
+			token = tokenDAO.getToken(tokenKey);
 		} finally {
 			session.close();
 		}
 
-		return tokenKey;
+		return token;
 	}
 	
 	/**

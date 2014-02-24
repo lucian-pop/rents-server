@@ -48,14 +48,15 @@ public class TokenDAOTest extends TestCase {
 		assertTrue(result == 1);
 	}
 	
-	public void testGetTokenKey() {
+	public void testGetToken() {
 		// Add token first.
 		Token token = new Token();
+		String tokenKey = TokenGenerator.generateToken();
 		token.setAccountId(account.getAccountId());
-		token.setTokenKey(TokenGenerator.generateToken());
+		token.setTokenKey(tokenKey);
 		token.setTokenCreationDate(new Date());
 		
-		String tokenKey = null;
+		Token resultToken = null;
 		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
 		try {
 			TokenDAO tokenDAO = session.getMapper(TokenDAO.class);
@@ -63,12 +64,12 @@ public class TokenDAOTest extends TestCase {
 			session.commit();
 			
 			// Get token key.
-			tokenKey = tokenDAO.getTokenKey(account.getAccountId());
+			resultToken = tokenDAO.getToken(tokenKey);
 		} finally {
 			session.close();
 		}
 		
-		assertNotNull(tokenKey);
-		assertEquals(token.getTokenKey(), tokenKey);
+		assertNotNull(resultToken);
+		assertTrue(resultToken.getAccountId() == account.getAccountId());
 	}
 }

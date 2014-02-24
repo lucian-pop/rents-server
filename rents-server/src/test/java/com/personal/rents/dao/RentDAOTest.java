@@ -14,6 +14,7 @@ import com.personal.rents.model.RentArchitecture;
 import com.personal.rents.model.RentParty;
 import com.personal.rents.model.RentStatus;
 import com.personal.rents.model.RentType;
+import com.personal.rents.model.view.RentFavoriteView;
 import com.personal.rents.util.TestUtil;
 
 import junit.framework.TestCase;
@@ -31,7 +32,6 @@ public class RentDAOTest extends TestCase {
 	private Account account;
 	
 	private Address address;
-	
 
 	@Override
 	protected void setUp() throws Exception {
@@ -451,4 +451,53 @@ public class RentDAOTest extends TestCase {
 		assertTrue(updated == 2);
 	}
 
+	public void testGetUserFavoriteRents() {
+		int accountId = 2;
+		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
+		List<RentFavoriteView> result = null;
+		try {
+			RentDAO rentDAO = session.getMapper(RentDAO.class);
+			result = rentDAO.getUserFavoriteRents(accountId, Integer.MAX_VALUE);
+		} finally {
+			session.close();
+		}
+		
+		assertNotNull(result);
+		assertTrue(result.size() > 0);
+		System.out.println(result.size());
+	}
+	
+	public void testGetUserFavoriteRentsNextPage() {
+		int accountId = 2;
+		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
+		List<RentFavoriteView> result = null;
+		try {
+			RentDAO rentDAO = session.getMapper(RentDAO.class);
+			result = rentDAO.getUserFavoriteRents(accountId, TestUtil.PAGE_SIZE);
+		} finally {
+			session.close();
+		}
+		
+		assertNotNull(result);
+		assertTrue(result.size() > 0);
+		assertTrue(result.size() <= TestUtil.PAGE_SIZE);
+		
+		RentFavoriteView lastRentFavorite = result.get(result.size() - 1);
+		session = TestUtil.getSqlSessionFactory().openSession();
+		try {
+			RentDAO rentDAO = session.getMapper(RentDAO.class);
+			result = rentDAO.getUserFavoriteRentsNextPage(accountId, lastRentFavorite.getRentFavoriteAddDate(),
+					TestUtil.PAGE_SIZE);
+		} finally {
+			session.close();
+		}
+		
+		assertNotNull(result);
+		assertTrue(result.size() > 0);
+		assertTrue(result.size() <= TestUtil.PAGE_SIZE);
+		
+		RentFavoriteView firstNextFavorite = result.get(0);
+		assertTrue(firstNextFavorite.getRentFavoriteAddDate().getTime()
+				< lastRentFavorite.getRentFavoriteAddDate().getTime());
+	}
 }

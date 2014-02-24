@@ -35,6 +35,7 @@
 	
 	<mappers>
   		<mapper resource="database/mappers/RentMapper.xml"/>
+  		<mapper resource="database/mappers/RentFavoriteMapper.xml"/>
 	</mappers>
 
 </configuration>

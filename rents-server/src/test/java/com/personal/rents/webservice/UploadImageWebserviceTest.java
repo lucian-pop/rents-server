@@ -49,7 +49,6 @@ public class UploadImageWebserviceTest extends TestCase {
 		FormDataMultiPart formMultiPartData = new FormDataMultiPart();
 		formMultiPartData.field("image", imageBytes, MediaType.APPLICATION_OCTET_STREAM_TYPE);
 		formMultiPartData.field("filename", filename);
-		formMultiPartData.field("accountId", Integer.toString(account.getAccountId()));
 		formMultiPartData.field("datetime", datetime);
 		Response response = target.path("uploadimage").request()
 				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())

@@ -37,7 +37,7 @@
     <resultMap id="FullRentMap" type="com.personal.rents.model.Rent">
    		<constructor>
    			<idArg column="rentId" javaType="int"/>
-   		</constructor>
+   		</constructor> 
         <id property="rentId" column="rentId"/>
         <result property="accountId" column="accountId"/>
         <result property="rentPrice" column="rentPrice"/>
@@ -73,6 +73,11 @@
         	ofType="java.lang.String">
         	<result property="rentImageURI" column="rentImageURI"/>
         </collection>
+    </resultMap>
+    
+    <resultMap id="LightRentFavoriteViewMap" type="com.personal.rents.model.view.RentFavoriteView">
+        <result property="rentFavoriteAddDate" column="rentFavoriteAddDate" />
+        <association property="rent" resultMap="LightRentMap" />
     </resultMap>
     
     <update id="updateRentsStatus" parameterType="com.personal.rents.dao.param.RentsStatus" >

@@ -12,13 +12,13 @@ public interface TokenDAO {
 	public static final String INSERT = "insert into token (accountId, tokenKey, tokenCreationDate)"
 			+ " values(#{accountId}, #{tokenKey}, #{tokenCreationDate})";
 	
-	public static final String GET_TOKEN_KEY = "select token.tokenKey from token where "
-			+ "token.accountId=#{accountId}";
+	public static final String SELECT_BY_TOKEN_KEY = "select * from token where"
+			+ " token.tokenKey=#{tokenKey}";
 	
 	@Insert(INSERT)
 	@Options(useGeneratedKeys=true, keyProperty="accountId")
 	public int insertToken(Token token);
 	
-	@Select(GET_TOKEN_KEY)
-	public String getTokenKey(@Param("accountId") int accountId);
+	@Select(SELECT_BY_TOKEN_KEY)
+	public Token getToken(@Param("tokenKey") String tokenKey);
 }

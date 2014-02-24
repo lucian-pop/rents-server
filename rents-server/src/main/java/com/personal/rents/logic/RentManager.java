@@ -9,13 +9,16 @@ import org.apache.log4j.Logger;
 
 import com.personal.rents.dao.AddressDAO;
 import com.personal.rents.dao.RentDAO;
+import com.personal.rents.dao.RentFavoriteDAO;
 import com.personal.rents.dao.RentImageDAO;
 import com.personal.rents.dao.param.RentsStatus;
+import com.personal.rents.dto.RentFavoriteViewsCounter;
 import com.personal.rents.dto.RentsCounter;
 import com.personal.rents.listener.ApplicationManager;
 import com.personal.rents.model.Rent;
 import com.personal.rents.model.RentImage;
 import com.personal.rents.model.RentSearch;
+import com.personal.rents.model.view.RentFavoriteView;
 
 public class RentManager {
 
@@ -219,15 +222,47 @@ public class RentManager {
 		rentsStatus.status = rentStatus;
 		rentsStatus.rentIds = rentIds;
 
-		int noOfUpdates = -1;
+		int updatesCount = -1;
 		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
 		try {
-			noOfUpdates = session.update("RentMapper.updateRentsStatus", rentsStatus);
+			updatesCount = session.update("RentMapper.updateRentsStatus", rentsStatus);
 			session.commit();
 		} finally {
 			session.close();
 		}
 
-		return noOfUpdates;
+		return updatesCount;
+	}
+	
+	public static RentFavoriteViewsCounter getUserFavoriteRents(int accountId, int pageSize) {
+		RentFavoriteViewsCounter rentFavoriteViewsCounter = new RentFavoriteViewsCounter();
+		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
+		try {
+			RentFavoriteDAO rentFavoriteDAO = session.getMapper(RentFavoriteDAO.class);
+			rentFavoriteViewsCounter.counter = rentFavoriteDAO.getNoOfUserFavoriteRents(accountId);
+			
+			RentDAO rentDAO = session.getMapper(RentDAO.class);
+			rentFavoriteViewsCounter.rentFavoriteViews = rentDAO.getUserFavoriteRents(accountId,
+					pageSize);
+		} finally {
+			session.close();
+		}
+
+		return rentFavoriteViewsCounter;
+	}
+	
+	public static List<RentFavoriteView> getUserFavoriteRentsNextPage(int accountId,
+			Date lastRentFavoriteDate, int pageSize) {
+		List<RentFavoriteView> result = null;
+		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
+		try {
+			RentDAO rentDAO = session.getMapper(RentDAO.class);
+			result = rentDAO.getUserFavoriteRentsNextPage(accountId, lastRentFavoriteDate,
+					pageSize);
+		} finally {
+			session.close();
+		}
+
+		return result;
 	}
 }

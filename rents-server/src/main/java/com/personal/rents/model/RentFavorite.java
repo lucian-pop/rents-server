@@ -1,10 +1,14 @@
 package com.personal.rents.model;
 
+import java.util.Date;
+
 public class RentFavorite {
 	
 	private Integer accountId;
 	
 	private Integer rentId;
+	
+	private Date rentFavoriteAddDate;
 
 	public Integer getAccountId() {
 		return accountId;
@@ -20,5 +24,13 @@ public class RentFavorite {
 
 	public void setRentId(Integer rentId) {
 		this.rentId = rentId;
+	}
+
+	public Date getRentFavoriteAddDate() {
+		return rentFavoriteAddDate;
+	}
+
+	public void setRentFavoriteAddDate(Date rentFavoriteAddDate) {
+		this.rentFavoriteAddDate = rentFavoriteAddDate;
 	}
 }

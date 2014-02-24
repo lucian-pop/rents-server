@@ -12,7 +12,9 @@ import junit.framework.TestCase;
 import org.junit.After;
 import org.junit.Before;
 
+import com.personal.rents.logic.TokenManager;
 import com.personal.rents.model.Account;
+import com.personal.rents.model.Token;
 import com.personal.rents.util.TestUtil;
 import com.personal.rents.webservice.response.WebserviceResponseStatus;
 
@@ -43,6 +45,8 @@ public class SignupWebserviceTest extends TestCase {
 	
 	@After
 	public void tearDown() throws Exception {
+		Token token = TestUtil.getToken(account.getTokenKey());
+		account.setAccountId(token.getAccountId());
 		TestUtil.deleteAccount(account);
 		
 		super.tearDown();

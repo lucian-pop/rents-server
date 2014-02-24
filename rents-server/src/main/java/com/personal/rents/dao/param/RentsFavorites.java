@@ -2,9 +2,9 @@ package com.personal.rents.dao.param;
 
 import java.util.List;
 
-public class RentsStatus {
+public class RentsFavorites {
 	
-	public int status;
+	public int accountId;
 	
 	public List<Integer> rentIds;
 }

@@ -19,7 +19,7 @@ import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import com.personal.rents.dao.AccountDAO;
 import com.personal.rents.dao.AddressDAO;
 import com.personal.rents.dao.RentDAO;
-import com.personal.rents.dao.RentFavoritesDAO;
+import com.personal.rents.dao.RentFavoriteDAO;
 import com.personal.rents.dao.RentImageDAO;
 import com.personal.rents.dao.TokenDAO;
 import com.personal.rents.logic.TokenGenerator;
@@ -73,7 +73,7 @@ public class TestUtil {
 				sqlSessionFactory.getConfiguration().addMapper(AddressDAO.class);
 				sqlSessionFactory.getConfiguration().addMapper(RentDAO.class);
 				sqlSessionFactory.getConfiguration().addMapper(RentImageDAO.class);
-				sqlSessionFactory.getConfiguration().addMapper(RentFavoritesDAO.class);
+				sqlSessionFactory.getConfiguration().addMapper(RentFavoriteDAO.class);
 				sqlSessionFactory.getConfiguration().addMapper(TokenDAO.class);
 
 				logger.info("Test database session factory created succesfully");
@@ -252,8 +252,8 @@ public class TestUtil {
 	public static void addRentFavorite(int accountId, int rentId) {
 		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
 		try {
-			RentFavoritesDAO rentFavoritesDAO = session.getMapper(RentFavoritesDAO.class);
-			rentFavoritesDAO.addEntry(accountId, rentId);
+			RentFavoriteDAO rentFavoritesDAO = session.getMapper(RentFavoriteDAO.class);
+			rentFavoritesDAO.addEntry(accountId, rentId, new Date());
 			session.commit();
 		} finally {
 			session.close();
@@ -263,12 +263,25 @@ public class TestUtil {
 	public static void deleteRentFavorite(int accountId, int rentId) {
 		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
 		try {
-			RentFavoritesDAO rentFavoritesDAO = session.getMapper(RentFavoritesDAO.class);
+			RentFavoriteDAO rentFavoritesDAO = session.getMapper(RentFavoriteDAO.class);
 			rentFavoritesDAO.deleteEntry(accountId, rentId);
 			session.commit();
 		} finally {
 			session.close();
 		}
+	}
+	
+	public static Token getToken(String tokenKey) {
+		SqlSession session = getSqlSessionFactory().openSession();
+		Token token = null;
+		try {
+			TokenDAO tokenDAO = session.getMapper(TokenDAO.class);
+			token = tokenDAO.getToken(tokenKey);
+		} finally {
+			session.close();
+		}
+
+		return token;
 	}
 
 	public static WebTarget buildWebTarget() {
