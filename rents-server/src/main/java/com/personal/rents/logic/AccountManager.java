@@ -36,7 +36,7 @@ public final class AccountManager {
 		Account account = null;
 		try {
 			AccountDAO accountDAO = session.getMapper(AccountDAO.class);
-			account = accountDAO.login(email, password);
+			account = accountDAO.getAccount(email, password);
 		} finally {
 			session.close();
 		}
@@ -77,5 +77,4 @@ public final class AccountManager {
 		
 		return tokenKey;
 	}
-	
 }

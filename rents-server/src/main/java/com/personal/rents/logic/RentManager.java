@@ -3,29 +3,27 @@ package com.personal.rents.logic;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.log4j.Logger;
 
 import com.personal.rents.dao.AddressDAO;
 import com.personal.rents.dao.RentDAO;
 import com.personal.rents.dao.RentFavoriteDAO;
-import com.personal.rents.dao.RentImageDAO;
 import com.personal.rents.dao.param.RentsStatus;
 import com.personal.rents.dto.RentFavoriteViewsCounter;
 import com.personal.rents.dto.RentsCounter;
 import com.personal.rents.listener.ApplicationManager;
 import com.personal.rents.model.Rent;
-import com.personal.rents.model.RentImage;
 import com.personal.rents.model.RentSearch;
 import com.personal.rents.model.view.RentFavoriteView;
+import com.personal.rents.webservice.exception.OperationFailedException;
 
 public class RentManager {
 
 	private static Logger logger = Logger.getLogger(RentManager.class);
 
 	public static Rent addRent(Rent rent) {
-		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession(ExecutorType.BATCH);
+		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
 		try {
 			AddressDAO addressDAO = session.getMapper(AddressDAO.class);
 			addressDAO.insertAddress(rent.getAddress());
@@ -34,25 +32,11 @@ public class RentManager {
 			RentDAO rentDAO = session.getMapper(RentDAO.class);
 			rentDAO.insertRent(rent);
 			session.commit();
-			
-			// add rent images in batches.
-			if((rent.getRentImageURIs() != null) && (rent.getRentImageURIs().size() > 0)) {
-				RentImageDAO rentImageDAO = session.getMapper(RentImageDAO.class);
-				RentImage rentImage = null;
-				for(String imageURI : rent.getRentImageURIs()) {
-					rentImage = new RentImage();
-					rentImage.setRentId(rent.getRentId());
-					rentImage.setRentImageURI(imageURI);
-					
-					rentImageDAO.insertRentImage(rentImage);
-				}
-				session.commit();
-			}
-		} catch (Exception e) {
+		} catch (RuntimeException e) {
 			logger.error("An error occured while adding rent to database", e);
 			session.rollback();
 			
-			return null;
+			throw new OperationFailedException();
 		} finally {
 			session.close();
 		}

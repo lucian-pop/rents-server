@@ -7,5 +7,7 @@ public final class ContextConstants {
 	public static final String IMAGES_PATH = "images";
 	
 	public static final String FILE_SEPARATOR = "/";
+	
+	public static final String IMAGE_FILE_EXT = ".jpg";
 
 }

@@ -89,7 +89,7 @@ public class AccountDAOTest extends TestCase {
 		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
 		try {
 			AccountDAO accountDAO = session.getMapper(AccountDAO.class);
-			testAccount = accountDAO.login(email, password);
+			testAccount = accountDAO.getAccount(email, password);
 		} finally {
 			session.close();
 		}

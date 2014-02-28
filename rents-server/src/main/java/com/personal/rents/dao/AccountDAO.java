@@ -50,7 +50,7 @@ public interface AccountDAO {
 	public int deleteAccount(@Param("accountId") int accountId);
 	
 	@Select(SELECT_BY_EMAIL_PASSWORD)
-	public Account login(@Param("email") String email, @Param("password") String password);
+	public Account getAccount(@Param("email") String email, @Param("password") String password);
 	
 	@Select(SELECT_ID_BY_EMAIL_PASSWORD)
 	public Integer getAccountId(@Param("email") String email, @Param("password") String password);

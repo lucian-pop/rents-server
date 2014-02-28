@@ -14,6 +14,7 @@ public final class AuthorizationUtil {
 		}
 
 		Token token = TokenManager.getToken(tokenKey);
+
 		return isAuthorized(token);
 	}
 
