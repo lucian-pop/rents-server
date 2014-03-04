@@ -1,6 +1,7 @@
 package com.personal.rents.dao;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
@@ -61,7 +62,7 @@ public class RentDAOTest extends TestCase {
 		try {
 			RentDAO rentDAO = session.getMapper(RentDAO.class);
 			result = rentDAO.getRentsByMapBoundaries(MIN_LATITUDE, MAX_LATITUDE, MIN_LONGITUDE,
-					MAX_LONGITUDE, RentStatus.AVAILABLE.getStatus(), TestUtil.PAGE_SIZE);
+					MAX_LONGITUDE, RentStatus.AVAILABLE.getStatus(), TestUtil.PAGE_SIZE, "");
 		} finally {
 			session.close();
 		}
@@ -86,7 +87,7 @@ public class RentDAOTest extends TestCase {
 		try {
 			RentDAO rentDAO = session.getMapper(RentDAO.class);
 			result = rentDAO.getRentsByMapBoundaries(MIN_LATITUDE, MAX_LATITUDE, MIN_LONGITUDE,
-					MAX_LONGITUDE, RentStatus.AVAILABLE.getStatus(), TestUtil.PAGE_SIZE);
+					MAX_LONGITUDE, RentStatus.AVAILABLE.getStatus(), TestUtil.PAGE_SIZE, "");
 		} finally {
 			session.close();
 		}
@@ -100,7 +101,7 @@ public class RentDAOTest extends TestCase {
 			RentDAO rentDAO = session.getMapper(RentDAO.class);
 			result = rentDAO.getRentsNextPageByMapBoundaries(MIN_LATITUDE, MAX_LATITUDE,
 					MIN_LONGITUDE, MAX_LONGITUDE, lastRent.getRentAddDate(), lastRent.getRentId(),
-					RentStatus.AVAILABLE.getStatus(), TestUtil.PAGE_SIZE);
+					RentStatus.AVAILABLE.getStatus(), TestUtil.PAGE_SIZE, "");
 		} finally {
 			session.close();
 		}
@@ -194,7 +195,7 @@ public class RentDAOTest extends TestCase {
 					MAX_LONGITUDE, minPrice, maxPrice, minSurface, maxSurface, minRooms, maxRooms,
 					minBaths, maxBaths, rentParty, rentParty, rentType, rentType, rentArchitecture,
 					rentArchitecture, rentAge, rentAge, rentPetsAllowed, rentStatus,
-					TestUtil.PAGE_SIZE);
+					TestUtil.PAGE_SIZE,"");
 		} finally {
 			session.close();
 		}
@@ -254,7 +255,7 @@ public class RentDAOTest extends TestCase {
 					MAX_LONGITUDE, minPrice, maxPrice, minSurface, maxSurface, minRooms, maxRooms,
 					minBaths, maxBaths, minParty, maxParty, minType, maxType, minArchitecture,
 					maxArchitecture, minAge, maxAge, rentPetsAllowed, rentStatus,
-					TestUtil.PAGE_SIZE);
+					TestUtil.PAGE_SIZE, "");
 		} finally {
 			session.close();
 		}
@@ -270,7 +271,7 @@ public class RentDAOTest extends TestCase {
 					MAX_LONGITUDE, minPrice, maxPrice, minSurface, maxSurface, minRooms, maxRooms,
 					minBaths, maxBaths, minParty, maxParty, minType, maxType, minArchitecture,
 					maxArchitecture, minAge, maxAge, rentPetsAllowed, rentStatus, 
-					lastRent.getRentAddDate(), lastRent.getRentId(), TestUtil.PAGE_SIZE);
+					lastRent.getRentAddDate(), lastRent.getRentId(), TestUtil.PAGE_SIZE, "");
 		} finally {
 			session.close();
 		}
@@ -301,7 +302,7 @@ public class RentDAOTest extends TestCase {
 		Rent resultRent = null;
 		try {
 			RentDAO rentDAO = session.getMapper(RentDAO.class);
-			resultRent = rentDAO.getDetailedRent(rent.getRentId());
+			resultRent = rentDAO.getDetailedRent(rent.getRentId(), "");
 		} finally {
 			session.close();
 		}
@@ -369,7 +370,7 @@ public class RentDAOTest extends TestCase {
 		try {
 			RentDAO rentDAO = session.getMapper(RentDAO.class);
 			result = rentDAO.getUserAddedRents(account.getAccountId(), 
-					RentStatus.AVAILABLE.getStatus(), TestUtil.PAGE_SIZE);
+					RentStatus.AVAILABLE.getStatus(), TestUtil.PAGE_SIZE, "");
 		} finally {
 			session.close();
 		}
@@ -394,7 +395,7 @@ public class RentDAOTest extends TestCase {
 		try {
 			RentDAO rentDAO = session.getMapper(RentDAO.class);
 			result = rentDAO.getUserAddedRents(account.getAccountId(), 
-					RentStatus.AVAILABLE.getStatus(), TestUtil.PAGE_SIZE);
+					RentStatus.AVAILABLE.getStatus(), TestUtil.PAGE_SIZE, "");
 		} finally {
 			session.close();
 		}
@@ -409,7 +410,7 @@ public class RentDAOTest extends TestCase {
 			RentDAO rentDAO = session.getMapper(RentDAO.class);
 			nextPageResult = rentDAO.getUserAddedRentsNextPage(account.getAccountId(),
 					RentStatus.AVAILABLE.getStatus(), lastRent.getRentAddDate(),
-					lastRent.getRentId(), TestUtil.PAGE_SIZE);
+					lastRent.getRentId(), TestUtil.PAGE_SIZE, "");
 		} finally {
 			session.close();
 		}
@@ -449,6 +450,9 @@ public class RentDAOTest extends TestCase {
 		}
 		
 		assertTrue(updated == 2);
+		
+		TestUtil.deleteRent(firstRent);
+		TestUtil.deleteRent(secondRent);
 	}
 
 	public void testGetUserFavoriteRents() {
@@ -457,14 +461,13 @@ public class RentDAOTest extends TestCase {
 		List<RentFavoriteView> result = null;
 		try {
 			RentDAO rentDAO = session.getMapper(RentDAO.class);
-			result = rentDAO.getUserFavoriteRents(accountId, Integer.MAX_VALUE);
+			result = rentDAO.getUserFavoriteRents(accountId, Integer.MAX_VALUE, "");
 		} finally {
 			session.close();
 		}
 		
 		assertNotNull(result);
 		assertTrue(result.size() > 0);
-		System.out.println(result.size());
 	}
 	
 	public void testGetUserFavoriteRentsNextPage() {
@@ -473,7 +476,7 @@ public class RentDAOTest extends TestCase {
 		List<RentFavoriteView> result = null;
 		try {
 			RentDAO rentDAO = session.getMapper(RentDAO.class);
-			result = rentDAO.getUserFavoriteRents(accountId, TestUtil.PAGE_SIZE);
+			result = rentDAO.getUserFavoriteRents(accountId, TestUtil.PAGE_SIZE, "");
 		} finally {
 			session.close();
 		}
@@ -487,7 +490,7 @@ public class RentDAOTest extends TestCase {
 		try {
 			RentDAO rentDAO = session.getMapper(RentDAO.class);
 			result = rentDAO.getUserFavoriteRentsNextPage(accountId, lastRentFavorite.getRentFavoriteAddDate(),
-					TestUtil.PAGE_SIZE);
+					TestUtil.PAGE_SIZE, "");
 		} finally {
 			session.close();
 		}
@@ -499,5 +502,34 @@ public class RentDAOTest extends TestCase {
 		RentFavoriteView firstNextFavorite = result.get(0);
 		assertTrue(firstNextFavorite.getRentFavoriteAddDate().getTime()
 				< lastRentFavorite.getRentFavoriteAddDate().getTime());
+	}
+	
+	public void testUpdateRent() {
+		Rent rent = TestUtil.addRent(account.getAccountId());
+
+		rent.setRentPrice(450);
+		rent.setRentSurface(80);
+		rent.setRentRooms((short) 3);
+		rent.setRentBaths((short) 3);
+		rent.setRentParty((byte) 0);
+		rent.setRentType((byte) 0);
+		rent.setRentArchitecture((byte) 0);
+		rent.setRentAge((short) 0);
+		rent.setRentDescription("");
+		rent.setRentPetsAllowed(false);
+		rent.setRentPhone("0744555666");
+		rent.setRentAddDate(new Date());
+		int updated = -1;
+		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
+		try {
+			updated = session.update("RentMapper.updateRent", rent);
+			session.commit();
+		} finally {
+			session.close();
+		}
+		
+		assertTrue(updated == 1);
+		
+		TestUtil.deleteRent(rent);
 	}
 }

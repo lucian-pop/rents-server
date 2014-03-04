@@ -48,7 +48,7 @@ public class GetRentWebserviceTest extends TestCase{
 		Rent result = response.readEntity(Rent.class);
 
 		assertTrue(result != null);
-		assertTrue(result.getAccountId() == account.getAccountId());
+		assertEquals(result.getAccountId(), account.getAccountId());
 		assertTrue(result.getAddress() != null);
 	}
 }

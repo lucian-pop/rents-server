@@ -14,9 +14,10 @@ import com.personal.rents.model.Token;
 import com.personal.rents.webservice.exception.UnauthorizedException;
 import com.personal.rents.webservice.util.AuthorizationUtil;
 
-@Path("addrent")
-public class AddRentWebservice {
+@Path("rent")
+public class RentWebservice {
 	
+	@Path("add")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -29,5 +30,17 @@ public class AddRentWebservice {
 		rent.setAccountId(token.getAccountId());
 
 		return RentManager.addRent(rent);
+	}
+	
+	@Path("update")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public int updateRent(Rent rent, @Context HttpServletRequest request) {
+		if(!AuthorizationUtil.isAuthorized(request)) {
+			throw new UnauthorizedException();
+		}
+
+		return RentManager.updateRent(rent);
 	}
 }

@@ -62,10 +62,12 @@ public class UserFavoritesWebserviceTest extends TestCase {
 	}
 	
 	public void testAddNewRentToFavorites() {
+		Rent rent = TestUtil.addRent(account.getAccountId());
+		rents.add(rent);
 		Response response = target.path("rents/userfavorites/addrent")
 				.request(MediaType.APPLICATION_JSON)
 				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
-				.post(Entity.json(rents.get(0).getRentId()));
+				.post(Entity.json(rent.getRentId()));
 		
 		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
 		
@@ -75,9 +77,7 @@ public class UserFavoritesWebserviceTest extends TestCase {
 		TestUtil.deleteRentFavorite(account.getAccountId(), rents.get(0).getRentId());
 	}
 	
-	public void testAddExistingRentToFavorites() {
-		TestUtil.addRentFavorite(account.getAccountId(), rents.get(0).getRentId());
-		
+	public void testAddExistingRentToFavorites() {		
 		Response response = target.path("rents/userfavorites/addrent")
 				.request(MediaType.APPLICATION_JSON)
 				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())

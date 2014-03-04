@@ -22,7 +22,8 @@ public interface RentDAO {
 			+ "#{rentBaths}, #{rentParty}, #{rentType}, #{rentArchitecture}, #{rentAge},"
 			+ "#{rentDescription}, #{rentPetsAllowed}, #{rentPhone}, #{rentAddDate}, #{rentStatus})";
 	
-	public static final String EAGER_SELECT_BY_ID= "select rent.*, address.*, rentImageURI from rent"
+	public static final String EAGER_SELECT_BY_ID= "select rent.*, address.*,"
+			+ " rentImageId, concat(#{appURL}, rentImageURI) as rentImageURI from rent"
 			+ " inner join address on rent.addressId=address.addressId"
 			+ "	left join rent_image on rent.rentId=rent_image.rentId"
 			+ " where rent.rentId = #{rentId}";
@@ -34,7 +35,7 @@ public interface RentDAO {
 			+ "rentPetsAllowed, rentAddDate, rentStatus,"
 			+ "address.addressId, addressStreetNo, addressStreetName, addressLatitude,"
 			+ "addressLongitude,"
-			+ "rentImageURI, min(rent_image.rentImageId)"
+			+ "concat(#{appURL}, rentImageURI) as rentImageURI, min(rent_image.rentImageId)"
 			+ " from rent inner join address on rent.addressId=address.addressId"
 			+ "	left join rent_image on rent.rentId=rent_image.rentId";
 	
@@ -123,7 +124,7 @@ public interface RentDAO {
 			+ "rentPetsAllowed, rentAddDate, rentStatus,"
 			+ "address.addressId, addressStreetNo, addressStreetName, addressLatitude,"
 			+ "addressLongitude,"
-			+ "rentImageURI, min(rent_image.rentImageId),"
+			+ "concat(#{appURL}, rentImageURI) as rentImageURI, min(rent_image.rentImageId),"
 			+ "rent_favorite.rentFavoriteAddDate"
 			+ " from rent inner join rent_favorite on rent.rentId = rent_favorite.rentId" 
 			+ " inner join address on rent.addressId=address.addressId"
@@ -146,7 +147,7 @@ public interface RentDAO {
 	
 	@Select(EAGER_SELECT_BY_ID)
 	@ResultMap("RentMapper.FullRentMap")
-	public Rent getDetailedRent(@Param("rentId") int rentId);
+	public Rent getDetailedRent(@Param("rentId") int rentId, @Param("appURL") String appURL);
 	
 	@Delete(DELETE_BY_ID)
 	public int deleteRent(@Param("rentId") int rentId);
@@ -161,7 +162,7 @@ public interface RentDAO {
 	public List<Rent> getRentsByMapBoundaries(@Param("minLatitude") double minLatitude,
 			@Param("maxLatitude") double maxLatitude, @Param("minLongitude") double minLongitude,
 			@Param("maxLongitude") double maxLongitude, @Param("rentStatus") byte rentStatus,
-			@Param("pageSize") int pageSize);
+			@Param("pageSize") int pageSize, @Param("appURL") String appURL);
 	
 	@Select(SELECT_NEXT_PAGE_BY_MAP_BOUNDARIES)
 	@ResultMap("RentMapper.LightRentMap")
@@ -169,7 +170,7 @@ public interface RentDAO {
 			@Param("maxLatitude") double maxLatitude, @Param("minLongitude") double minLongitude,
 			@Param("maxLongitude") double maxLongitude, @Param("lastRentDate") Date lastRentDate, 
 			@Param("lastRentId") int lastRentId, @Param("rentStatus") byte rentStatus, 
-			@Param("pageSize") int pageSize);
+			@Param("pageSize") int pageSize, @Param("appURL") String appURL);
 	
 	@Select(SELECT_COUNT_BY_CRITERIA)
 	public int searchResultSize(@Param("minLatitude") double minLatitude,
@@ -198,7 +199,7 @@ public interface RentDAO {
 			@Param("maxType") byte maxType, @Param("minArchitecture") byte minArchitecture,
 			@Param("maxArchitecture") byte maxArchitecture, @Param("minAge") short minAge,
 			@Param("maxAge") short maxAge, @Param("rentPetsAllowed") boolean rentPetsAllowed,
-			@Param("rentStatus") byte rentStatus, @Param("pageSize") int pageSize);
+			@Param("rentStatus") byte rentStatus, @Param("pageSize") int pageSize, @Param("appURL") String appURL);
 	
 	@Select(SELECT_NEXT_PAGE_BY_CRITERIA)
 	@ResultMap("RentMapper.LightRentMap")
@@ -214,7 +215,8 @@ public interface RentDAO {
 			@Param("maxArchitecture") byte maxArchitecture, @Param("minAge") short minAge,
 			@Param("maxAge") short maxAge, @Param("rentPetsAllowed") boolean rentPetsAllowed,
 			@Param("rentStatus") byte rentStatus, @Param("lastRentDate") Date lastRentDate, 
-			@Param("lastRentId") int lastRentId, @Param("pageSize") int pageSize);
+			@Param("lastRentId") int lastRentId, @Param("pageSize") int pageSize, 
+			@Param("appURL") String appURL);
 	
 	@Select(SELECT_COUNT_USER_ADDED_RENTS)
 	public int getNoOfUserAddedRents(@Param("accountId") int accountId, 
@@ -223,22 +225,24 @@ public interface RentDAO {
 	@Select(SELECT_USER_ADDED_RENTS)
 	@ResultMap("RentMapper.LightRentMap")
 	public List<Rent> getUserAddedRents(@Param("accountId") int accountId, 
-			@Param("rentStatus") byte rentStatus, @Param("pageSize") int pageSize) ;
+			@Param("rentStatus") byte rentStatus, @Param("pageSize") int pageSize,
+			@Param("appURL") String appURL);
 	
 	@Select(SELECT_USER_ADDED_RENTS_NEXT_PAGE)
 	@ResultMap("RentMapper.LightRentMap")
 	public List<Rent> getUserAddedRentsNextPage(@Param("accountId") int accountId, 
 			@Param("rentStatus") byte rentStatus, @Param("lastRentDate") Date lastRentDate, 
-			@Param("lastRentId") int lastRentId, @Param("pageSize") int pageSize);
+			@Param("lastRentId") int lastRentId, @Param("pageSize") int pageSize,
+			@Param("appURL") String appURL);
 	
 	@Select(SELECT_USER_FAVORITE_RENTS)
 	@ResultMap("RentMapper.LightRentFavoriteViewMap")
 	public List<RentFavoriteView> getUserFavoriteRents(@Param("accountId") int accountId,
-			@Param("pageSize") int pageSize);
+			@Param("pageSize") int pageSize, @Param("appURL") String appURL);
 	
 	@Select(SELECT_USER_FAVORITE_RENTS_NEXT_PAGE)
 	@ResultMap("RentMapper.LightRentFavoriteViewMap")
 	public List<RentFavoriteView> getUserFavoriteRentsNextPage(@Param("accountId") int accountId,
 			@Param("lastRentFavoriteDate") Date lastRentFavoriteDate,
-			@Param("pageSize") int pageSize);
+			@Param("pageSize") int pageSize, @Param("appURL") String appURL);
 } 

@@ -28,8 +28,9 @@
             <result property="addressLatitude" column="addressLatitude"/>
             <result property="addressLongitude" column="addressLongitude"/>
         </association>
-        <collection property="rentImageURIs" javaType="java.util.List" 
-        	ofType="java.lang.String">
+        <collection property="rentImages" javaType="java.util.List"
+        	ofType="com.personal.rents.model.RentImage">
+        	<result property="rentImageId" column="rentImageId"/>
         	<result property="rentImageURI" column="rentImageURI"/>
         </collection>
     </resultMap>
@@ -69,8 +70,10 @@
             <result property="addressFloor" column="addressFloor"/>
             <result property="addressAp" column="addressAp"/>
         </association>
-        <collection property="rentImageURIs" javaType="java.util.List" 
-        	ofType="java.lang.String">
+        <collection property="rentImages" javaType="java.util.List" 
+        	ofType="com.personal.rents.model.RentImage">
+        	<result property="rentImageId" column="rentImageId"/>
+        	<result property="rentId" column="rentId"/>
         	<result property="rentImageURI" column="rentImageURI"/>
         </collection>
     </resultMap>
@@ -85,6 +88,25 @@
     	<foreach collection="rentIds" item="item" index="index" open="(" close=")" separator=",">
     		#{item}
     	</foreach>
+    </update>
+    
+    <update id="updateRent" parameterType="com.personal.rents.model.Rent">
+    	update rent
+    	<set>
+    		<if test="rentPrice != null">rentPrice=#{rentPrice},</if>
+    		<if test="rentSurface != null">rentSurface=#{rentSurface},</if>
+    		<if test="rentRooms != null">rentRooms=#{rentRooms},</if>
+    		<if test="rentBaths != null">rentBaths=#{rentBaths},</if>
+    		<if test="rentParty != null">rentParty=#{rentParty},</if>
+    		<if test="rentType != null">rentType=#{rentType},</if>
+    		<if test="rentArchitecture != null">rentArchitecture=#{rentArchitecture},</if>
+    		<if test="rentAge != null">rentAge=#{rentAge},</if>
+    		<if test="rentDescription != null">rentDescription=#{rentDescription},</if>
+    		<if test="rentPetsAllowed != null">rentPetsAllowed=#{rentPetsAllowed},</if>
+    		<if test="rentPhone != null">rentPhone=#{rentPhone},</if>
+    		<if test="rentAddDate != null">rentAddDate=#{rentAddDate}</if>
+    	</set>
+    	where rentId=#{rentId}
     </update>
 
 </mapper>

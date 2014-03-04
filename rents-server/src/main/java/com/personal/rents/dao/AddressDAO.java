@@ -4,6 +4,7 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import com.personal.rents.model.Address;
 
@@ -17,6 +18,9 @@ public interface AddressDAO {
 			+ "#{addressAdmAreaL1}, #{addressCountry}, #{addressLatitude}, #{addressLongitude},"
 			+ "#{addressBuilding}, #{addressStaircase}, #{addressFloor}, #{addressAp})";
 	
+	public static final String SELECT_BY_ID = "select * from address where address.addressId="
+			+ "#{addressId}";
+	
 	public static final String DELETE_BY_ID = "delete from address where address.addressId="
 			+ "#{addressId}";
 
@@ -26,4 +30,7 @@ public interface AddressDAO {
 	
 	@Delete(DELETE_BY_ID)
 	public int deleteAddress(@Param("addressId") int addressId);
+	
+	@Select(SELECT_BY_ID)
+	public Address getAddress(@Param("addressId") int addressId);
 }

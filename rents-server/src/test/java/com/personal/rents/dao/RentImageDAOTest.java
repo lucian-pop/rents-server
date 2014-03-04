@@ -47,16 +47,37 @@ public class RentImageDAOTest extends TestCase {
 		}
 		
 		assertTrue(result == 1);
+	}
+	
+	public void testUpdateRentImageURI() {
+		RentImage rentImage = new RentImage();
+		rentImage.setRentId(rent.getRentId());
+		rentImage.setRentImageURI("\\images\\1\\13123123213\\1.jpg");
 		
-		// delete rent image
-		session = TestUtil.getSqlSessionFactory().openSession();
+		int result = -1;
+		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
 		try {
 			RentImageDAO rentImageDAO = session.getMapper(RentImageDAO.class);
-			rentImageDAO.deleteRentImage(rentImage.getRentImageId());
+			result = rentImageDAO.insertRentImage(rentImage);
 			session.commit();
 		} finally {
 			session.close();
 		}
+		
+		assertTrue(result == 1);
+		
+		String newRentImageURI = "\\images\\1\\213213213213312312\\1.jpg";
+		session = TestUtil.getSqlSessionFactory().openSession();
+		try {
+			RentImageDAO rentImageDAO = session.getMapper(RentImageDAO.class);
+			result = rentImageDAO.updateRentImageURI(rentImage.getRentImageId(), newRentImageURI);
+			
+			session.commit();
+		} finally {
+			session.close();
+		}
+		
+		assertTrue(result == 1);
 	}
 	
 }

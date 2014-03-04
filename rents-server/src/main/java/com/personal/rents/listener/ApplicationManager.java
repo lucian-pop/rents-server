@@ -2,6 +2,8 @@ package com.personal.rents.listener;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Properties;
 
 import javax.servlet.ServletContextEvent;
@@ -36,6 +38,8 @@ public class ApplicationManager implements ServletContextListener {
 	
 	// paths
 	private static String appRealPath;
+	
+	private static String appURL;
 
 	/**
 	 * Creates and configures the sql session factory and store application paths.
@@ -68,7 +72,7 @@ public class ApplicationManager implements ServletContextListener {
 		
 		logger.info("Store application paths");
 		appRealPath = event.getServletContext().getRealPath("/");
-
+		appURL = buildAppURL(event.getServletContext().getContextPath());
 	}
 	
 	/**
@@ -91,5 +95,23 @@ public class ApplicationManager implements ServletContextListener {
 	 */
 	public static String getAppRealPath() {
 		return appRealPath;
+	}
+	
+	public static String getAppURL() {
+		return appURL;
+	}
+	
+	private static final String buildAppURL(String contextPath) {
+		StringBuilder appURLBuilder = new StringBuilder();
+		appURLBuilder.append("http://");
+		try {
+			appURLBuilder.append(InetAddress.getLocalHost().getHostAddress());
+		} catch (UnknownHostException e) {
+			return "";
+		}
+		appURLBuilder.append(":8080");
+		appURLBuilder.append(contextPath);
+		
+		return appURLBuilder.toString();
 	}
 }

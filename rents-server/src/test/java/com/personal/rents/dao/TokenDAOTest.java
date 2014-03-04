@@ -70,6 +70,8 @@ public class TokenDAOTest extends TestCase {
 		}
 		
 		assertNotNull(resultToken);
-		assertTrue(resultToken.getAccountId() == account.getAccountId());
+		System.out.println(resultToken.getAccountId() + " " + account.getAccountId());
+
+		assertEquals(resultToken.getAccountId(), account.getAccountId());
 	}
 }

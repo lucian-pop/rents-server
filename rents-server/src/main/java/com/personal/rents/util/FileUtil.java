@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import com.personal.rents.listener.ApplicationManager;
+import com.personal.rents.webservice.util.ContextConstants;
 
 public final class FileUtil {
 	
@@ -34,5 +35,15 @@ public final class FileUtil {
 			outputStream.close();
 			inputStream.close();
 		}
+	}
+	
+	public static boolean deleteFile(String filepath) {
+		String absoluteFilepath = ApplicationManager.getAppRealPath() + filepath;
+		File file = new File(absoluteFilepath);
+		if(file.exists()) {
+			return file.delete();
+		}
+		
+		return false;
 	}
 }
