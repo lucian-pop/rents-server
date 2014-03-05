@@ -5,11 +5,12 @@ import javax.ws.rs.core.Response;
 
 import com.personal.rents.webservice.response.WebserviceResponseStatus;
 
-public class ForbiddenException extends WebApplicationException {
+public class AuthenticationException extends WebApplicationException {
 
 	private static final long serialVersionUID = 1L;
-
-	public ForbiddenException() {
-		super(Response.status(WebserviceResponseStatus.FORBIDDEN.getCode()).build());
+	
+	public AuthenticationException() {
+		super(Response.status(WebserviceResponseStatus.BAD_CREDENTIALS.getCode()).build());
 	}
+
 }

@@ -27,8 +27,13 @@ public interface AccountDAO {
 	public static final String DELETE_BY_ID = "delete from account where account.accountId="
 			+ "#{accountId}";
 	
-	public static final String SELECT_BY_EMAIL_PASSWORD = "select account.*, token.tokenKey"
-			+ " as tokenKey from account left join token on account.accountId = token.accountId"
+	public static final String DELETE_BY_EMAIL = "delete from account where account.accountEmail="
+			+ "#{accountEmail}";
+	
+	public static final String SELECT_BY_EMAIL_OR_PHONE = "select account.* from account"
+			+ " where account.accountEmail=#{accountEmail} or account.accountPhone=#{accountPhone}";
+	
+	public static final String SELECT_BY_EMAIL_PASSWORD = "select account.* from account"
 			+ " where account.accountEmail=#{email} and account.accountPassword=#{password}";
 	
 	public static final String SELECT_ID_BY_EMAIL_PASSWORD = "select accountId from account"
@@ -46,14 +51,18 @@ public interface AccountDAO {
 	@Select(SELECT_BY_ID)
 	public Account getAccountById(@Param("accountId") int accountId);
 	
-	@Delete(DELETE_BY_ID)
-	public int deleteAccount(@Param("accountId") int accountId);
+	@Select(SELECT_BY_EMAIL_OR_PHONE)
+	public Account getAccountByEmailOrPhone(@Param("accountEmail") String accountEmail, 
+			@Param("accountPhone") String accountPhone);
 	
 	@Select(SELECT_BY_EMAIL_PASSWORD)
 	public Account getAccount(@Param("email") String email, @Param("password") String password);
 	
-	@Select(SELECT_ID_BY_EMAIL_PASSWORD)
-	public Integer getAccountId(@Param("email") String email, @Param("password") String password);
+	@Delete(DELETE_BY_ID)
+	public int deleteAccount(@Param("accountId") int accountId);
+	
+	@Delete(DELETE_BY_EMAIL)
+	public int deleteAccountByEmail(@Param("accountEmail") String accountEmail);
 	
 	@Update(UPDATE_PASSWORD_AND_TOKEN)
 	public int updatePassword(@Param("accountId") int accountId, @Param("password") String password,

@@ -89,8 +89,6 @@ public class TestUtil {
 	
 	public static Account createAccount() {
 		//Insert account into database
-		Date date = new Date();
-		
 		Account account = new Account();
 		account.setAccountType((byte) 0);
 		account.setAccountExternalId("sadsadkjhfsdfsdfsdddddddddddddddf");
@@ -98,8 +96,8 @@ public class TestUtil {
 		account.setAccountPassword("account password");
 		account.setAccountFirstname("account firstname");
 		account.setAccountLastname("account lastname");
-		account.setAccountPhone("+4 0100900900");
-		account.setAccountSignupDate(date);
+		account.setAccountPhone("+40100900900");
+		account.setAccountSignupDate(new Date());
 
 		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
 		try {
@@ -129,28 +127,26 @@ public class TestUtil {
 
 	public static Account createAccountWithoutToken() {
 		//Insert account into database
-				Date date = new Date();
-				
-				Account account = new Account();
-				account.setAccountType((byte) 0);
-				account.setAccountExternalId("sadsadkjhfsdfsdfsdddddddddddddddf");
-				account.setAccountEmail("initial.account@gmail.com");
-				account.setAccountPassword("account password");
-				account.setAccountFirstname("account firstname");
-				account.setAccountLastname("account lastname");
-				account.setAccountPhone("+4 0100900900");
-				account.setAccountSignupDate(date);
+		Account account = new Account();
+		account.setAccountType((byte) 0);
+		account.setAccountExternalId("sadsadkjhfsdfsdfsdddddddddddddddf");
+		account.setAccountEmail("initial.account@gmail.com");
+		account.setAccountPassword("account password");
+		account.setAccountFirstname("account firstname");
+		account.setAccountLastname("account lastname");
+		account.setAccountPhone("+4 0100900900");
+		account.setAccountSignupDate(new Date());
 
-				SqlSession session = TestUtil.getSqlSessionFactory().openSession();
-				try {
-					AccountDAO accountMapper = session.getMapper(AccountDAO.class);
-					accountMapper.insertAccount(account);
-					session.commit();
-				} finally {
-					session.close();
-				}
-				
-				return account;
+		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
+		try {
+			AccountDAO accountMapper = session.getMapper(AccountDAO.class);
+			accountMapper.insertAccount(account);
+			session.commit();
+		} finally {
+			session.close();
+		}
+		
+		return account;
 	}
 	
 	public static void deleteAccount(Account account) {
@@ -158,6 +154,17 @@ public class TestUtil {
 		try {
 			AccountDAO accountMapper = session.getMapper(AccountDAO.class);
 			accountMapper.deleteAccount(account.getAccountId());
+			session.commit();	
+		} finally {
+			session.close();
+		}
+	}
+	
+	public static void deleteAccountByEmail(String email) {
+		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
+		try {
+			AccountDAO accountMapper = session.getMapper(AccountDAO.class);
+			accountMapper.deleteAccountByEmail(email);
 			session.commit();	
 		} finally {
 			session.close();
@@ -269,19 +276,6 @@ public class TestUtil {
 		} finally {
 			session.close();
 		}
-	}
-	
-	public static Token getToken(String tokenKey) {
-		SqlSession session = getSqlSessionFactory().openSession();
-		Token token = null;
-		try {
-			TokenDAO tokenDAO = session.getMapper(TokenDAO.class);
-			token = tokenDAO.getToken(tokenKey);
-		} finally {
-			session.close();
-		}
-
-		return token;
 	}
 
 	public static WebTarget buildWebTarget() {

@@ -40,11 +40,6 @@
     		<artifactId>jersey-media-multipart</artifactId>
    			<version>${jersey-version}</version>
 		</dependency>
-		<dependency>
-    		<groupId>org.jvnet</groupId>
-    		<artifactId>mimepull</artifactId>
-    		<version>1.6</version>
-		</dependency>
 		<!-- 
          <dependency>
             <groupId>org.glassfish.jersey.media</groupId>

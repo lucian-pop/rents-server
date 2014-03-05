@@ -32,8 +32,8 @@ public class RentManager {
 			RentDAO rentDAO = session.getMapper(RentDAO.class);
 			rentDAO.insertRent(rent);
 			session.commit();
-		} catch (RuntimeException e) {
-			logger.error("An error occured while adding rent to database", e);
+		} catch (RuntimeException runtimeException) {
+			logger.error("An error occured while adding rent to database", runtimeException);
 			session.rollback();
 			
 			throw new OperationFailedException();

@@ -104,7 +104,7 @@ public class UserFavoritesWebserviceTest extends TestCase {
 		Form form = new Form();
 		form.param("email", TEST_ACCOUNT_EMAIL);
 		form.param("password", TEST_ACCOUNT_PASSWORD);
-		Response response = target.path("login").request(MediaType.APPLICATION_JSON)
+		Response response = target.path("account/login").request(MediaType.APPLICATION_JSON)
 				.post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
 		
 		Account testAccount = response.readEntity(Account.class);
@@ -125,7 +125,7 @@ public class UserFavoritesWebserviceTest extends TestCase {
 		Form form = new Form();
 		form.param("email", TEST_ACCOUNT_EMAIL);
 		form.param("password", TEST_ACCOUNT_PASSWORD);
-		Response response = target.path("login").request(MediaType.APPLICATION_JSON)
+		Response response = target.path("account/login").request(MediaType.APPLICATION_JSON)
 				.post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
 		
 		Account testAccount = response.readEntity(Account.class);

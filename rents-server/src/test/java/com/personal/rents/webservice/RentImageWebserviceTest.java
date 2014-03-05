@@ -117,6 +117,7 @@ public class RentImageWebserviceTest extends TestCase {
 				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
 				.delete();
 		
-		assertTrue(response.getStatus() == 204);
+		System.out.println(response.getStatus());
+		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
 	}
 }

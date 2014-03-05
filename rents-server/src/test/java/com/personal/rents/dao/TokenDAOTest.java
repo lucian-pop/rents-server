@@ -48,7 +48,7 @@ public class TokenDAOTest extends TestCase {
 		assertTrue(result == 1);
 	}
 	
-	public void testGetToken() {
+	public void testGetTokenByAccountId() {
 		// Add token first.
 		Token token = new Token();
 		String tokenKey = TokenGenerator.generateToken();
@@ -63,15 +63,36 @@ public class TokenDAOTest extends TestCase {
 			tokenDAO.insertToken(token);
 			session.commit();
 			
-			// Get token key.
-			resultToken = tokenDAO.getToken(tokenKey);
+			resultToken = tokenDAO.getTokenByAccountId(account.getAccountId());
 		} finally {
 			session.close();
 		}
 		
 		assertNotNull(resultToken);
-		System.out.println(resultToken.getAccountId() + " " + account.getAccountId());
-
 		assertEquals(resultToken.getAccountId(), account.getAccountId());
+	}
+	
+	public void testUpdateTokenKey() {
+		// Add token first.
+		Token token = new Token();
+		String tokenKey = TokenGenerator.generateToken();
+		token.setAccountId(account.getAccountId());
+		token.setTokenKey(tokenKey);
+		token.setTokenCreationDate(new Date());
+		
+		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
+		int updateCount = -1;
+		try {
+			TokenDAO tokenDAO = session.getMapper(TokenDAO.class);
+			tokenDAO.insertToken(token);
+			session.commit();
+			
+			updateCount = tokenDAO.updateTokenKey(token.getAccountId(), 
+					TokenGenerator.generateToken(), new Date());
+		} finally {
+			session.close();
+		}
+		
+		assertTrue(updateCount == 1);
 	}
 }

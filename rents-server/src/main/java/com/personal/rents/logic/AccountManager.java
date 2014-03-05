@@ -3,30 +3,73 @@ package com.personal.rents.logic;
 import java.util.Date;
 
 import org.apache.ibatis.session.SqlSession;
+import org.apache.log4j.Logger;
 
 import com.personal.rents.dao.AccountDAO;
+import com.personal.rents.dao.TokenDAO;
 import com.personal.rents.listener.ApplicationManager;
 import com.personal.rents.model.Account;
+import com.personal.rents.model.Token;
+import com.personal.rents.webservice.exception.AuthenticationException;
+import com.personal.rents.webservice.exception.OperationFailedException;
+import com.personal.rents.webservice.exception.AccountConflictException;
 
 public final class AccountManager {
 	
+	private static Logger logger = Logger.getLogger(AccountManager.class);
+	
 	public static Account createAccount(Account account) {
+		// Create a token to be linked with the account.
+		Token token = new Token();
+		token.setTokenKey(TokenGenerator.generateToken());
+		token.setTokenCreationDate(new Date());
+		
 		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
 		try {
-			AccountDAO accountMapper = session.getMapper(AccountDAO.class);
-			accountMapper.insertAccount(account);
+			AccountDAO accountDAO = session.getMapper(AccountDAO.class);
+			Account existingAccount = accountDAO.getAccountByEmailOrPhone(account.getAccountEmail(),
+					account.getAccountPhone());
+			if(existingAccount != null) {
+				throw new AccountConflictException();
+			}
+			
+			// Create account.
+			int insertCount = -1;
+			int retry = 0;
+			while (insertCount != 1 && retry < 3) {
+				insertCount = accountDAO.insertAccount(account);
+				++retry;
+			}
+
+			// Save token for account.
+			if (account.getAccountId() != null) {
+				token.setAccountId(account.getAccountId());
+				TokenDAO tokenDAO = session.getMapper(TokenDAO.class);
+				
+				insertCount = -1;
+				retry = 0;
+				while(insertCount != 1 && retry < 3) {
+					insertCount = tokenDAO.insertToken(token);
+					++retry;
+				}
+			}
+
 			session.commit();
+		} catch (AccountConflictException accountConflictException) {
+			logger.error("Email or phone are already registered. Failed to create account for email" 
+					+ account.getAccountEmail());
+			
+			throw accountConflictException;
+		} catch (RuntimeException runtimeException) {
+			logger.error("Unable to create account with email " + account.getAccountEmail(), runtimeException);
+			session.rollback();
+			
+			throw new OperationFailedException();
 		} finally {
 			session.close();
 		}
-		
-		// Generate token and save in db for later authorization.
-		String tokenKey = TokenManager.createAuthToken(account.getAccountId());
-		account.setTokenKey(tokenKey);
-		
-		// Set password field to null. We use the token for authorization.
-		account.setAccountId(null);
-		account.setAccountPassword(null);
+
+		renewAccountCredentials(account, token.getTokenKey());
 		
 		return account;
 	}
@@ -40,41 +83,55 @@ public final class AccountManager {
 		} finally {
 			session.close();
 		}
-
-		// Make sure the account gets a valid authorization token.
-		String tokenKey = TokenManager.getValidToken(account.getTokenKey(), account.getAccountId());
-		account.setTokenKey(tokenKey);
+		
+		if(account == null) {
+			throw new AuthenticationException();
+		}
 		
 		// Set password field to null. We use the token for authorization.
-		account.setAccountId(null);
-		account.setAccountPassword(null);
+		String tokenKey = TokenManager.getNewTokenKey(account.getAccountId());
+		renewAccountCredentials(account, tokenKey);
 		
 		return account;
 	}
 	
 	public static String changePassword(String email, String password, String newPassword) {
-		String tokenKey = null;
-		
+		String tokenKey = TokenGenerator.generateToken();
 		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
+		int updatesCount = -1;
 		try {
 			AccountDAO accountDAO = session.getMapper(AccountDAO.class);
-			
-			Integer accountId = accountDAO.getAccountId(email, password);
-			if(accountId == null) {
-				return null;
+			Account account = accountDAO.getAccount(email, password);
+			if(account == null) {
+				throw new AuthenticationException();
 			}
 			
-			tokenKey = TokenGenerator.generateToken();
-			int result = accountDAO.updatePassword(accountId, newPassword, tokenKey, new Date());
+			int retry = 0;
+			while(updatesCount != 2 && retry < 3) {
+				updatesCount = accountDAO.updatePassword(account.getAccountId(), newPassword, 
+						tokenKey, new Date());
+				++retry;
+			}
+			
 			session.commit();
-
-			if(result != 2) {
-				return null;
-			}
 		} finally {
+			if(updatesCount != 2) {
+				session.rollback();
+			}
+
 			session.close();
+		}
+
+		if(updatesCount != 2) {
+			throw new OperationFailedException();
 		}
 		
 		return tokenKey;
+	}
+	
+	private static void renewAccountCredentials(Account account, String tokenKey) {
+		account.setAccountId(null);
+		account.setAccountPassword(null);
+		account.setTokenKey(tokenKey);
 	}
 }

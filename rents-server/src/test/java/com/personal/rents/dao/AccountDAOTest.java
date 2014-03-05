@@ -95,22 +95,18 @@ public class AccountDAOTest extends TestCase {
 		}
 		
 		assertNotNull(testAccount);
-		
-		assertTrue(testAccount.getTokenKey().equals(account.getTokenKey()));
 	}
 	
 	public void testGetAccountIdByEmailPassword() {
 		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
-		Integer accountId = null;
 		try {
 			AccountDAO accountDAO = session.getMapper(AccountDAO.class);
-			accountId = accountDAO.getAccountId(account.getAccountEmail(), account.getAccountPassword());
+			account = accountDAO.getAccount(account.getAccountEmail(), account.getAccountPassword());
 		} finally {
 			session.close();
 		}
 		
-		assertNotNull(accountId);
-		assertTrue((int) accountId == account.getAccountId());
+		assertNotNull(account);
 	}
 	
 	public void testUpdatePassword() {
@@ -130,5 +126,31 @@ public class AccountDAOTest extends TestCase {
 		
 		assertTrue(account.getAccountPassword().equals(newPassword));
 		assertTrue(account.getTokenKey().equals(tokenKey));
+	}
+	
+	public void testGetAccountByEmail() {
+		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
+		Account result = null;
+		try {
+			AccountDAO accountDAO = session.getMapper(AccountDAO.class);
+			result = accountDAO.getAccountByEmailOrPhone(account.getAccountEmail(), "");
+		} finally {
+			session.close();
+		}
+		
+		assertNotNull(result);
+	}
+	
+	public void testGetAccountByPhone() {
+		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
+		Account result = null;
+		try {
+			AccountDAO accountDAO = session.getMapper(AccountDAO.class);
+			result = accountDAO.getAccountByEmailOrPhone("", account.getAccountPhone());
+		} finally {
+			session.close();
+		}
+		
+		assertNotNull(result);
 	}
 }

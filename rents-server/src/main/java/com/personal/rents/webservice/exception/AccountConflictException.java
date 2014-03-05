@@ -5,12 +5,11 @@ import javax.ws.rs.core.Response;
 
 import com.personal.rents.webservice.response.WebserviceResponseStatus;
 
-public class UnauthorizedException extends WebApplicationException {
+public class AccountConflictException extends WebApplicationException {
 
 	private static final long serialVersionUID = 1L;
-
-	public UnauthorizedException() {
-		super(Response.status(WebserviceResponseStatus.UNAUTHORIZED.getCode()).build());
+	
+	public AccountConflictException() {
+		super(Response.status(WebserviceResponseStatus.ACCOUNT_CONFLICT.getCode()).build());
 	}
-
 }
