@@ -1,5 +1,7 @@
 package com.personal.rents.logic;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Date;
 
 import org.apache.ibatis.session.SqlSession;
@@ -10,6 +12,7 @@ import com.personal.rents.dao.TokenDAO;
 import com.personal.rents.listener.ApplicationManager;
 import com.personal.rents.model.Account;
 import com.personal.rents.model.Token;
+import com.personal.rents.util.PasswordHashing;
 import com.personal.rents.webservice.exception.AuthenticationException;
 import com.personal.rents.webservice.exception.OperationFailedException;
 import com.personal.rents.webservice.exception.AccountConflictException;
@@ -23,6 +26,9 @@ public final class AccountManager {
 		Token token = new Token();
 		token.setTokenKey(TokenGenerator.generateToken());
 		token.setTokenCreationDate(new Date());
+		
+		String hashedPassword = createHashedPassword(account.getAccountPassword());
+		account.setAccountPassword(hashedPassword);
 		
 		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
 		try {
@@ -79,12 +85,12 @@ public final class AccountManager {
 		Account account = null;
 		try {
 			AccountDAO accountDAO = session.getMapper(AccountDAO.class);
-			account = accountDAO.getAccount(email, password);
+			account = accountDAO.getAccountByEmail(email);
 		} finally {
 			session.close();
 		}
-		
-		if(account == null) {
+
+		if(account == null || !isPasswordValid(password, account.getAccountPassword())) {
 			throw new AuthenticationException();
 		}
 		
@@ -101,14 +107,17 @@ public final class AccountManager {
 		int updatesCount = -1;
 		try {
 			AccountDAO accountDAO = session.getMapper(AccountDAO.class);
-			Account account = accountDAO.getAccount(email, password);
-			if(account == null) {
+			Account account = accountDAO.getAccountByEmail(email);
+			
+			if(account == null || !isPasswordValid(password, account.getAccountPassword())) {
 				throw new AuthenticationException();
 			}
 			
+			String hashedNewPassword = createHashedPassword(newPassword);
+
 			int retry = 0;
 			while(updatesCount != 2 && retry < 3) {
-				updatesCount = accountDAO.updatePassword(account.getAccountId(), newPassword, 
+				updatesCount = accountDAO.updatePassword(account.getAccountId(),  hashedNewPassword, 
 						tokenKey, new Date());
 				++retry;
 			}
@@ -133,5 +142,31 @@ public final class AccountManager {
 		account.setAccountId(null);
 		account.setAccountPassword(null);
 		account.setTokenKey(tokenKey);
+	}
+	
+	private static boolean isPasswordValid(String providedPassword, String accountPassword) {
+		boolean isPasswordValid = false;
+		try {
+			isPasswordValid = PasswordHashing.validatePassword(providedPassword, accountPassword);
+		} catch (NoSuchAlgorithmException e) {
+			throw new OperationFailedException();
+		} catch (InvalidKeySpecException e) {
+			throw new OperationFailedException();
+		}
+		
+		return isPasswordValid;
+	}
+	
+	private static String createHashedPassword(String password) {
+		String hashedPassword = null;
+		try {
+			hashedPassword = PasswordHashing.createHashString(password);
+		} catch (NoSuchAlgorithmException e) {
+			throw new OperationFailedException();
+		} catch (InvalidKeySpecException e) {
+			throw new OperationFailedException();
+		}
+		
+		return hashedPassword;
 	}
 }

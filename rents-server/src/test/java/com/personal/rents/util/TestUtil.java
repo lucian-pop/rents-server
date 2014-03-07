@@ -2,6 +2,8 @@ package com.personal.rents.util;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Date;
 import java.util.Properties;
 
@@ -30,6 +32,10 @@ import com.personal.rents.model.Token;
 import com.personal.rents.webservice.jsonprovider.GsonMessageBodyHandler;
 
 public class TestUtil {
+	
+	public static final String ACCOUNT_EMAIL = "initial.account@gmail.com";
+	
+	public static final String ACCOUNT_PASSWORD = "account password";
 
 	public static final String BASE_URI = "http://localhost:8080/rents-server/ws/";
 	
@@ -92,8 +98,14 @@ public class TestUtil {
 		Account account = new Account();
 		account.setAccountType((byte) 0);
 		account.setAccountExternalId("sadsadkjhfsdfsdfsdddddddddddddddf");
-		account.setAccountEmail("initial.account@gmail.com");
-		account.setAccountPassword("account password");
+		account.setAccountEmail(ACCOUNT_EMAIL);
+		try {
+			account.setAccountPassword(PasswordHashing.createHashString(ACCOUNT_PASSWORD));
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		} catch (InvalidKeySpecException e) {
+			e.printStackTrace();
+		}
 		account.setAccountFirstname("account firstname");
 		account.setAccountLastname("account lastname");
 		account.setAccountPhone("+40100900900");
@@ -153,18 +165,7 @@ public class TestUtil {
 		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
 		try {
 			AccountDAO accountMapper = session.getMapper(AccountDAO.class);
-			accountMapper.deleteAccount(account.getAccountId());
-			session.commit();	
-		} finally {
-			session.close();
-		}
-	}
-	
-	public static void deleteAccountByEmail(String email) {
-		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
-		try {
-			AccountDAO accountMapper = session.getMapper(AccountDAO.class);
-			accountMapper.deleteAccountByEmail(email);
+			accountMapper.deleteAccountByEmail(account.getAccountEmail());
 			session.commit();	
 		} finally {
 			session.close();

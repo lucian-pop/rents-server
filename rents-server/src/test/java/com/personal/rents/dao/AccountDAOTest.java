@@ -84,12 +84,11 @@ public class AccountDAOTest extends TestCase {
 	public void testLogin() {
 		Account testAccount = null;
 		String email = account.getAccountEmail();
-		String password = account.getAccountPassword();
 		
 		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
 		try {
 			AccountDAO accountDAO = session.getMapper(AccountDAO.class);
-			testAccount = accountDAO.getAccount(email, password);
+			testAccount = accountDAO.getAccountByEmail(email);
 		} finally {
 			session.close();
 		}
@@ -97,11 +96,11 @@ public class AccountDAOTest extends TestCase {
 		assertNotNull(testAccount);
 	}
 	
-	public void testGetAccountIdByEmailPassword() {
+	public void testGetAccountByEmail() {
 		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
 		try {
 			AccountDAO accountDAO = session.getMapper(AccountDAO.class);
-			account = accountDAO.getAccount(account.getAccountEmail(), account.getAccountPassword());
+			account = accountDAO.getAccountByEmail(account.getAccountEmail());
 		} finally {
 			session.close();
 		}
@@ -128,12 +127,13 @@ public class AccountDAOTest extends TestCase {
 		assertTrue(account.getTokenKey().equals(tokenKey));
 	}
 	
-	public void testGetAccountByEmail() {
+	public void testGetAccountByEmailOrPhoneWithMatchingEmail() {
 		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
 		Account result = null;
 		try {
 			AccountDAO accountDAO = session.getMapper(AccountDAO.class);
-			result = accountDAO.getAccountByEmailOrPhone(account.getAccountEmail(), "");
+			result = accountDAO.getAccountByEmailOrPhone(account.getAccountEmail(), 
+					"some random number");
 		} finally {
 			session.close();
 		}
@@ -141,12 +141,12 @@ public class AccountDAOTest extends TestCase {
 		assertNotNull(result);
 	}
 	
-	public void testGetAccountByPhone() {
+	public void testGetAccountByEmailOrPhoneWithMatchingPhone() {
 		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
 		Account result = null;
 		try {
 			AccountDAO accountDAO = session.getMapper(AccountDAO.class);
-			result = accountDAO.getAccountByEmailOrPhone("", account.getAccountPhone());
+			result = accountDAO.getAccountByEmailOrPhone("some random email", account.getAccountPhone());
 		} finally {
 			session.close();
 		}

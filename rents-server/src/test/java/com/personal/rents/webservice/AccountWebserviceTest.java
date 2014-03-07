@@ -17,6 +17,10 @@ import com.personal.rents.util.TestUtil;
 import com.personal.rents.webservice.response.WebserviceResponseStatus;
 
 public class AccountWebserviceTest extends TestCase {
+	
+	private static final String ACCOUNT_EMAIL = "initial.account@gmail.com";
+	
+	private static final String ACCOUNT_PASSWORD = "account password";
 
 	private Account account;
 	
@@ -29,7 +33,7 @@ public class AccountWebserviceTest extends TestCase {
 	@After
 	public void tearDown() throws Exception {
 		if(account.getAccountEmail() != null) {
-			TestUtil.deleteAccountByEmail(account.getAccountEmail());
+			TestUtil.deleteAccount(account);
 		}
 		
 		super.tearDown();
@@ -39,8 +43,8 @@ public class AccountWebserviceTest extends TestCase {
 		account = new Account();
 		account.setAccountType((byte) 0);
 		account.setAccountExternalId("sadsadkjhfsdfsdfsdddddddddddddddf");
-		account.setAccountEmail("initial.account@gmail.com");
-		account.setAccountPassword("account password");
+		account.setAccountEmail(ACCOUNT_EMAIL);
+		account.setAccountPassword(ACCOUNT_PASSWORD);
 		account.setAccountFirstname("account firstname");
 		account.setAccountLastname("account lastname");
 		account.setAccountPhone("+4 0100900900");
@@ -61,8 +65,8 @@ public class AccountWebserviceTest extends TestCase {
 		account = TestUtil.createAccount();
 
 		Form form = new Form();
-		form.param("email", account.getAccountEmail());
-		form.param("password", account.getAccountPassword());
+		form.param("email", ACCOUNT_EMAIL);
+		form.param("password", ACCOUNT_PASSWORD);
 		Response response = target.path("account/login").request(MediaType.APPLICATION_JSON).post(Entity.entity(form,
 				MediaType.APPLICATION_FORM_URLENCODED));
 		
@@ -78,8 +82,8 @@ public class AccountWebserviceTest extends TestCase {
 		account = TestUtil.createAccount();
 		
 		Form form = new Form();
-		form.param("email", account.getAccountEmail());
-		form.param("password", account.getAccountPassword());
+		form.param("email", ACCOUNT_EMAIL);
+		form.param("password", ACCOUNT_PASSWORD);
 		form.param("newPassword", "some new password");
 		
 		Response response = target.path("account/changepassword").request(MediaType.APPLICATION_JSON).post(Entity.entity(form,
