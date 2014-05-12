@@ -32,7 +32,7 @@ public interface RentDAO {
 	
 	public static final String LIGHT_RENT_PROJECTION = "select rent.rentId, rent.rentPrice,"
 			+ "rentSurface, rentRooms, rentBaths, rentParty, rentType, rentArchitecture, rentAge,"
-			+ "rentPetsAllowed, rentAddDate, rentStatus,"
+			+ "rentPetsAllowed, rentPhone, rentAddDate, rentStatus,"
 			+ "address.addressId, addressStreetNo, addressStreetName, addressLatitude,"
 			+ "addressLongitude,"
 			+ "concat(#{appURL}, rentImageURI) as rentImageURI, min(rent_image.rentImageId)"
@@ -121,7 +121,7 @@ public interface RentDAO {
 	
 	public static final String LIGHT_RENT_FAVORITE_VIEW_PROJECTION = "select rent.rentId, rent.rentPrice,"
 			+ "rentSurface, rentRooms, rentBaths, rentParty, rentType, rentArchitecture, rentAge,"
-			+ "rentPetsAllowed, rentAddDate, rentStatus,"
+			+ "rentPetsAllowed, rentPhone, rentAddDate, rentStatus,"
 			+ "address.addressId, addressStreetNo, addressStreetName, addressLatitude,"
 			+ "addressLongitude,"
 			+ "concat(#{appURL}, rentImageURI) as rentImageURI, min(rent_image.rentImageId),"

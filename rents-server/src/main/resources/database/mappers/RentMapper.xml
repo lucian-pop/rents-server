@@ -19,6 +19,7 @@
         <result property="rentArchitecture" column="rentArchitecture"/>
         <result property="rentAge" column="rentAge"/>
         <result property="rentPetsAllowed" column="rentPetsAllowed"/>
+        <result property="rentPhone" column="rentPhone"/>
         <result property="rentAddDate" column="rentAddDate"/>
         <result property="rentStatus" column="rentStatus"/>
         <association property="address" javaType="com.personal.rents.model.Address">
