@@ -162,7 +162,7 @@ public class RentDAOTest extends TestCase {
 			result = rentDAO.searchResultSize(MIN_LATITUDE, MAX_LATITUDE, MIN_LONGITUDE,
 					MAX_LONGITUDE, minPrice, maxPrice, minSurface, maxSurface, minRooms, maxRooms,
 					minBaths, maxBaths, rentParty, rentParty, rentType, rentType, rentArchitecture,
-					rentArchitecture, rentAge, rentAge, rentPetsAllowed, rentStatus);
+					rentArchitecture, rentAge, rentAge, rentPetsAllowed, true, rentStatus);
 		} finally {
 			session.close();
 		}
@@ -172,10 +172,10 @@ public class RentDAOTest extends TestCase {
 	
 	public void testSearch() {
 		int minPrice = 100;
-		int maxPrice = 5000;
-		int minSurface = 20;
-		int maxSurface = 500;
-		short minRooms = 2;
+		int maxPrice = 10000;
+		int minSurface = 50;
+		int maxSurface = 1000;
+		short minRooms = 1;
 		short maxRooms = 6;
 		short minBaths = 1;
 		short maxBaths = 5;
@@ -194,7 +194,7 @@ public class RentDAOTest extends TestCase {
 			results = rentDAO.search(MIN_LATITUDE, MAX_LATITUDE, MIN_LONGITUDE,
 					MAX_LONGITUDE, minPrice, maxPrice, minSurface, maxSurface, minRooms, maxRooms,
 					minBaths, maxBaths, rentParty, rentParty, rentType, rentType, rentArchitecture,
-					rentArchitecture, rentAge, rentAge, rentPetsAllowed, rentStatus,
+					rentArchitecture, rentAge, rentAge, rentPetsAllowed, true, rentStatus,
 					TestUtil.PAGE_SIZE,"");
 		} finally {
 			session.close();
@@ -217,11 +217,8 @@ public class RentDAOTest extends TestCase {
 			assertTrue(resultRent.getRentRooms() >=  minRooms);
 			assertTrue(resultRent.getRentBaths() <=  maxBaths);
 			assertTrue(resultRent.getRentBaths() >=  minBaths);
-			assertTrue(resultRent.getRentParty() == rentParty);
 			assertTrue(resultRent.getRentType() == rentType);
 			assertTrue(resultRent.getRentArchitecture() == rentArchitecture);
-			assertTrue(resultRent.getRentAge() == rentAge);
-			assertTrue(resultRent.isRentPetsAllowed() == rentPetsAllowed);
 			assertTrue(resultRent.getRentStatus() == rentStatus);
 		}
 	}
@@ -254,7 +251,7 @@ public class RentDAOTest extends TestCase {
 			results = rentDAO.search(MIN_LATITUDE, MAX_LATITUDE, MIN_LONGITUDE,
 					MAX_LONGITUDE, minPrice, maxPrice, minSurface, maxSurface, minRooms, maxRooms,
 					minBaths, maxBaths, minParty, maxParty, minType, maxType, minArchitecture,
-					maxArchitecture, minAge, maxAge, rentPetsAllowed, rentStatus,
+					maxArchitecture, minAge, maxAge, rentPetsAllowed, true, rentStatus,
 					TestUtil.PAGE_SIZE, "");
 		} finally {
 			session.close();
@@ -270,7 +267,7 @@ public class RentDAOTest extends TestCase {
 			results = rentDAO.searchNextPage(MIN_LATITUDE, MAX_LATITUDE, MIN_LONGITUDE,
 					MAX_LONGITUDE, minPrice, maxPrice, minSurface, maxSurface, minRooms, maxRooms,
 					minBaths, maxBaths, minParty, maxParty, minType, maxType, minArchitecture,
-					maxArchitecture, minAge, maxAge, rentPetsAllowed, rentStatus, 
+					maxArchitecture, minAge, maxAge, rentPetsAllowed, true, rentStatus, 
 					lastRent.getRentAddDate(), lastRent.getRentId(), TestUtil.PAGE_SIZE, "");
 		} finally {
 			session.close();
@@ -308,7 +305,7 @@ public class RentDAOTest extends TestCase {
 		}
 		
 		assertTrue(resultRent != null);
-		assertTrue(resultRent.getAccountId() == account.getAccountId());
+		assertTrue(resultRent.getAccountId().intValue() == account.getAccountId().intValue());
 		assertTrue(resultRent.getRentPrice() != null);
 		assertTrue(resultRent.getRentSurface() != null);
 		assertTrue(resultRent.getRentRooms() != null);

@@ -115,6 +115,7 @@ public class RentsSearchWebServiceTest extends TestCase {
 		highRent.setRentType(rentType);
 		highRent.setRentArchitecture(rentArchitecture);
 		highRent.setRentAge(rentAge);
+		highRent.setRentPetsAllowed(rentPetsAllowed);
 		
 		rentSearch.setLowRent(lowRent);
 		rentSearch.setHighRent(highRent);
@@ -173,6 +174,7 @@ public class RentsSearchWebServiceTest extends TestCase {
 		highRent.setRentType(Byte.MAX_VALUE);
 		highRent.setRentArchitecture(Byte.MAX_VALUE);
 		highRent.setRentAge(Short.MAX_VALUE);
+		highRent.setRentPetsAllowed(rentPetsAllowed);
 
 		rentSearch.setLowRent(lowRent);
 		rentSearch.setHighRent(highRent);
@@ -231,6 +233,7 @@ public class RentsSearchWebServiceTest extends TestCase {
 		highRent.setRentType(Byte.MAX_VALUE);
 		highRent.setRentArchitecture(Byte.MAX_VALUE);
 		highRent.setRentAge(Short.MAX_VALUE);
+		highRent.setRentPetsAllowed(true);
 		highRent.setRentAddDate(new Date());
 		highRent.setRentId(Integer.MAX_VALUE);
 		

@@ -31,9 +31,9 @@ public interface RentDAO {
 	public static final String DELETE_BY_ID = "delete from rent where rent.rentId=#{rentId}";
 	
 	public static final String LIGHT_RENT_PROJECTION = "select rent.rentId, rent.rentPrice,"
-			+ "rentSurface, rentRooms, rentBaths, rentParty, rentType, rentArchitecture, rentAge,"
-			+ "rentPetsAllowed, rentPhone, rentAddDate, rentStatus,"
-			+ "address.addressId, addressStreetNo, addressStreetName, addressLatitude,"
+			+ "rentSurface, rentRooms, rentBaths, rentType, rentArchitecture,"
+			+ "rentPetsAllowed, rentAddDate, rentStatus,"
+			+ "address.addressId, addressStreetName, addressNeighbourhood, addressLatitude,"
 			+ "addressLongitude,"
 			+ "concat(#{appURL}, rentImageURI) as rentImageURI, min(rent_image.rentImageId)"
 			+ " from rent inner join address on rent.addressId=address.addressId"
@@ -75,7 +75,7 @@ public interface RentDAO {
 			+ " and rentType between #{minType} and #{maxType}"
 			+ " and rentArchitecture between #{minArchitecture} and #{maxArchitecture}"
 			+ " and rentAge between #{minAge} and #{maxAge}"
-			+ " and rentPetsAllowed=#{rentPetsAllowed}"
+			+ " and (rentPetsAllowed=#{lowRentPetsAllowed} or rentPetsAllowed=#{highRentPetsAllowed})"
 			+ " and rentStatus=#{rentStatus}";
 	
 	public static final String SELECT_BY_CRITERIA = LIGHT_RENT_PROJECTION 
@@ -89,7 +89,7 @@ public interface RentDAO {
 			+ " and rentType between #{minType} and #{maxType}"
 			+ " and rentArchitecture between #{minArchitecture} and #{maxArchitecture}"
 			+ " and rentAge between #{minAge} and #{maxAge}"
-			+ " and rentPetsAllowed=#{rentPetsAllowed}"
+			+ " and (rentPetsAllowed=#{lowRentPetsAllowed} or rentPetsAllowed=#{highRentPetsAllowed})"
 			+ " and rentStatus=#{rentStatus}"
 			+ DATE_RESTRICTION;
 	
@@ -104,7 +104,7 @@ public interface RentDAO {
 			+ " and rentType between #{minType} and #{maxType}"
 			+ " and rentArchitecture between #{minArchitecture} and #{maxArchitecture}"
 			+ " and rentAge between #{minAge} and #{maxAge}"
-			+ " and rentPetsAllowed=#{rentPetsAllowed}"
+			+ " and (rentPetsAllowed=#{lowRentPetsAllowed} or rentPetsAllowed=#{highRentPetsAllowed})"
 			+ " and rentStatus=#{rentStatus}"
 			+ " and " + DATE_PAGINATION_CONDITION + DATE_RESTRICTION;
 	
@@ -120,7 +120,7 @@ public interface RentDAO {
 			+ " and " + DATE_PAGINATION_CONDITION + DATE_RESTRICTION;
 	
 	public static final String LIGHT_RENT_FAVORITE_VIEW_PROJECTION = "select rent.rentId, rent.rentPrice,"
-			+ "rentSurface, rentRooms, rentBaths, rentParty, rentType, rentArchitecture, rentAge,"
+			+ "rentSurface, rentRooms, rentBaths, rentType, rentArchitecture,"
 			+ "rentPetsAllowed, rentPhone, rentAddDate, rentStatus,"
 			+ "address.addressId, addressStreetNo, addressStreetName, addressLatitude,"
 			+ "addressLongitude,"
@@ -183,7 +183,8 @@ public interface RentDAO {
 			@Param("maxParty") byte maxParty, @Param("minType") byte minType, 
 			@Param("maxType") byte maxType, @Param("minArchitecture") byte minArchitecture,
 			@Param("maxArchitecture") byte maxArchitecture, @Param("minAge") short minAge,
-			@Param("maxAge") short maxAge, @Param("rentPetsAllowed") boolean rentPetsAllowed,
+			@Param("maxAge") short maxAge, @Param("lowRentPetsAllowed") boolean lowRentPetsAllowed,
+			@Param("highRentPetsAllowed") boolean highRentPetsAllowed,
 			@Param("rentStatus") byte rentStatus);
 	
 	@Select(SELECT_BY_CRITERIA)
@@ -198,7 +199,8 @@ public interface RentDAO {
 			@Param("maxParty") byte maxParty, @Param("minType") byte minType, 
 			@Param("maxType") byte maxType, @Param("minArchitecture") byte minArchitecture,
 			@Param("maxArchitecture") byte maxArchitecture, @Param("minAge") short minAge,
-			@Param("maxAge") short maxAge, @Param("rentPetsAllowed") boolean rentPetsAllowed,
+			@Param("maxAge") short maxAge, @Param("lowRentPetsAllowed") boolean lowRentPetsAllowed,
+			@Param("highRentPetsAllowed") boolean highRentPetsAllowed,
 			@Param("rentStatus") byte rentStatus, @Param("pageSize") int pageSize, @Param("appURL") String appURL);
 	
 	@Select(SELECT_NEXT_PAGE_BY_CRITERIA)
@@ -213,7 +215,8 @@ public interface RentDAO {
 			@Param("maxParty") byte maxParty, @Param("minType") byte minType, 
 			@Param("maxType") byte maxType, @Param("minArchitecture") byte minArchitecture,
 			@Param("maxArchitecture") byte maxArchitecture, @Param("minAge") short minAge,
-			@Param("maxAge") short maxAge, @Param("rentPetsAllowed") boolean rentPetsAllowed,
+			@Param("maxAge") short maxAge, @Param("lowRentPetsAllowed") boolean lowRentPetsAllowed,
+			@Param("highRentPetsAllowed") boolean highRentPetsAllowed,
 			@Param("rentStatus") byte rentStatus, @Param("lastRentDate") Date lastRentDate, 
 			@Param("lastRentId") int lastRentId, @Param("pageSize") int pageSize, 
 			@Param("appURL") String appURL);

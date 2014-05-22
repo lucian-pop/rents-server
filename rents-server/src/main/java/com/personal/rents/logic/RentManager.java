@@ -137,7 +137,7 @@ public class RentManager {
 					highRent.getRentBaths(), lowRent.getRentParty(), highRent.getRentParty(),
 					lowRent.getRentType(), highRent.getRentType(), lowRent.getRentArchitecture(),
 					highRent.getRentArchitecture(), lowRent.getRentAge(), highRent.getRentAge(),
-					lowRent.isRentPetsAllowed(), lowRent.getRentStatus());
+					lowRent.isRentPetsAllowed(), highRent.isRentPetsAllowed(), lowRent.getRentStatus());
 			rentsCounter.rents = rentDAO.search(lowRent.getAddress().getAddressLatitude(), 
 					highRent.getAddress().getAddressLatitude(), 
 					lowRent.getAddress().getAddressLongitude(),
@@ -147,8 +147,8 @@ public class RentManager {
 					highRent.getRentBaths(), lowRent.getRentParty(), highRent.getRentParty(),
 					lowRent.getRentType(), highRent.getRentType(), lowRent.getRentArchitecture(),
 					highRent.getRentArchitecture(), lowRent.getRentAge(), highRent.getRentAge(),
-					lowRent.isRentPetsAllowed(), lowRent.getRentStatus(), rentSearch.getPageSize(),
-					ApplicationManager.getAppURL());
+					lowRent.isRentPetsAllowed(), highRent.isRentPetsAllowed(),
+					lowRent.getRentStatus(), rentSearch.getPageSize(), ApplicationManager.getAppURL());
 		} finally {
 			session.close();
 		}
@@ -172,8 +172,9 @@ public class RentManager {
 					highRent.getRentBaths(), lowRent.getRentParty(), highRent.getRentParty(),
 					lowRent.getRentType(), highRent.getRentType(), lowRent.getRentArchitecture(),
 					highRent.getRentArchitecture(), lowRent.getRentAge(), highRent.getRentAge(),
-					lowRent.isRentPetsAllowed(), lowRent.getRentStatus(), highRent.getRentAddDate(),
-					highRent.getRentId(), rentSearch.getPageSize(), ApplicationManager.getAppURL());
+					lowRent.isRentPetsAllowed(), highRent.isRentPetsAllowed(), 
+					lowRent.getRentStatus(), highRent.getRentAddDate(), highRent.getRentId(),
+					rentSearch.getPageSize(), ApplicationManager.getAppURL());
 		} finally {
 			session.close();
 		}
