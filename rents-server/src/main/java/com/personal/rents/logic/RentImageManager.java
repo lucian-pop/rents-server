@@ -1,7 +1,6 @@
 package com.personal.rents.logic;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Date;
 
 import org.apache.ibatis.session.SqlSession;
@@ -60,13 +59,13 @@ public class RentImageManager {
 		return updateCount;
 	}
 	
-	public static RentImage uploadRentImage(InputStream imageInputStream, int rentId) {
+	public static RentImage uploadRentImage(byte[] imageBytes, int rentId) {
 		String imagePath = buildImagePath(rentId);
 		String imageFilename = buildImageFilename();
 		String imageURI = buildImageURI(imagePath, imageFilename);
 		
 		try {
-			FileUtil.saveFile(imageInputStream, imagePath, imageFilename);
+			FileUtil.saveFile(imageBytes, imagePath, imageFilename);
 		} catch (IOException ioe) {
 			logger.error("An error occured while saving image '" + imageURI + "'", ioe);
 			
@@ -89,14 +88,14 @@ public class RentImageManager {
 		return rentImage;
 	}
 	
-	public static RentImage replaceRentImage(InputStream imageInputStream, int rentImageId,
+	public static RentImage replaceRentImage(byte[] imageBytes, int rentImageId,
 			String rentImageURI, int rentId) {
 		String imagePath = buildImagePath(rentId);
 		String imageFilename = buildImageFilename();
 		String imageURI = buildImageURI(imagePath, imageFilename);
 		
 		try {
-			FileUtil.saveFile(imageInputStream, imagePath, imageFilename);
+			FileUtil.saveFile(imageBytes, imagePath, imageFilename);
 		} catch (IOException ioe) {
 			logger.error("An error occured while saving image '" + imageURI + "'", ioe);
 			

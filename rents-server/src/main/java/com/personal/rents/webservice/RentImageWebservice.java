@@ -1,7 +1,5 @@
 package com.personal.rents.webservice;
 
-import java.io.InputStream;	
-
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -13,42 +11,43 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-import org.glassfish.jersey.media.multipart.FormDataParam;
-
 import com.personal.rents.logic.RentImageManager;
 import com.personal.rents.model.RentImage;
 import com.personal.rents.webservice.exception.UnauthorizedException;
 import com.personal.rents.webservice.util.AuthorizationUtil;
+import com.personal.rents.webservice.util.ContextConstants;
 
 @Path("rentimage")
 public class RentImageWebservice {
 
 	@Path("upload")
 	@POST
-	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Consumes(MediaType.APPLICATION_OCTET_STREAM)
 	@Produces(MediaType.APPLICATION_JSON)
-	public RentImage uploadImage(@FormDataParam("imageData") InputStream imageInputStream,
-			@FormDataParam("rentId") int rentId, @Context HttpServletRequest request) {
+	public RentImage uploadImage(byte[] imageBytes, @Context HttpServletRequest request) {
 		if(!AuthorizationUtil.isAuthorized(request)) {
 			throw new UnauthorizedException();
 		}
 
-		return RentImageManager.uploadRentImage(imageInputStream, rentId);
+		int rentId = request.getIntHeader(ContextConstants.RENT_ID);
+
+		return RentImageManager.uploadRentImage(imageBytes, rentId);
 	}
 	
 	@Path("replace")
 	@PUT
-	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Consumes(MediaType.APPLICATION_OCTET_STREAM)
 	@Produces(MediaType.APPLICATION_JSON)
-	public RentImage replaceImage(@FormDataParam("imageData") InputStream imageInputStream,
-			@FormDataParam("rentImageId") int rentImageId, 
-			@FormDataParam("rentImageURI") String rentImageURI, @FormDataParam("rentId") int rentId,
-			@Context HttpServletRequest request) {
+	public RentImage replaceImage(byte[] imageBytes, @Context HttpServletRequest request) {
 		if(!AuthorizationUtil.isAuthorized(request)) {
 			throw new UnauthorizedException();
 		}
 		
-		return RentImageManager.replaceRentImage(imageInputStream, rentImageId, rentImageURI, rentId);
+		int rentImageId = request.getIntHeader(ContextConstants.RENT_IMAGE_ID);
+		String rentImageURI = request.getHeader(ContextConstants.RENT_IMAGE_URI);
+		int rentId = request.getIntHeader(ContextConstants.RENT_ID);
+
+		return RentImageManager.replaceRentImage(imageBytes, rentImageId, rentImageURI, rentId);
 	}
 	
 	@Path("delete/{rentImageId}")

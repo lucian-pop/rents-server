@@ -109,7 +109,7 @@ public class ApplicationManager implements ServletContextListener {
 //		} catch (UnknownHostException e) {
 //			return "";
 //		}
-		appURLBuilder.append("192.168.1.4");
+		appURLBuilder.append("192.168.1.3");
 		appURLBuilder.append(":8080");
 		appURLBuilder.append(contextPath);
 		

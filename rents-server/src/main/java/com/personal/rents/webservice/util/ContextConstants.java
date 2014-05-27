@@ -11,5 +11,10 @@ public final class ContextConstants {
 	public static final String RENTS_IMAGES_PATH = IMAGES_PATH + FILE_SEPARATOR + "rents";
 	
 	public static final String IMAGE_FILE_EXT = ".jpg";
+	
+	public static final String RENT_ID = "rentId";
+	
+	public static final String RENT_IMAGE_ID = "rentImageId";
 
+	public static final String RENT_IMAGE_URI = "rentImageURI";
 }

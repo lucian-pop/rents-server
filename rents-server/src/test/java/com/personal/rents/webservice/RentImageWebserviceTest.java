@@ -21,7 +21,7 @@ import junit.framework.TestCase;
 
 public class RentImageWebserviceTest extends TestCase {
 	
-	private static final int NO_OF_IMG_BYTES = 60*1024;
+	private static final int NO_OF_IMG_BYTES = 100*1024;
 	
 	private Account account;
 	
@@ -50,14 +50,11 @@ public class RentImageWebserviceTest extends TestCase {
 		byte[] imageBytes = new byte[NO_OF_IMG_BYTES];
 		new Random().nextBytes(imageBytes);
 
-		FormDataMultiPart formMultiPartData = new FormDataMultiPart();
-		FormDataBodyPart imageDataPart = new FormDataBodyPart("imageData", imageBytes,
-				MediaType.APPLICATION_OCTET_STREAM_TYPE);
-		formMultiPartData.bodyPart(imageDataPart);
-		formMultiPartData.field("rentId", Integer.toString(rent.getRentId()));
-		Response response = target.path("rentimage/upload").request()
+		Response response = target.path("rentimage/upload").request(MediaType.APPLICATION_OCTET_STREAM)
 				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
-				.post(Entity.entity(formMultiPartData, formMultiPartData.getMediaType()));
+				.header(ContextConstants.RENT_ID, Integer.toString(rent.getRentId()))
+				.header("accept", "*/*")
+				.post(Entity.entity(imageBytes, MediaType.APPLICATION_OCTET_STREAM));
 		
 		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
 		
@@ -69,30 +66,28 @@ public class RentImageWebserviceTest extends TestCase {
 		byte[] imageBytes = new byte[NO_OF_IMG_BYTES];
 		new Random().nextBytes(imageBytes);
 		
-		FormDataMultiPart formMultiPartData = new FormDataMultiPart();
-		FormDataBodyPart imageDataPart = new FormDataBodyPart("imageData", imageBytes,
-				MediaType.APPLICATION_OCTET_STREAM_TYPE);
-		formMultiPartData.bodyPart(imageDataPart);
-		formMultiPartData.field("rentId", Integer.toString(rent.getRentId()));
-		Response response = target.path("rentimage/upload").request()
+		Response response = target.path("rentimage/upload").request(MediaType.APPLICATION_OCTET_STREAM)
 				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
-				.post(Entity.entity(formMultiPartData, formMultiPartData.getMediaType()));
+				.header(ContextConstants.RENT_ID, Integer.toString(rent.getRentId()))
+				.header("accept", "*/*")
+				.post(Entity.entity(imageBytes, MediaType.APPLICATION_OCTET_STREAM));
 		
 		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
 		
 		RentImage rentImage = response.readEntity(RentImage.class);
 		assertNotNull(rentImage);
 		
-		formMultiPartData = new FormDataMultiPart();
-		formMultiPartData.bodyPart(imageDataPart);
-		formMultiPartData.field("rentImageId", Integer.toString(rentImage.getRentImageId()));
-		formMultiPartData.field("rentImageURI", rentImage.getRentImageURI());
-		formMultiPartData.field("rentId", Integer.toString(rent.getRentId()));
-		response = target.path("rentimage/replace").request()
+		response = target.path("rentimage/replace").request(MediaType.APPLICATION_OCTET_STREAM)
+				.header(ContextConstants.RENT_IMAGE_ID, Integer.toString(rentImage.getRentImageId()))
+				.header(ContextConstants.RENT_IMAGE_URI, rentImage.getRentImageURI())
+				.header(ContextConstants.RENT_ID, Integer.toString(rent.getRentId()))
 				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
-				.put(Entity.entity(formMultiPartData, formMultiPartData.getMediaType()));
+				.header("accept", "*/*")
+				.put(Entity.entity(imageBytes, MediaType.APPLICATION_OCTET_STREAM));
 		
 		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
+		rentImage = response.readEntity(RentImage.class);
+		assertNotNull(rentImage);
 	}
 	
 	public void testSuccessfullyDeleteRentImage() {

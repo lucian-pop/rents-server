@@ -11,7 +11,7 @@ import com.personal.rents.webservice.util.ContextConstants;
 
 public final class FileUtil {
 	
-	public static void saveFile(InputStream inputStream, String filepath, String filename)
+	public static void saveFile(byte[] fileBytes, String filepath, String filename)
 			throws IOException {
 		String absoluteFilepath = ApplicationManager.getAppRealPath() + filepath;
 
@@ -23,17 +23,10 @@ public final class FileUtil {
 			}
 
 			outputStream = new FileOutputStream(new File(absoluteFilepath, filename));
-			
-			int read = 0;
-			byte[] bytes = new byte[10*1024];
-			while ((read = inputStream.read(bytes)) > 0 ) {
-				outputStream.write(bytes, 0, read);
-			}
-
+			outputStream.write(fileBytes, 0, fileBytes.length);
 			outputStream.flush();
 		} finally {
 			outputStream.close();
-			inputStream.close();
 		}
 	}
 	
