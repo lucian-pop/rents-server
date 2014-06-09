@@ -2,8 +2,6 @@ package com.personal.rents.listener;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Properties;
 
 import javax.servlet.ServletContextEvent;

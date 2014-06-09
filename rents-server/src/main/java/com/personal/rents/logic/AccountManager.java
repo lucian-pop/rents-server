@@ -3,12 +3,14 @@ package com.personal.rents.logic;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.log4j.Logger;
 
 import com.personal.rents.dao.AccountDAO;
 import com.personal.rents.dao.TokenDAO;
+import com.personal.rents.dto.AccountUpdate;
 import com.personal.rents.listener.ApplicationManager;
 import com.personal.rents.model.Account;
 import com.personal.rents.model.Token;
@@ -33,9 +35,9 @@ public final class AccountManager {
 		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
 		try {
 			AccountDAO accountDAO = session.getMapper(AccountDAO.class);
-			Account existingAccount = accountDAO.getAccountByEmailOrPhone(account.getAccountEmail(),
+			List<Account> existingAccounts = accountDAO.getAccountByEmailOrPhone(account.getAccountEmail(),
 					account.getAccountPhone());
-			if(existingAccount != null) {
+			if(existingAccounts != null && existingAccounts.size() > 0) {
 				throw new AccountConflictException();
 			}
 			
@@ -69,18 +71,26 @@ public final class AccountManager {
 		} catch (RuntimeException runtimeException) {
 			logger.error("Unable to create account with email " + account.getAccountEmail(), runtimeException);
 			session.rollback();
-			
+
 			throw new OperationFailedException();
 		} finally {
 			session.close();
 		}
 
-		renewAccountCredentials(account, token.getTokenKey());
+		account.setTokenKey(token.getTokenKey());
+		clearSensitiveData(account);
 		
 		return account;
 	}
 
 	public static Account login(String email, String password) {
+		Account account = loginWithoutClearingSensitiveData(email, password);
+		clearSensitiveData(account);
+		
+		return account;
+	}
+	
+	public static Account loginWithoutClearingSensitiveData(String email, String password) {
 		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
 		Account account = null;
 		try {
@@ -96,9 +106,46 @@ public final class AccountManager {
 		
 		// Set password field to null. We use the token for authorization.
 		String tokenKey = TokenManager.getNewTokenKey(account.getAccountId());
-		renewAccountCredentials(account, tokenKey);
+		account.setTokenKey(tokenKey);
 		
 		return account;
+	}
+	
+	public static Account updateAccount(AccountUpdate accountUpdate) {
+		Account editedAccount = accountUpdate.account;
+		Account originalAccount = 
+				loginWithoutClearingSensitiveData(accountUpdate.accountEmail, editedAccount.getAccountPassword());
+		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
+		int updateCount = -1;
+		try {
+			AccountDAO accountDAO = session.getMapper(AccountDAO.class);
+
+			List<Account> existingAccounts = 
+					accountDAO.getAccountByEmailOrPhoneRestrictById(editedAccount.getAccountEmail(),
+							editedAccount.getAccountPhone(), originalAccount.getAccountId());
+			if(existingAccounts != null && existingAccounts.size() > 0) {
+				throw new AccountConflictException();
+			}
+
+			editedAccount.setAccountId(originalAccount.getAccountId());
+			updateCount = session.update("AccountMapper.updateAccount", editedAccount);
+
+			session.commit();
+		} finally {
+			session.close();
+		}
+		
+		if(updateCount != 1) {
+			logger.error("An error occured while updating account '" 
+					+ originalAccount.getAccountEmail());
+			
+			throw new OperationFailedException();
+		}
+
+		editedAccount.setTokenKey(originalAccount.getTokenKey());
+		clearSensitiveData(editedAccount);
+		
+		return editedAccount;
 	}
 	
 	public static String changePassword(String email, String password, String newPassword) {
@@ -138,10 +185,9 @@ public final class AccountManager {
 		return tokenKey;
 	}
 	
-	private static void renewAccountCredentials(Account account, String tokenKey) {
+	public static void clearSensitiveData(Account account) {
 		account.setAccountId(null);
 		account.setAccountPassword(null);
-		account.setTokenKey(tokenKey);
 	}
 	
 	private static boolean isPasswordValid(String providedPassword, String accountPassword) {

@@ -1,5 +1,6 @@
 package com.personal.rents.webservice;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -11,6 +12,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.apache.log4j.Logger;
 
+import com.personal.rents.dto.AccountUpdate;
 import com.personal.rents.logic.AccountManager;
 import com.personal.rents.model.Account;
 
@@ -40,6 +42,14 @@ public class AccountWebservice {
 		Account account = AccountManager.login(email, password);
 		
 		return account;
+	}
+	
+	@Path("updateaccount")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Account updateAccount(AccountUpdate accountUpdate, @Context HttpServletRequest request) {
+		return AccountManager.updateAccount(accountUpdate);
 	}
 	
 	@Path("changepassword")

@@ -7,9 +7,6 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.glassfish.jersey.media.multipart.FormDataBodyPart;
-import org.glassfish.jersey.media.multipart.FormDataMultiPart;
-
 import com.personal.rents.model.Account;
 import com.personal.rents.model.Rent;
 import com.personal.rents.model.RentImage;
@@ -94,14 +91,11 @@ public class RentImageWebserviceTest extends TestCase {
 		byte[] imageBytes = new byte[NO_OF_IMG_BYTES];
 		new Random().nextBytes(imageBytes);
 
-		FormDataMultiPart formMultiPartData = new FormDataMultiPart();
-		FormDataBodyPart imageDataPart = new FormDataBodyPart("imageData", imageBytes,
-				MediaType.APPLICATION_OCTET_STREAM_TYPE);
-		formMultiPartData.bodyPart(imageDataPart);
-		formMultiPartData.field("rentId", Integer.toString(rent.getRentId()));
-		Response response = target.path("rentimage/upload").request()
+		Response response = target.path("rentimage/upload").request(MediaType.APPLICATION_OCTET_STREAM)
 				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
-				.post(Entity.entity(formMultiPartData, formMultiPartData.getMediaType()));
+				.header(ContextConstants.RENT_ID, Integer.toString(rent.getRentId()))
+				.header("accept", "*/*")
+				.post(Entity.entity(imageBytes, MediaType.APPLICATION_OCTET_STREAM));
 		
 		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
 		
@@ -112,7 +106,6 @@ public class RentImageWebserviceTest extends TestCase {
 				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
 				.delete();
 		
-		System.out.println(response.getStatus());
 		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
 	}
 }

@@ -9,16 +9,15 @@ public class PasswordHashingTest extends TestCase {
 	
 	public void testPasswordHashing() {
 		String password = "test";
-		String hashedPassword = null;
 		try {
-			hashedPassword = PasswordHashing.createHashString(password);
+			PasswordHashing.createHashString(password);
 		} catch (NoSuchAlgorithmException e) {
+			fail();
 			e.printStackTrace();
 		} catch (InvalidKeySpecException e) {
+			fail();
 			e.printStackTrace();
 		}
-		
-		System.out.println("Hashed password is: " + hashedPassword);
 	}
 	
 	public void testPasswordsMatching() {

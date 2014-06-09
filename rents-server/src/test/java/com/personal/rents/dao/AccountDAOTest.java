@@ -1,6 +1,7 @@
 package com.personal.rents.dao;
 
 import java.util.Date;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -35,7 +36,7 @@ public class AccountDAOTest extends TestCase {
 		Account testAccount = new Account();
 		testAccount.setAccountType((byte) 0);
 		testAccount.setAccountExternalId("sadsadkjhsadas2dsa5dasd4asd5a5232323");
-		testAccount.setAccountEmail("test@gmail.com");
+		testAccount.setAccountEmail("test@email.com");
 		testAccount.setAccountPassword("dummypassword");
 		testAccount.setAccountFirstname("Dummy firstname");
 		testAccount.setAccountLastname("Dummy lastname");
@@ -129,7 +130,7 @@ public class AccountDAOTest extends TestCase {
 	
 	public void testGetAccountByEmailOrPhoneWithMatchingEmail() {
 		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
-		Account result = null;
+		List<Account> result = null;
 		try {
 			AccountDAO accountDAO = session.getMapper(AccountDAO.class);
 			result = accountDAO.getAccountByEmailOrPhone(account.getAccountEmail(), 
@@ -139,11 +140,12 @@ public class AccountDAOTest extends TestCase {
 		}
 		
 		assertNotNull(result);
+		assertTrue(result.size() > 0);
 	}
 	
 	public void testGetAccountByEmailOrPhoneWithMatchingPhone() {
 		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
-		Account result = null;
+		List<Account> result = null;
 		try {
 			AccountDAO accountDAO = session.getMapper(AccountDAO.class);
 			result = accountDAO.getAccountByEmailOrPhone("some random email", account.getAccountPhone());
@@ -152,5 +154,24 @@ public class AccountDAOTest extends TestCase {
 		}
 		
 		assertNotNull(result);
+		assertTrue(result.size() > 0);
+	}
+	
+	public void testUpdateAccount() {
+		String email = "updated.account@email.com";
+		String phone = "0100111000";
+
+		account.setAccountEmail(email);
+		account.setAccountPhone(phone);
+		int updated = -1;
+		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
+		try {
+			updated = session.update("AccountMapper.updateAccount", account);
+			session.commit();
+		} finally {
+			session.close();
+		}
+		
+		assertTrue(updated == 1);
 	}
 }

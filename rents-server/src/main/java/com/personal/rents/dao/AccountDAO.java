@@ -1,12 +1,12 @@
 package com.personal.rents.dao;
 
 import java.util.Date;
+import java.util.List;
 
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
-
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
@@ -38,6 +38,10 @@ public interface AccountDAO {
 	public static final String SELECT_BY_EMAIL_OR_PHONE = "select account.* from account"
 			+ " where account.accountEmail=#{accountEmail} or account.accountPhone=#{accountPhone}";
 	
+	public static final String SELECT_BY_EMAIL_OR_PHONE_RESTRICT_BY_ID = "select account.* from account"
+			+ " where (account.accountEmail=#{accountEmail} or account.accountPhone=#{accountPhone})"
+			+ " and account.accountId!=#{accountId}";
+	
 	public static final String UPDATE_PASSWORD_AND_TOKEN = "update account left join token"
 			+ " on token.accountId=account.accountId set account.accountPassword=#{password},"
 			+ " token.tokenKey=#{tokenKey}, token.tokenCreationDate=#{creationDate}"
@@ -54,8 +58,12 @@ public interface AccountDAO {
 	public Account getAccountByEmail(@Param("email") String email);
 	
 	@Select(SELECT_BY_EMAIL_OR_PHONE)
-	public Account getAccountByEmailOrPhone(@Param("accountEmail") String accountEmail, 
+	public List<Account> getAccountByEmailOrPhone(@Param("accountEmail") String accountEmail, 
 			@Param("accountPhone") String accountPhone);
+	
+	@Select(SELECT_BY_EMAIL_OR_PHONE_RESTRICT_BY_ID)
+	public List<Account> getAccountByEmailOrPhoneRestrictById(@Param("accountEmail") String accountEmail, 
+			@Param("accountPhone") String accountPhone, @Param("accountId") int accountId);
 	
 	@Delete(DELETE_BY_ID)
 	public int deleteAccount(@Param("accountId") int accountId);

@@ -35,6 +35,8 @@ public class TestUtil {
 	
 	public static final String ACCOUNT_EMAIL = "initial.account@gmail.com";
 	
+	public static final String ACCOUNT_PHONE = "+40100900900";
+	
 	public static final String ACCOUNT_PASSWORD = "account password";
 
 	public static final String BASE_URI = "http://localhost:8080/rents-server/ws/";
@@ -108,7 +110,51 @@ public class TestUtil {
 		}
 		account.setAccountFirstname("account firstname");
 		account.setAccountLastname("account lastname");
-		account.setAccountPhone("+40100900900");
+		account.setAccountPhone(ACCOUNT_PHONE);
+		account.setAccountSignupDate(new Date());
+
+		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
+		try {
+			AccountDAO accountMapper = session.getMapper(AccountDAO.class);
+			accountMapper.insertAccount(account);
+			session.commit();
+			
+			// Generate token
+			String tokenKey = TokenGenerator.generateToken();
+			Token token = new Token();
+			token.setAccountId(account.getAccountId());
+			token.setTokenKey(tokenKey);
+			token.setTokenCreationDate(new Date());
+					
+			// insert token into database
+			TokenDAO tokenDAO = session.getMapper(TokenDAO.class);
+			tokenDAO.insertToken(token);
+			session.commit();
+			
+			account.setTokenKey(tokenKey);
+		} finally {
+			session.close();
+		}
+		
+		return account;
+	}
+	
+	public static Account createAccount(String email, String phone) {
+		//Insert account into database
+		Account account = new Account();
+		account.setAccountType((byte) 0);
+		account.setAccountExternalId("sadsadkjhfsdfsdfsdddddddddddddddf");
+		account.setAccountEmail(email);
+		try {
+			account.setAccountPassword(PasswordHashing.createHashString(ACCOUNT_PASSWORD));
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		} catch (InvalidKeySpecException e) {
+			e.printStackTrace();
+		}
+		account.setAccountFirstname("account firstname");
+		account.setAccountLastname("account lastname");
+		account.setAccountPhone(phone);
 		account.setAccountSignupDate(new Date());
 
 		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
