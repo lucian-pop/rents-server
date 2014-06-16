@@ -5,7 +5,7 @@
  
 <mapper namespace="RentMapper">
 
-   <resultMap id="LightRentMap" type="com.personal.rents.model.Rent">
+   <resultMap id="LightRentMap" type="ro.fizbo.rents.model.Rent">
    		<constructor>
    			<idArg column="rentId" javaType="int"/>
    		</constructor>
@@ -18,7 +18,7 @@
         <result property="rentArchitecture" column="rentArchitecture"/>
         <result property="rentAddDate" column="rentAddDate"/>
         <result property="rentStatus" column="rentStatus"/>
-        <association property="address" javaType="com.personal.rents.model.Address">
+        <association property="address" javaType="ro.fizbo.rents.model.Address">
             <id property="addressId" column="addressId"/>
             <result property="addressStreetName" column="addressStreetName"/>
             <result property="addressNeighbourhood" column="addressNeighbourhood"/>
@@ -26,13 +26,13 @@
             <result property="addressLongitude" column="addressLongitude"/>
         </association>
         <collection property="rentImages" javaType="java.util.List"
-        	ofType="com.personal.rents.model.RentImage">
+        	ofType="ro.fizbo.rents.model.RentImage">
         	<result property="rentImageId" column="rentImageId"/>
         	<result property="rentImageURI" column="rentImageURI"/>
         </collection>
     </resultMap>
     
-    <resultMap id="FullRentMap" type="com.personal.rents.model.Rent">
+    <resultMap id="FullRentMap" type="ro.fizbo.rents.model.Rent">
    		<constructor>
    			<idArg column="rentId" javaType="int"/>
    		</constructor> 
@@ -51,7 +51,7 @@
         <result property="rentPhone" column="rentPhone"/>
         <result property="rentAddDate" column="rentAddDate"/>
         <result property="rentStatus" column="rentStatus"/>
-        <association property="address" javaType="com.personal.rents.model.Address">
+        <association property="address" javaType="ro.fizbo.rents.model.Address">
             <id property="addressId" column="addressId"/>
             <result property="addressStreetNo" column="addressStreetNo"/>
             <result property="addressStreetName" column="addressStreetName"/>
@@ -68,26 +68,26 @@
             <result property="addressAp" column="addressAp"/>
         </association>
         <collection property="rentImages" javaType="java.util.List" 
-        	ofType="com.personal.rents.model.RentImage">
+        	ofType="ro.fizbo.rents.model.RentImage">
         	<result property="rentImageId" column="rentImageId"/>
         	<result property="rentId" column="rentId"/>
         	<result property="rentImageURI" column="rentImageURI"/>
         </collection>
     </resultMap>
     
-    <resultMap id="LightRentFavoriteViewMap" type="com.personal.rents.model.view.RentFavoriteView">
+    <resultMap id="LightRentFavoriteViewMap" type="ro.fizbo.rents.model.view.RentFavoriteView">
         <result property="rentFavoriteAddDate" column="rentFavoriteAddDate" />
         <association property="rent" resultMap="LightRentMap" />
     </resultMap>
     
-    <update id="updateRentsStatus" parameterType="com.personal.rents.dao.param.RentsStatus" >
+    <update id="updateRentsStatus" parameterType="ro.fizbo.rents.dao.param.RentsStatus" >
     	update rent set rentStatus=#{status} where rentId in
     	<foreach collection="rentIds" item="item" index="index" open="(" close=")" separator=",">
     		#{item}
     	</foreach>
     </update>
     
-    <update id="updateRent" parameterType="com.personal.rents.model.Rent">
+    <update id="updateRent" parameterType="ro.fizbo.rents.model.Rent">
     	update rent
     	<set>
     		<if test="rentPrice != null">rentPrice=#{rentPrice},</if>

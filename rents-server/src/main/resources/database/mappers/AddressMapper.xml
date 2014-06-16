@@ -4,7 +4,7 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  
 <mapper namespace="AddressMapper">
-	<update id="updateAddress" parameterType="com.personal.rents.model.Address">
+	<update id="updateAddress" parameterType="ro.fizbo.rents.model.Address">
 		update address
 		<set>
 			<if test="addressStreetNo != null">addressStreetNo=#{addressStreetNo},</if>

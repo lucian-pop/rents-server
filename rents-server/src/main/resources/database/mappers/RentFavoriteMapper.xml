@@ -4,7 +4,7 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  
 <mapper namespace="RentFavoriteMapper">
-    <delete id="deleteFavoriteRents" parameterType="com.personal.rents.dao.param.RentsFavorites">
+    <delete id="deleteFavoriteRents" parameterType="ro.fizbo.rents.dao.param.RentsFavorites">
     	delete from rent_favorite where accountId=#{accountId} and rentId in 
     	<foreach collection="rentIds" item="item" index="index" open="(" close=")" separator=",">
     		#{item}
