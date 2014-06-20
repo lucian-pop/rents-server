@@ -17,7 +17,7 @@ import ro.fizbo.rents.webservice.exception.UnauthorizedException;
 import ro.fizbo.rents.webservice.util.AuthorizationUtil;
 import ro.fizbo.rents.webservice.util.ContextConstants;
 
-@Path("rentimage")
+@Path("account/rentimage")
 public class RentImageWebservice {
 
 	@Path("upload")

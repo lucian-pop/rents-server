@@ -16,7 +16,7 @@ import ro.fizbo.rents.webservice.response.WebserviceResponseStatus;
 import ro.fizbo.rents.webservice.util.ContextConstants;
 import junit.framework.TestCase;
 
-public class RentWebserviceTest extends TestCase {
+public class AccountRentWebserviceTest extends TestCase {
 	
 	private Rent rent; 
 	
@@ -74,7 +74,7 @@ public class RentWebserviceTest extends TestCase {
 	}
 
 	public void testAddRent() {
-		Response response = target.path("rent/add").request(MediaType.APPLICATION_JSON)
+		Response response = target.path("account/rent/add").request(MediaType.APPLICATION_JSON)
 				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
 				.post(Entity.json(rent));
 
@@ -85,7 +85,7 @@ public class RentWebserviceTest extends TestCase {
 	}
 	
 	public void testAddRentWithoutPrivileges() {
-		Response response = target.path("rent/add").request(MediaType.APPLICATION_JSON)
+		Response response = target.path("account/rent/add").request(MediaType.APPLICATION_JSON)
 				.header(ContextConstants.TOKEN_KEY, TokenGenerator.generateToken())
 				.post(Entity.json(rent));
 
@@ -93,7 +93,7 @@ public class RentWebserviceTest extends TestCase {
 	}
 	
 	public void testUpdateRent() {
-		Response response = target.path("rent/add").request(MediaType.APPLICATION_JSON)
+		Response response = target.path("account/rent/add").request(MediaType.APPLICATION_JSON)
 				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
 				.post(Entity.json(rent));
 
@@ -101,7 +101,7 @@ public class RentWebserviceTest extends TestCase {
 
 		rent = response.readEntity(Rent.class);
 		
-		response = target.path("rent/update").request(MediaType.APPLICATION_JSON)
+		response = target.path("account/rent/update").request(MediaType.APPLICATION_JSON)
 				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
 				.post(Entity.json(rent));
 		

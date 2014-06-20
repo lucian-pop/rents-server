@@ -5,7 +5,7 @@ import javax.ws.rs.core.Response;
 
 import ro.fizbo.rents.webservice.response.WebserviceResponseStatus;
 
-public class VersionOutdatedException extends WebApplicationException{
+public class VersionOutdatedException extends WebApplicationException {
 	private static final long serialVersionUID = 1L;
 
 	public VersionOutdatedException() {

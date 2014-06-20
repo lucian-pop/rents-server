@@ -46,7 +46,7 @@ public class RentImageWebserviceTest extends TestCase {
 		byte[] imageBytes = new byte[NO_OF_IMG_BYTES];
 		new Random().nextBytes(imageBytes);
 
-		Response response = target.path("rentimage/upload").request(MediaType.APPLICATION_OCTET_STREAM)
+		Response response = target.path("account/rentimage/upload").request(MediaType.APPLICATION_OCTET_STREAM)
 				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
 				.header(ContextConstants.RENT_ID, Integer.toString(rent.getRentId()))
 				.header("accept", "*/*")
@@ -62,7 +62,7 @@ public class RentImageWebserviceTest extends TestCase {
 		byte[] imageBytes = new byte[NO_OF_IMG_BYTES];
 		new Random().nextBytes(imageBytes);
 		
-		Response response = target.path("rentimage/upload").request(MediaType.APPLICATION_OCTET_STREAM)
+		Response response = target.path("account/rentimage/upload").request(MediaType.APPLICATION_OCTET_STREAM)
 				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
 				.header(ContextConstants.RENT_ID, Integer.toString(rent.getRentId()))
 				.header("accept", "*/*")
@@ -73,7 +73,7 @@ public class RentImageWebserviceTest extends TestCase {
 		RentImage rentImage = response.readEntity(RentImage.class);
 		assertNotNull(rentImage);
 		
-		response = target.path("rentimage/replace").request(MediaType.APPLICATION_OCTET_STREAM)
+		response = target.path("account/rentimage/replace").request(MediaType.APPLICATION_OCTET_STREAM)
 				.header(ContextConstants.RENT_IMAGE_ID, Integer.toString(rentImage.getRentImageId()))
 				.header(ContextConstants.RENT_IMAGE_URI, rentImage.getRentImageURI())
 				.header(ContextConstants.RENT_ID, Integer.toString(rent.getRentId()))
@@ -90,7 +90,7 @@ public class RentImageWebserviceTest extends TestCase {
 		byte[] imageBytes = new byte[NO_OF_IMG_BYTES];
 		new Random().nextBytes(imageBytes);
 
-		Response response = target.path("rentimage/upload").request(MediaType.APPLICATION_OCTET_STREAM)
+		Response response = target.path("account/rentimage/upload").request(MediaType.APPLICATION_OCTET_STREAM)
 				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
 				.header(ContextConstants.RENT_ID, Integer.toString(rent.getRentId()))
 				.header("accept", "*/*")
@@ -101,7 +101,7 @@ public class RentImageWebserviceTest extends TestCase {
 		RentImage rentImage = response.readEntity(RentImage.class);
 		assertNotNull(rentImage);
 		
-		response = target.path("rentimage/delete/" + rentImage.getRentImageId()).request()
+		response = target.path("account/rentimage/delete/" + rentImage.getRentImageId()).request()
 				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
 				.delete();
 		

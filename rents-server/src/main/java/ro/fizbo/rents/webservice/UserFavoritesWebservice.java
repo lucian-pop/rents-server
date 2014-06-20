@@ -26,23 +26,10 @@ import ro.fizbo.rents.webservice.exception.UnauthorizedException;
 import ro.fizbo.rents.webservice.util.AuthorizationUtil;
 import ro.fizbo.rents.webservice.util.GeneralConstants;
 
-@Path("rents")
+@Path("account/rents")
 public class UserFavoritesWebservice {
-
-	@Path("userfavorites/addrent")
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public boolean addRentToFavorites(int rentId, @Context HttpServletRequest request) {
-		Token token = AuthorizationUtil.authorize(request);
-		if(!AuthorizationUtil.isAuthorized(token)) {
-			throw new UnauthorizedException();
-		}
-		
-		return RentFavoriteManager.addRentToFavorites(token.getAccountId(), rentId);
-	}
 	
-	@Path("userfavorites")
+	@Path("favorites")
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -56,7 +43,7 @@ public class UserFavoritesWebservice {
 		return RentManager.getUserFavoriteRents(token.getAccountId(), pageSize);
 	}
 	
-	@Path("userfavorites/page")
+	@Path("favorites/page")
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -79,7 +66,20 @@ public class UserFavoritesWebservice {
 		return RentManager.getUserFavoriteRentsNextPage(token.getAccountId(), date, pageSize);
 	}
 	
-	@Path("userfavorites/delete")
+	@Path("favorites/add")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public boolean addRentToFavorites(int rentId, @Context HttpServletRequest request) {
+		Token token = AuthorizationUtil.authorize(request);
+		if(!AuthorizationUtil.isAuthorized(token)) {
+			throw new UnauthorizedException();
+		}
+		
+		return RentFavoriteManager.addRentToFavorites(token.getAccountId(), rentId);
+	}
+	
+	@Path("favorites/delete")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)

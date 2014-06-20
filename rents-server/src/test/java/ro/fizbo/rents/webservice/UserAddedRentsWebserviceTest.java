@@ -54,7 +54,7 @@ public class UserAddedRentsWebserviceTest extends TestCase {
 	}
 	
 	public void testGetUserAddedRentsForAuthorizedUser() {
-		Response response = target.path("rents/useradded")
+		Response response = target.path("account/rents/added")
 				.queryParam("pageSize", TestUtil.PAGE_SIZE)
 				.request(MediaType.APPLICATION_JSON)
 				.header(ContextConstants.TOKEN_KEY, account.getTokenKey()).get();
@@ -69,7 +69,7 @@ public class UserAddedRentsWebserviceTest extends TestCase {
 	}
 	
 	public void testGetUserAddedRentsForUnauthorizedUser() {
-		Response response = target.path("rents/useradded")
+		Response response = target.path("account/rents/added")
 				.queryParam("pageSize", TestUtil.PAGE_SIZE)
 				.request(MediaType.APPLICATION_JSON)
 				.header(ContextConstants.TOKEN_KEY, TokenGenerator.generateToken()).get();
@@ -79,7 +79,7 @@ public class UserAddedRentsWebserviceTest extends TestCase {
 	
 	public void testGetUserAddedRentsNextPage() {
 		String date = (new SimpleDateFormat(GeneralConstants.DATE_FORMAT)).format(new Date());
-		Response response = target.path("rents/useradded/page")
+		Response response = target.path("account/rents/added/page")
 				.queryParam("lastRentDate", date)
 				.queryParam("lastRentId", Integer.MAX_VALUE)
 				.queryParam("pageSize", TestUtil.PAGE_SIZE)
@@ -91,7 +91,7 @@ public class UserAddedRentsWebserviceTest extends TestCase {
 	
 	public void testGetUserAddedRentsNextPageForUnauthorizedUser() {
 		String date = (new SimpleDateFormat(GeneralConstants.DATE_FORMAT)).format(new Date());
-		Response response = target.path("rents/useradded/page")
+		Response response = target.path("account/rents/added/page")
 				.queryParam("lastRentDate", date)
 				.queryParam("lastRentId", Integer.MAX_VALUE)
 				.queryParam("pageSize", TestUtil.PAGE_SIZE)
@@ -107,7 +107,7 @@ public class UserAddedRentsWebserviceTest extends TestCase {
 			rentIds.add(rent.getRentId());
 		}
 		
-		Response response = target.path("rents/useradded/delete")
+		Response response = target.path("account/rents/added/delete")
 				.request(MediaType.APPLICATION_JSON)
 				.header("tokenKey", account.getTokenKey())
 				.post(Entity.json(rentIds));

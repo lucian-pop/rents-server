@@ -26,10 +26,10 @@ import ro.fizbo.rents.webservice.exception.UnauthorizedException;
 import ro.fizbo.rents.webservice.util.AuthorizationUtil;
 import ro.fizbo.rents.webservice.util.GeneralConstants;
 
-@Path("rents")
+@Path("account/rents")
 public class UserAddedRentsWebservice {
 
-	@Path("useradded")
+	@Path("added")
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -44,7 +44,7 @@ public class UserAddedRentsWebservice {
 				pageSize);
 	}
 	
-	@Path("useradded/page")
+	@Path("added/page")
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -68,7 +68,7 @@ public class UserAddedRentsWebservice {
 				RentStatus.AVAILABLE.getStatus(), date, lastRentId, pageSize);
 	}
 	
-	@Path("useradded/delete")
+	@Path("added/delete")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)

@@ -145,7 +145,7 @@ public class AccountWebserviceTest extends TestCase {
 		accountUpdate.accountEmail = ACCOUNT_EMAIL;
 		accountUpdate.account = account;
 		
-		Response response = target.path("account/updateaccount").request(MediaType.APPLICATION_JSON)
+		Response response = target.path("account/update").request(MediaType.APPLICATION_JSON)
 				.post(Entity.json(accountUpdate));
 		
 		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
@@ -171,7 +171,7 @@ public class AccountWebserviceTest extends TestCase {
 		accountUpdate.accountEmail = ACCOUNT_EMAIL;
 		accountUpdate.account = account;
 		
-		Response response = target.path("account/updateaccount").request(MediaType.APPLICATION_JSON)
+		Response response = target.path("account/update").request(MediaType.APPLICATION_JSON)
 				.post(Entity.json(accountUpdate));
 		
 		assertTrue(response.getStatus() == WebserviceResponseStatus.ACCOUNT_CONFLICT.getCode());
@@ -188,7 +188,7 @@ public class AccountWebserviceTest extends TestCase {
 		accountUpdate.accountEmail = ACCOUNT_EMAIL;
 		accountUpdate.account = account;
 		
-		Response response = target.path("account/updateaccount").request(MediaType.APPLICATION_JSON)
+		Response response = target.path("account/update").request(MediaType.APPLICATION_JSON)
 				.post(Entity.json(accountUpdate));
 		
 		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
@@ -206,7 +206,7 @@ public class AccountWebserviceTest extends TestCase {
 		accountUpdate.accountEmail = ACCOUNT_EMAIL;
 		accountUpdate.account = account;
 		
-		Response response = target.path("account/updateaccount").request(MediaType.APPLICATION_JSON)
+		Response response = target.path("account/update").request(MediaType.APPLICATION_JSON)
 				.post(Entity.json(accountUpdate));
 		
 		assertTrue(response.getStatus() == WebserviceResponseStatus.BAD_CREDENTIALS.getCode());

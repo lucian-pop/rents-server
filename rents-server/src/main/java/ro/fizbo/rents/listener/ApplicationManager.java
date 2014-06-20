@@ -2,6 +2,10 @@ package ro.fizbo.rents.listener;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Enumeration;
 import java.util.Properties;
 
 import javax.servlet.ServletContextEvent;
@@ -11,6 +15,8 @@ import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.log4j.Logger;
+
+import com.mysql.jdbc.AbandonedConnectionCleanupThread;
 
 import ro.fizbo.rents.dao.AccountDAO;
 import ro.fizbo.rents.dao.AddressDAO;
@@ -81,6 +87,20 @@ public class ApplicationManager implements ServletContextListener {
 	@Override
 	public void contextDestroyed(ServletContextEvent arg0) {
 		sqlSessionFactory = null;
+		Enumeration<Driver> drivers = DriverManager.getDrivers();     
+        Driver driver = null;
+        while(drivers.hasMoreElements()) {
+            try {
+                driver = drivers.nextElement();
+                DriverManager.deregisterDriver(driver);
+            } catch (SQLException ex) {
+            }
+        }
+
+        try {
+            AbandonedConnectionCleanupThread.shutdown();
+        } catch (InterruptedException e) {
+        }
 	}
 	
 	/**

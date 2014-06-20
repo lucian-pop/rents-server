@@ -44,7 +44,7 @@ public class AccountWebservice {
 		return account;
 	}
 	
-	@Path("updateaccount")
+	@Path("update")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)

@@ -14,8 +14,8 @@ import ro.fizbo.rents.model.Token;
 import ro.fizbo.rents.webservice.exception.UnauthorizedException;
 import ro.fizbo.rents.webservice.util.AuthorizationUtil;
 
-@Path("rent")
-public class RentWebservice {
+@Path("account/rent")
+public class AccountRentWebservice {
 	
 	@Path("add")
 	@POST

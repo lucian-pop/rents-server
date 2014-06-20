@@ -25,7 +25,7 @@ import junit.framework.TestCase;
 
 public class UserFavoritesWebserviceTest extends TestCase {
 	
-	private static final String TEST_ACCOUNT_EMAIL = "test";
+	private static final String TEST_ACCOUNT_EMAIL = "test@test.com";
 	
 	private static final String TEST_ACCOUNT_PASSWORD = "test";
 	
@@ -63,7 +63,7 @@ public class UserFavoritesWebserviceTest extends TestCase {
 	public void testAddNewRentToFavorites() {
 		Rent rent = TestUtil.addRent(account.getAccountId());
 		rents.add(rent);
-		Response response = target.path("rents/userfavorites/addrent")
+		Response response = target.path("account/rents/favorites/add")
 				.request(MediaType.APPLICATION_JSON)
 				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
 				.post(Entity.json(rent.getRentId()));
@@ -77,7 +77,7 @@ public class UserFavoritesWebserviceTest extends TestCase {
 	}
 	
 	public void testAddExistingRentToFavorites() {		
-		Response response = target.path("rents/userfavorites/addrent")
+		Response response = target.path("account/rents/favorites/add")
 				.request(MediaType.APPLICATION_JSON)
 				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
 				.post(Entity.json(rents.get(0).getRentId()));
@@ -91,7 +91,7 @@ public class UserFavoritesWebserviceTest extends TestCase {
 	}
 	
 	public void testAddRentToFavoritesWithoutPrivileges() {
-		Response response = target.path("rents/userfavorites/addrent")
+		Response response = target.path("account/rents/favorites/add")
 				.request(MediaType.APPLICATION_JSON)
 				.header(ContextConstants.TOKEN_KEY, TokenGenerator.generateToken())
 				.post(Entity.json(rents.get(0).getRentId()));
@@ -103,14 +103,17 @@ public class UserFavoritesWebserviceTest extends TestCase {
 		Form form = new Form();
 		form.param("email", TEST_ACCOUNT_EMAIL);
 		form.param("password", TEST_ACCOUNT_PASSWORD);
-		Response response = target.path("account/login").request(MediaType.APPLICATION_JSON)
-				.post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
+		Response response = target.path("account/login").request(MediaType.APPLICATION_JSON).post(Entity.entity(form,
+				MediaType.APPLICATION_FORM_URLENCODED));
 		
-		Account testAccount = response.readEntity(Account.class);
-		response = target.path("rents/userfavorites")
+		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
+		Account loginResult = response.readEntity(Account.class);
+		assertNotNull(loginResult);
+		
+		response = target.path("account/rents/favorites")
 				.queryParam("pageSize", TestUtil.PAGE_SIZE)
 				.request(MediaType.APPLICATION_JSON)
-				.header(ContextConstants.TOKEN_KEY, testAccount.getTokenKey()).get();
+				.header(ContextConstants.TOKEN_KEY, loginResult.getTokenKey()).get();
 		
 		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
 
@@ -129,7 +132,7 @@ public class UserFavoritesWebserviceTest extends TestCase {
 		
 		Account testAccount = response.readEntity(Account.class);
 		String date = (new SimpleDateFormat(GeneralConstants.DATE_FORMAT)).format(new Date());
-		response = target.path("rents/userfavorites/page")
+		response = target.path("account/rents/favorites/page")
 				.queryParam("lastDate", date)
 				.queryParam("pageSize", TestUtil.PAGE_SIZE)
 				.request(MediaType.APPLICATION_JSON)
@@ -149,7 +152,7 @@ public class UserFavoritesWebserviceTest extends TestCase {
 			rentIds.add(rent.getRentId());
 		}
 		
-		Response response = target.path("rents/userfavorites/delete")
+		Response response = target.path("account/rents/favorites/delete")
 				.request(MediaType.APPLICATION_JSON)
 				.header("tokenKey", account.getTokenKey())
 				.post(Entity.json(rentIds));
