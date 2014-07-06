@@ -35,13 +35,15 @@ public final class AccountManager {
 		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
 		try {
 			AccountDAO accountDAO = session.getMapper(AccountDAO.class);
-			List<Account> existingAccounts = accountDAO.getAccountByEmailOrPhone(account.getAccountEmail(),
-					account.getAccountPhone());
+			List<Account> existingAccounts = 
+					accountDAO.getAccountByEmailOrPhone(account.getAccountEmail(),
+							account.getAccountPhone());
 			if(existingAccounts != null && existingAccounts.size() > 0) {
 				throw new AccountConflictException();
 			}
 			
 			// Create account.
+			logger.info("Create account with email " + account.getAccountEmail());
 			int insertCount = -1;
 			int retry = 0;
 			while (insertCount != 1 && retry < 3) {
@@ -64,12 +66,13 @@ public final class AccountManager {
 
 			session.commit();
 		} catch (AccountConflictException accountConflictException) {
-			logger.error("Email or phone are already registered. Failed to create account for email" 
+			logger.error("Email or phone are already registered. Failed to create account for email"
 					+ account.getAccountEmail());
 			
 			throw accountConflictException;
 		} catch (RuntimeException runtimeException) {
-			logger.error("Unable to create account with email " + account.getAccountEmail(), runtimeException);
+			logger.error("Unable to create account with email " + account.getAccountEmail(),
+					runtimeException);
 			session.rollback();
 
 			throw new OperationFailedException();
@@ -96,6 +99,12 @@ public final class AccountManager {
 		try {
 			AccountDAO accountDAO = session.getMapper(AccountDAO.class);
 			account = accountDAO.getAccountByEmail(email);
+		} catch (RuntimeException runtimeException) {
+			logger.error("Unable to authenticate account with email " + account.getAccountEmail(),
+					runtimeException);
+			session.rollback();
+
+			throw new OperationFailedException();
 		} finally {
 			session.close();
 		}
@@ -131,6 +140,12 @@ public final class AccountManager {
 			updateCount = session.update("AccountMapper.updateAccount", editedAccount);
 
 			session.commit();
+		} catch (RuntimeException runtimeException) {
+			logger.error("Unable to update account with email " + originalAccount.getAccountEmail(),
+					runtimeException);
+			session.rollback();
+
+			throw new OperationFailedException();
 		} finally {
 			session.close();
 		}
@@ -170,6 +185,12 @@ public final class AccountManager {
 			}
 			
 			session.commit();
+		} catch (RuntimeException runtimeException) {
+			logger.error("Unable to update password for account with email " + email,
+					runtimeException);
+			session.rollback();
+
+			throw new OperationFailedException();
 		} finally {
 			if(updatesCount != 2) {
 				session.rollback();

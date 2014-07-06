@@ -56,6 +56,11 @@ public class RentManager {
 			updateRentCount = session.update("RentMapper.updateRent", rent);
 
 			session.commit();
+		} catch (RuntimeException runtimeException) {
+			logger.error("Unable to update rent with id  " + rent.getRentId(), runtimeException);
+			session.rollback();
+
+			throw new OperationFailedException();
 		} finally {
 			session.close();
 		}
@@ -65,7 +70,7 @@ public class RentManager {
 			
 			throw new OperationFailedException();
 		}
-
+		
 		return 1;
 	}
 	
@@ -222,6 +227,11 @@ public class RentManager {
 		try {
 			updatesCount = session.update("RentMapper.updateRentsStatus", rentsStatus);
 			session.commit();
+		} catch (RuntimeException runtimeException) {
+			logger.error("Failed to update rents status", runtimeException);
+			session.rollback();
+			
+			throw new OperationFailedException();
 		} finally {
 			session.close();
 		}

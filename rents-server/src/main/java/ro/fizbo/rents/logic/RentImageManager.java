@@ -24,6 +24,11 @@ public class RentImageManager {
 			rentImageDAO.insertRentImage(rentImage);
 
 			session.commit();
+		} catch (RuntimeException runtimeException) {
+			logger.error("An error occured while adding rent image to database", runtimeException);
+			session.rollback();
+			
+			throw new OperationFailedException();
 		} finally {
 			session.close();
 		}
@@ -79,6 +84,7 @@ public class RentImageManager {
 
 		if(rentImage.getRentImageId() == null) {
 			FileUtil.deleteFile(imageURI);
+			logger.error("An error occured while adding image for rent" + rentId);
 
 			throw new OperationFailedException();
 		}
@@ -105,7 +111,7 @@ public class RentImageManager {
 		int updateCount = updateRentImageURI(rentImageId, imageURI);
 		if(updateCount != 1) {
 			FileUtil.deleteFile(imageURI);
-			logger.error("An error occured while updating image '" + rentImageId);
+			logger.error("An error occured while replacing image '" + rentImageId);
 
 			throw new OperationFailedException();
 		}
@@ -131,6 +137,12 @@ public class RentImageManager {
 			deleteCount = rentImageDAO.deleteRentImage(rentImageId);
 			
 			session.commit();
+		} catch (RuntimeException runtimeException) {
+			logger.error("An error occured while deleting rent image with id " + rentImageId,
+					runtimeException);
+			session.rollback();
+			
+			throw new OperationFailedException();
 		} finally {
 			session.close();
 		}

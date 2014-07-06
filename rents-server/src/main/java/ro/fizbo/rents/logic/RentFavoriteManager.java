@@ -4,13 +4,18 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
+import org.apache.log4j.Logger;
 
 import ro.fizbo.rents.dao.RentFavoriteDAO;
 import ro.fizbo.rents.dao.param.RentsFavorites;
 import ro.fizbo.rents.listener.ApplicationManager;
 import ro.fizbo.rents.model.RentFavorite;
+import ro.fizbo.rents.webservice.exception.OperationFailedException;
 
 public class RentFavoriteManager {
+	
+	private static Logger logger = Logger.getLogger(RentFavoriteManager.class);
+	
 	public static boolean addRentToFavorites(int accountId, int rentId) {
 		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
 		try {
@@ -21,7 +26,14 @@ public class RentFavoriteManager {
 			}
 
 			rentFavoritesDAO.addEntry(accountId, rentId, new Date());
+
 			session.commit();
+		} catch (RuntimeException runtimeException) {
+			logger.error("An error occured while adding to favorites rent with id " + rentId 
+					+ " for account " + accountId, runtimeException);
+			session.rollback();
+			
+			throw new OperationFailedException();
 		} finally {
 			session.close();
 		}
@@ -38,7 +50,14 @@ public class RentFavoriteManager {
 		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
 		try {
 			deletesCount = session.delete("RentFavoriteMapper.deleteFavoriteRents", rentsFavorites);
+
 			session.commit();
+		} catch (RuntimeException runtimeException) {
+			logger.error("An error occured while deleting favorite rents for account with id " 
+					+ accountId, runtimeException);
+			session.rollback();
+			
+			throw new OperationFailedException();
 		} finally {
 			session.close();
 		}

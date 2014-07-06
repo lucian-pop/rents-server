@@ -51,7 +51,7 @@ public class ApplicationManager implements ServletContextListener {
 	 * Creates and configures the sql session factory and store application paths.
 	 */
 	@Override
-	public void contextInitialized(ServletContextEvent event) {
+	public void contextInitialized(ServletContextEvent event) {		
 		logger.info("Create database session factory");
 		try {
 			Properties databaseProperties = Resources.getResourceAsProperties(
@@ -79,6 +79,7 @@ public class ApplicationManager implements ServletContextListener {
 		logger.info("Store application paths");
 		appRealPath = event.getServletContext().getRealPath("/");
 		appURL = buildAppURL(event.getServletContext().getContextPath());
+		logger.info("Stored application paths");
 	}
 	
 	/**
@@ -94,12 +95,14 @@ public class ApplicationManager implements ServletContextListener {
                 driver = drivers.nextElement();
                 DriverManager.deregisterDriver(driver);
             } catch (SQLException ex) {
+            	logger.error("Failed to de-register database driver", ex);
             }
         }
 
         try {
             AbandonedConnectionCleanupThread.shutdown();
-        } catch (InterruptedException e) {
+        } catch (InterruptedException ie) {
+        	logger.error("Failed while trying to shutdown database connection", ie);
         }
 	}
 	
