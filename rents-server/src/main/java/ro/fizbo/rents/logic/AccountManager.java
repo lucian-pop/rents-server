@@ -14,14 +14,80 @@ import ro.fizbo.rents.dto.AccountUpdate;
 import ro.fizbo.rents.listener.ApplicationManager;
 import ro.fizbo.rents.model.Account;
 import ro.fizbo.rents.model.Token;
+import ro.fizbo.rents.rest.client.FacebookClient;
 import ro.fizbo.rents.util.PasswordHashing;
 import ro.fizbo.rents.webservice.exception.AccountConflictException;
 import ro.fizbo.rents.webservice.exception.AuthenticationException;
 import ro.fizbo.rents.webservice.exception.OperationFailedException;
+import ro.fizbo.rents.webservice.exception.UnauthorizedException;
 
 public final class AccountManager {
 	
 	private static Logger logger = Logger.getLogger(AccountManager.class);
+	
+	public static Account facebookLogin(Account account) {
+		logger.info("Validate facebook access token for " + account.getAccountEmail());
+		final boolean isTokenAccessValid = FacebookClient.validateUserAccessToken(
+				account.getAccountExternalId(), account.getTokenKey());
+		if(!isTokenAccessValid) {
+			throw new UnauthorizedException();
+		}
+		
+		logger.info("Facebook login for " + account.getAccountEmail());
+		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
+		try {
+			AccountDAO accountDAO = session.getMapper(AccountDAO.class);
+			Account existingAccount = accountDAO.getAccountByEmail(account.getAccountEmail());
+			if(existingAccount != null) {
+				if(existingAccount.getAccountExternalId() == null) {
+					existingAccount.setAccountExternalId(account.getAccountExternalId());
+					existingAccount.setAccountFirstname(account.getAccountFirstname());
+					
+					session.update("AccountMapper.updateAccountExternalInfo", existingAccount);
+				} else if(!existingAccount.getAccountExternalId()
+							.equals(account.getAccountExternalId())) {
+					throw new UnauthorizedException();
+				}
+				
+				// update token
+				TokenDAO tokenDAO = session.getMapper(TokenDAO.class);
+				Token token = tokenDAO.getTokenByAccountId(existingAccount.getAccountId());
+				int insertCount = -1;
+				int retry = 0;
+				while(insertCount != 1 && retry < 3) {
+					insertCount = tokenDAO.updateTokenKey(token.getTokenId(), account.getTokenKey(),
+							new Date());
+					++retry;
+				}
+
+				session.commit();
+
+				existingAccount.setTokenKey(account.getTokenKey());
+				clearSensitiveData(existingAccount);
+				
+				return existingAccount;
+			}
+		} catch (UnauthorizedException ue) {
+			logger.error("Facebook stored id is different from provided id for account "
+					+ account.getAccountEmail());
+			
+			throw ue;
+		}  catch (RuntimeException runtimeException) {
+			logger.error("Unable to update facebook account information for " + account.getAccountEmail(),
+					runtimeException);
+			session.rollback();
+
+			throw new OperationFailedException();
+		} finally {
+			session.close();
+		}
+
+		Token token = new Token();
+		token.setTokenKey(account.getTokenKey());
+		token.setTokenCreationDate(new Date());
+		
+		return createAccount(account, token, false);
+	}
 	
 	public static Account createAccount(Account account) {
 		// Create a token to be linked with the account.
@@ -32,18 +98,29 @@ public final class AccountManager {
 		String hashedPassword = createHashedPassword(account.getAccountPassword());
 		account.setAccountPassword(hashedPassword);
 		
+		return createAccount(account, token, true);
+	}
+	
+	private static Account createAccount(Account account, Token token, boolean verifyExisting) {
 		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
 		try {
 			AccountDAO accountDAO = session.getMapper(AccountDAO.class);
-			List<Account> existingAccounts = 
-					accountDAO.getAccountByEmailOrPhone(account.getAccountEmail(),
-							account.getAccountPhone());
-			if(existingAccounts != null && existingAccounts.size() > 0) {
-				throw new AccountConflictException();
+			if(verifyExisting) {
+				List<Account> existingAccounts = 
+						accountDAO.getAccountByEmailOrPhone(account.getAccountEmail(),
+								account.getAccountPhone());
+				if(existingAccounts != null && existingAccounts.size() > 0) {
+					throw new AccountConflictException();
+				}
 			}
 			
 			// Create account.
 			logger.info("Create account with email " + account.getAccountEmail());
+
+			if(account.getAccountPhone() != null && account.getAccountPhone().trim().equals("")) {
+				account.setAccountPhone(null);
+			}
+			
 			int insertCount = -1;
 			int retry = 0;
 			while (insertCount != 1 && retry < 3) {
@@ -123,7 +200,32 @@ public final class AccountManager {
 	public static Account updateAccount(AccountUpdate accountUpdate) {
 		Account editedAccount = accountUpdate.account;
 		Account originalAccount = 
-				loginWithoutClearingSensitiveData(accountUpdate.accountEmail, editedAccount.getAccountPassword());
+				loginWithoutClearingSensitiveData(accountUpdate.accountEmail, 
+						editedAccount.getAccountPassword());
+		
+		return updateAccountInfo(originalAccount, editedAccount, false);
+	
+	}
+	
+	public static Account updateExternalAccount(Account editedAccount) {
+		logger.info("Validate facebook access token for account " 
+				+ editedAccount.getAccountEmail());
+		final boolean isTokenAccessValid = FacebookClient.validateUserAccessToken(
+				editedAccount.getAccountExternalId(), editedAccount.getTokenKey());
+		if(!isTokenAccessValid) {
+			throw new UnauthorizedException();
+		}
+		
+		logger.info("Facebook login by externalId for " + editedAccount.getAccountEmail());
+		Account originalAccount = externalLogin(editedAccount.getAccountEmail(), 
+				editedAccount.getAccountExternalId(), editedAccount.getTokenKey());
+		
+		return updateAccountInfo(originalAccount, editedAccount, true);
+	}
+	
+	private static Account updateAccountInfo(Account originalAccount, Account editedAccount, 
+			boolean isExternalAccount) {
+		logger.info("Update account " + editedAccount.getAccountEmail());
 		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
 		int updateCount = -1;
 		try {
@@ -136,10 +238,23 @@ public final class AccountManager {
 				throw new AccountConflictException();
 			}
 
+			if(editedAccount.getAccountPhone() != null 
+					&& editedAccount.getAccountPhone().trim().equals("")){
+				editedAccount.setAccountPhone(null);
+			}
 			editedAccount.setAccountId(originalAccount.getAccountId());
-			updateCount = session.update("AccountMapper.updateAccount", editedAccount);
-
+			if(!isExternalAccount) {
+				updateCount = session.update("AccountMapper.updateAccount", editedAccount);
+			} else {
+				updateCount = session.update("AccountMapper.updateExternalAccount", editedAccount);
+			}
+			
 			session.commit();
+		} catch (AccountConflictException ace) {
+			logger.error("Unable to update account. There is already an account with email " 
+					+ editedAccount.getAccountEmail() + " or phone " + editedAccount.getAccountPhone());
+			
+			throw ace;
 		} catch (RuntimeException runtimeException) {
 			logger.error("Unable to update account with email " + originalAccount.getAccountEmail(),
 					runtimeException);
@@ -161,6 +276,30 @@ public final class AccountManager {
 		clearSensitiveData(editedAccount);
 		
 		return editedAccount;
+	}
+	
+	private static Account externalLogin(String accountEmail, String externalId, 
+			String accessToken) {
+		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
+		Account account = null;
+		try {
+			AccountDAO accountDAO = session.getMapper(AccountDAO.class);
+			account = accountDAO.getExternalAccountByEmail(accountEmail);
+		} catch (RuntimeException runtimeException) {
+			logger.error("Unable to authenticate account " + accountEmail, runtimeException);
+			session.rollback();
+
+			throw new OperationFailedException();
+		} finally {
+			session.close();
+		}
+
+		if(account == null || !account.getAccountExternalId().equals(externalId) 
+				|| !account.getTokenKey().equals(accessToken)) {
+			throw new UnauthorizedException();
+		}
+		
+		return account;
 	}
 	
 	public static String changePassword(String email, String password, String newPassword) {
@@ -212,6 +351,10 @@ public final class AccountManager {
 	}
 	
 	private static boolean isPasswordValid(String providedPassword, String accountPassword) {
+		if(providedPassword == null || accountPassword == null) {
+			return false;
+		}
+		
 		boolean isPasswordValid = false;
 		try {
 			isPasswordValid = PasswordHashing.validatePassword(providedPassword, accountPassword);

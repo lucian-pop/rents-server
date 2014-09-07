@@ -174,4 +174,20 @@ public class AccountDAOTest extends TestCase {
 		
 		assertTrue(updated == 1);
 	}
+	
+	public void testUpdateAccountExternalInfo() {
+		account.setAccountExternalId("32456223565764353");
+		account.setAccountFirstname("John Smith");
+		
+		int updated = -1;
+		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
+		try {
+			updated = session.update("AccountMapper.updateAccountExternalInfo", account);
+			session.commit();
+		} finally {
+			session.close();
+		}
+		
+		assertTrue(updated == 1);
+	}
 }

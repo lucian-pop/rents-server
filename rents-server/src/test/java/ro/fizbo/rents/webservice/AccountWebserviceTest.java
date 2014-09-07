@@ -33,7 +33,7 @@ public class AccountWebserviceTest extends TestCase {
 	
 	@After
 	public void tearDown() throws Exception {
-		if(account.getAccountEmail() != null) {
+		if(account != null && account.getAccountEmail() != null) {
 			TestUtil.deleteAccount(account);
 		}
 		
@@ -64,7 +64,6 @@ public class AccountWebserviceTest extends TestCase {
 	public void testSignupWithSameAccount() {
 		account = new Account();
 		account.setAccountType((byte) 0);
-		account.setAccountExternalId("sadsadkjhfsdfsdfsdddddddddddddddf");
 		account.setAccountEmail(ACCOUNT_EMAIL);
 		account.setAccountPassword(ACCOUNT_PASSWORD);
 		account.setAccountFirstname("account firstname");
@@ -99,6 +98,78 @@ public class AccountWebserviceTest extends TestCase {
 		System.out.println("Status shouldn't be OK: " + response.getStatus());
 	}
 	
+	public void testFacebookLoginExistingNonFacebookUser() {
+		account = TestUtil.createAccount();
+		
+		Account externalAccount = new Account();
+		externalAccount.setAccountEmail(TestUtil.ACCOUNT_EMAIL);
+		externalAccount.setAccountExternalId(TestUtil.USER_EXTERNAL_ID);
+		externalAccount.setTokenKey(TestUtil.USER_ACCESS_TOKEN);
+		
+		Response response = target.path("account/externallogin").request(MediaType.APPLICATION_JSON)
+				.post(Entity.json(externalAccount));
+		
+		assertTrue("Status should be OK" , response.getStatus() == 
+				WebserviceResponseStatus.OK.getCode());
+		
+		account = response.readEntity(Account.class);
+		
+		// assert account has expected fields
+		assertTrue(account.getAccountEmail().equals(TestUtil.ACCOUNT_EMAIL));
+		assertTrue(account.getAccountExternalId().equals(TestUtil.USER_EXTERNAL_ID));
+		assertTrue(account.getTokenKey().equals(TestUtil.USER_ACCESS_TOKEN));
+
+		assertNotNull(account);
+	}
+	
+	public void testFacebookLoginExistingFacebookUser() {
+		account = TestUtil.createAccountWithExternalInfo();
+		
+		Account externalAccount = new Account();
+		externalAccount.setAccountEmail(TestUtil.ACCOUNT_EMAIL);
+		externalAccount.setAccountExternalId(TestUtil.USER_EXTERNAL_ID);
+		externalAccount.setTokenKey(TestUtil.USER_ACCESS_TOKEN);
+		
+		Response response = target.path("account/externallogin").request(MediaType.APPLICATION_JSON)
+				.post(Entity.json(externalAccount));
+		
+		assertTrue("Status should be OK" , response.getStatus() == 
+				WebserviceResponseStatus.OK.getCode());
+		
+		account = response.readEntity(Account.class);
+		
+		// assert account has expected fields
+		assertTrue(account.getAccountEmail().equals(TestUtil.ACCOUNT_EMAIL));
+		assertTrue(account.getAccountExternalId().equals(TestUtil.USER_EXTERNAL_ID));
+		assertTrue(account.getTokenKey().equals(TestUtil.USER_ACCESS_TOKEN));
+
+		assertNotNull(account);
+	}
+	
+	public void testFacebookLoginNonExistingUser() {
+		Account externalAccount = new Account();
+		externalAccount.setAccountEmail(TestUtil.ACCOUNT_EMAIL);
+		externalAccount.setAccountFirstname(TestUtil.ACCOUNT_NAME);
+		externalAccount.setAccountExternalId(TestUtil.USER_EXTERNAL_ID);
+		externalAccount.setTokenKey(TestUtil.USER_ACCESS_TOKEN);
+		externalAccount.setAccountType((byte) 0);
+		externalAccount.setAccountSignupDate(new Date());
+		Response response = target.path("account/externallogin").request(MediaType.APPLICATION_JSON)
+				.post(Entity.json(externalAccount));
+		
+		assertTrue("Status should be OK" , response.getStatus() == 
+				WebserviceResponseStatus.OK.getCode());
+		
+		account = response.readEntity(Account.class);
+		
+		// assert account has expected fields
+		assertTrue(account.getAccountEmail().equals(TestUtil.ACCOUNT_EMAIL));
+		assertTrue(account.getAccountFirstname().equals(TestUtil.ACCOUNT_NAME));
+		assertTrue(account.getAccountExternalId().equals(TestUtil.USER_EXTERNAL_ID));
+		assertTrue(account.getTokenKey().equals(TestUtil.USER_ACCESS_TOKEN));
+
+		assertNotNull(account);
+	}
 	
 	public void testLogin() {
 		account = TestUtil.createAccount();
@@ -163,6 +234,7 @@ public class AccountWebserviceTest extends TestCase {
 		String updatedPhone = "0260222111";
 		Account conflictAccount = TestUtil.createAccount(updatedEmail, updatedPhone);
 		account = TestUtil.createAccount();
+		String previousEmail = account.getAccountEmail();
 		account.setAccountEmail(updatedEmail);
 		account.setAccountPhone(updatedPhone);
 		account.setAccountPassword(ACCOUNT_PASSWORD);
@@ -178,6 +250,7 @@ public class AccountWebserviceTest extends TestCase {
 		
 		// Cleanup accounts.
 		TestUtil.deleteAccount(conflictAccount);
+		account.setAccountEmail(previousEmail);
 	}
 	
 	public void testUpdateAccountNothingToUpdate() {
@@ -210,6 +283,52 @@ public class AccountWebserviceTest extends TestCase {
 				.post(Entity.json(accountUpdate));
 		
 		assertTrue(response.getStatus() == WebserviceResponseStatus.BAD_CREDENTIALS.getCode());
+		
+		// Reset account email in order to be deleted.
+		account.setAccountEmail(ACCOUNT_EMAIL);
+	}
+	
+	public void testUpdateExternalAccount() {
+		String updatedPhone = "0260222111";
+		account = TestUtil.createAccountWithExternalInfo();
+		account.setAccountPhone(updatedPhone);
+		
+		Response response = target.path("account/updateexternal").request(MediaType.APPLICATION_JSON)
+				.post(Entity.json(account));
+		
+		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
+		Account result = response.readEntity(Account.class);
+		
+		assertNotNull(result);
+		assertEquals(updatedPhone, result.getAccountPhone());
+		assertNull(result.getAccountId());
+	}
+	
+	public void testUpdateExternalAccountWithInvalidToken() {
+		String updatedPhone = "0260222111";
+		account = TestUtil.createAccountWithExternalInfo();
+		account.setAccountPhone(updatedPhone);
+		account.setTokenKey("sasajdbsadjsasahsahjsahjsa");
+		
+		Response response = target.path("account/updateexternal").request(MediaType.APPLICATION_JSON)
+				.post(Entity.json(account));
+		
+		assertTrue(response.getStatus() == WebserviceResponseStatus.UNAUTHORIZED.getCode());
+
+		// Reset account email in order to be deleted.
+		account.setAccountEmail(ACCOUNT_EMAIL);
+	}
+	
+	public void testUpdateExternalAccountWithInvalidUserId() {
+		String updatedPhone = "0260222111";
+		account = TestUtil.createAccountWithExternalInfo();
+		account.setAccountPhone(updatedPhone);
+		account.setAccountExternalId("111111111111111111111111111");
+		
+		Response response = target.path("account/updateexternal").request(MediaType.APPLICATION_JSON)
+				.post(Entity.json(account));
+		
+		assertTrue(response.getStatus() == WebserviceResponseStatus.UNAUTHORIZED.getCode());
 		
 		// Reset account email in order to be deleted.
 		account.setAccountEmail(ACCOUNT_EMAIL);

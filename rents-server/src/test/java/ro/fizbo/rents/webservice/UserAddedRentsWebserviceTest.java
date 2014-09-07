@@ -14,10 +14,10 @@ import ro.fizbo.rents.dto.RentsCounter;
 import ro.fizbo.rents.logic.TokenGenerator;
 import ro.fizbo.rents.model.Account;
 import ro.fizbo.rents.model.Rent;
+import ro.fizbo.rents.util.Constants;
 import ro.fizbo.rents.util.TestUtil;
 import ro.fizbo.rents.webservice.response.WebserviceResponseStatus;
 import ro.fizbo.rents.webservice.util.ContextConstants;
-import ro.fizbo.rents.webservice.util.GeneralConstants;
 import junit.framework.TestCase;
 
 public class UserAddedRentsWebserviceTest extends TestCase {
@@ -78,7 +78,7 @@ public class UserAddedRentsWebserviceTest extends TestCase {
 	}
 	
 	public void testGetUserAddedRentsNextPage() {
-		String date = (new SimpleDateFormat(GeneralConstants.DATE_FORMAT)).format(new Date());
+		String date = (new SimpleDateFormat(Constants.DATE_FORMAT)).format(new Date());
 		Response response = target.path("account/rents/added/page")
 				.queryParam("lastRentDate", date)
 				.queryParam("lastRentId", Integer.MAX_VALUE)
@@ -90,7 +90,7 @@ public class UserAddedRentsWebserviceTest extends TestCase {
 	}
 	
 	public void testGetUserAddedRentsNextPageForUnauthorizedUser() {
-		String date = (new SimpleDateFormat(GeneralConstants.DATE_FORMAT)).format(new Date());
+		String date = (new SimpleDateFormat(Constants.DATE_FORMAT)).format(new Date());
 		Response response = target.path("account/rents/added/page")
 				.queryParam("lastRentDate", date)
 				.queryParam("lastRentId", Integer.MAX_VALUE)

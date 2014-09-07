@@ -17,10 +17,10 @@ import ro.fizbo.rents.logic.TokenGenerator;
 import ro.fizbo.rents.model.Account;
 import ro.fizbo.rents.model.Rent;
 import ro.fizbo.rents.model.view.RentFavoriteView;
+import ro.fizbo.rents.util.Constants;
 import ro.fizbo.rents.util.TestUtil;
 import ro.fizbo.rents.webservice.response.WebserviceResponseStatus;
 import ro.fizbo.rents.webservice.util.ContextConstants;
-import ro.fizbo.rents.webservice.util.GeneralConstants;
 import junit.framework.TestCase;
 
 public class UserFavoritesWebserviceTest extends TestCase {
@@ -131,7 +131,7 @@ public class UserFavoritesWebserviceTest extends TestCase {
 				.post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
 		
 		Account testAccount = response.readEntity(Account.class);
-		String date = (new SimpleDateFormat(GeneralConstants.DATE_FORMAT)).format(new Date());
+		String date = (new SimpleDateFormat(Constants.DATE_FORMAT)).format(new Date());
 		response = target.path("account/rents/favorites/page")
 				.queryParam("lastDate", date)
 				.queryParam("pageSize", TestUtil.PAGE_SIZE)

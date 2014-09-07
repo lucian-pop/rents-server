@@ -4,11 +4,28 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  
 <mapper namespace="AccountMapper">
-	    <update id="updateAccount" parameterType="ro.fizbo.rents.model.Account">
+	<update id="updateAccount" parameterType="ro.fizbo.rents.model.Account">
     	update account
     	<set>
     		<if test="accountEmail != null">accountEmail=#{accountEmail},</if>
-    		<if test="accountPhone != null">accountPhone=#{accountPhone}</if>
+    		accountPhone=#{accountPhone}
+    	</set>
+    	where accountId=#{accountId}
+    </update>
+    
+    <update id="updateExternalAccount" parameterType="ro.fizbo.rents.model.Account">
+    	update account
+    	<set>
+    		accountPhone=#{accountPhone}
+    	</set>
+    	where accountId=#{accountId}
+    </update>
+    
+    <update id="updateAccountExternalInfo" parameterType="ro.fizbo.rents.model.Account">
+    	update account
+    	<set>
+    		<if test="accountExternalId != null">accountExternalId=#{accountExternalId},</if>
+    		<if test="accountFirstname != null">accountFirstname=#{accountFirstname}</if>
     	</set>
     	where accountId=#{accountId}
     </update>

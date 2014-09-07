@@ -21,10 +21,10 @@ import ro.fizbo.rents.logic.RentManager;
 import ro.fizbo.rents.model.Rent;
 import ro.fizbo.rents.model.RentStatus;
 import ro.fizbo.rents.model.Token;
+import ro.fizbo.rents.util.Constants;
 import ro.fizbo.rents.webservice.exception.InvalidDataException;
 import ro.fizbo.rents.webservice.exception.UnauthorizedException;
 import ro.fizbo.rents.webservice.util.AuthorizationUtil;
-import ro.fizbo.rents.webservice.util.GeneralConstants;
 
 @Path("account/rents")
 public class UserAddedRentsWebservice {
@@ -56,7 +56,7 @@ public class UserAddedRentsWebservice {
 			throw new UnauthorizedException();
 		}
 		
-		DateFormat dateFormat = new SimpleDateFormat(GeneralConstants.DATE_FORMAT);
+		DateFormat dateFormat = new SimpleDateFormat(Constants.DATE_FORMAT);
 		Date date = null;
 		try {
 			date = dateFormat.parse(lastRentDate);

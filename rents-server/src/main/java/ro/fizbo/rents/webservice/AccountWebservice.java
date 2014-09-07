@@ -34,6 +34,17 @@ public class AccountWebservice {
 		return account;
 	}
 	
+	@Path("externallogin")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Account externalLogin(Account account) {
+		logger.info("An external login request was received for account with email " 
+				+ account.getAccountEmail());
+		
+		return AccountManager.facebookLogin(account);
+	}
+	
 	@Path("login")
 	@POST
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -50,6 +61,15 @@ public class AccountWebservice {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Account updateAccount(AccountUpdate accountUpdate, @Context HttpServletRequest request) {
 		return AccountManager.updateAccount(accountUpdate);
+	}
+	
+	@Path("updateexternal")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Account updateExternalAccount(Account account, 
+			@Context HttpServletRequest request) {
+		return AccountManager.updateExternalAccount(account);
 	}
 	
 	@Path("changepassword")

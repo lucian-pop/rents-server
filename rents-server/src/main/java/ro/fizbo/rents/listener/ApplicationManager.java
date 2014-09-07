@@ -46,6 +46,8 @@ public class ApplicationManager implements ServletContextListener {
 	private static String appRealPath;
 	
 	private static String appURL;
+	
+	private static String appFacebookAccessToken;
 
 	/**
 	 * Creates and configures the sql session factory and store application paths.
@@ -124,6 +126,14 @@ public class ApplicationManager implements ServletContextListener {
 		return appURL;
 	}
 	
+	public String getAppFacebookAccessToken() {
+		if(appFacebookAccessToken != null) {
+			// get app facebook acces token
+		}
+		
+		return null;
+	}
+	
 	private static final String buildAppURL(String contextPath) {
 		StringBuilder appURLBuilder = new StringBuilder();
 		appURLBuilder.append("http://");
@@ -132,4 +142,5 @@ public class ApplicationManager implements ServletContextListener {
 		
 		return appURLBuilder.toString();
 	}
+	
 }

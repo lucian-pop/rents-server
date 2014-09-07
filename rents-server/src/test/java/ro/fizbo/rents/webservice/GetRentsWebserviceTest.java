@@ -12,9 +12,9 @@ import javax.ws.rs.core.Response;
 import ro.fizbo.rents.dto.RentsCounter;
 import ro.fizbo.rents.model.Account;
 import ro.fizbo.rents.model.Rent;
+import ro.fizbo.rents.util.Constants;
 import ro.fizbo.rents.util.TestUtil;
 import ro.fizbo.rents.webservice.response.WebserviceResponseStatus;
-import ro.fizbo.rents.webservice.util.GeneralConstants;
 import junit.framework.TestCase;
 
 public class GetRentsWebserviceTest extends TestCase {
@@ -72,7 +72,7 @@ public class GetRentsWebserviceTest extends TestCase {
 	}
 	
 	public void testGetRentsNextPageByMapBoundaries() {
-		String date = (new SimpleDateFormat(GeneralConstants.DATE_FORMAT)).format(new Date());
+		String date = (new SimpleDateFormat(Constants.DATE_FORMAT)).format(new Date());
 		Response response = target.path("rents/map/page")
 				.queryParam("minLatitude", TestUtil.MIN_LATITUDE)
 				.queryParam("maxLatitude", TestUtil.MAX_LATITUDE)

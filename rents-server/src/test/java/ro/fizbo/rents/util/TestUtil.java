@@ -36,11 +36,20 @@ public class TestUtil {
 	
 	public static final String ACCOUNT_EMAIL = "initial.account@gmail.com";
 	
+	public static final String ACCOUNT_NAME= "John Smith";
+	
+	public static final String USER_EXTERNAL_ID = "805939182760843";
+	
+	public static final String USER_ACCESS_TOKEN = "CAAFJNhhy1CYBAPQXYbVLT5poxOAcStBocYpDI2rSlnEB2F"
+			+ "NVnIZB7VZCf3CgcbwQNu1qOAkl9ZBQqsZB1NmZCAX67w8x2bWZCDaNjLjrH261cNMen2Re7YjsdhBUgbuyoi"
+			+ "xMJZAkR9gqbgPBwrGg0DfSwZCQxbONollObHXzk9ul4jZBxDmVKAQiZByCAPrVJwwgoIuk0we47USxuxgSAC"
+			+ "29j6me1zi8q8BdHZCQJfpftpuSAZDZD";
+	
 	public static final String ACCOUNT_PHONE = "+40100900900";
 	
 	public static final String ACCOUNT_PASSWORD = "account password";
 
-	public static final String BASE_URI = "http://192.168.1.3:8080/rents-server/ws/";
+	public static final String BASE_URI = "http://192.168.1.2:8080/rents-server/ws/";
 	
 	public static final double MIN_LATITUDE = 46.7379424563698;
 
@@ -100,7 +109,6 @@ public class TestUtil {
 		//Insert account into database
 		Account account = new Account();
 		account.setAccountType((byte) 0);
-		account.setAccountExternalId("sadsadkjhfsdfsdfsdddddddddddddddf");
 		account.setAccountEmail(ACCOUNT_EMAIL);
 		try {
 			account.setAccountPassword(PasswordHashing.createHashString(ACCOUNT_PASSWORD));
@@ -133,6 +141,42 @@ public class TestUtil {
 			session.commit();
 			
 			account.setTokenKey(tokenKey);
+		} finally {
+			session.close();
+		}
+		
+		return account;
+	}
+	
+	public static Account createAccountWithExternalInfo() {
+		//Insert account into database
+		Account account = new Account();
+		account.setAccountType((byte) 0);
+		account.setAccountEmail(ACCOUNT_EMAIL);
+		account.setAccountExternalId(USER_EXTERNAL_ID);
+		account.setAccountFirstname("account firstname");
+		account.setAccountLastname("account lastname");
+		account.setAccountPhone(ACCOUNT_PHONE);
+		account.setAccountSignupDate(new Date());
+
+		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
+		try {
+			AccountDAO accountMapper = session.getMapper(AccountDAO.class);
+			accountMapper.insertAccount(account);
+			session.commit();
+			
+			// Generate token
+			Token token = new Token();
+			token.setAccountId(account.getAccountId());
+			token.setTokenKey(USER_ACCESS_TOKEN);
+			token.setTokenCreationDate(new Date());
+					
+			// insert token into database
+			TokenDAO tokenDAO = session.getMapper(TokenDAO.class);
+			tokenDAO.insertToken(token);
+			session.commit();
+			
+			account.setTokenKey(USER_ACCESS_TOKEN);
 		} finally {
 			session.close();
 		}

@@ -24,15 +24,17 @@ public interface AccountDAO {
 			+ " from account left join token on token.accountId=account.accountId"
 			+ " where account.accountId=#{accountId}";
 	
+	public static final String SELECT_EXTERNAL_BY_EMAIL = "select account.*, token.tokenKey as tokenKey"
+			+ " from account inner join token on token.accountId=account.accountId"
+			+ " where account.accountEmail=#{accountEmail}";
+	
 	public static final String DELETE_BY_ID = "delete from account where account.accountId="
 			+ "#{accountId}";
 	
 	public static final String DELETE_BY_EMAIL = "delete from account where account.accountEmail="
 			+ "#{accountEmail}";
 	
-	public static final String SELECT_BY_EMAIL = "select account.accountId, account.accountEmail,"
-			+ " account.accountPassword, account.accountFirstname, account.accountLastname,"
-			+ " account.accountPhone, account.accountSignupDate from account"
+	public static final String SELECT_BY_EMAIL = "select account.* from account "
 			+ " where account.accountEmail=#{email}";
 	
 	public static final String SELECT_BY_EMAIL_OR_PHONE = "select account.* from account"
@@ -64,6 +66,9 @@ public interface AccountDAO {
 	@Select(SELECT_BY_EMAIL_OR_PHONE_RESTRICT_BY_ID)
 	public List<Account> getAccountByEmailOrPhoneRestrictById(@Param("accountEmail") String accountEmail, 
 			@Param("accountPhone") String accountPhone, @Param("accountId") int accountId);
+	
+	@Select(SELECT_EXTERNAL_BY_EMAIL)
+	public Account getExternalAccountByEmail(@Param("accountEmail") String accountEmail);
 	
 	@Delete(DELETE_BY_ID)
 	public int deleteAccount(@Param("accountId") int accountId);
