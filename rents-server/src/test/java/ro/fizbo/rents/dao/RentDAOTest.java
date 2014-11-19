@@ -13,6 +13,7 @@ import ro.fizbo.rents.model.Address;
 import ro.fizbo.rents.model.Rent;
 import ro.fizbo.rents.model.RentAge;
 import ro.fizbo.rents.model.RentArchitecture;
+import ro.fizbo.rents.model.RentForm;
 import ro.fizbo.rents.model.RentParty;
 import ro.fizbo.rents.model.RentStatus;
 import ro.fizbo.rents.model.RentType;
@@ -56,13 +57,20 @@ public class RentDAOTest extends TestCase {
 		TestUtil.deleteRent(rent);
 	}
 	
+	public void testInsertHotelierRent() {
+		Rent rent = TestUtil.addRent(account.getAccountId(), (byte) 1);
+		
+		TestUtil.deleteRent(rent);
+	}
+	
 	public void testGetRentsByMapBoundaries() {
 		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
 		List<Rent> result = null;
 		try {
 			RentDAO rentDAO = session.getMapper(RentDAO.class);
 			result = rentDAO.getRentsByMapBoundaries(MIN_LATITUDE, MAX_LATITUDE, MIN_LONGITUDE,
-					MAX_LONGITUDE, RentStatus.AVAILABLE.getStatus(), TestUtil.PAGE_SIZE, "");
+					MAX_LONGITUDE, RentStatus.AVAILABLE.getStatus(), RentForm.NORMAL.getForm(),
+					TestUtil.PAGE_SIZE, "");
 		} finally {
 			session.close();
 		}
@@ -87,7 +95,8 @@ public class RentDAOTest extends TestCase {
 		try {
 			RentDAO rentDAO = session.getMapper(RentDAO.class);
 			result = rentDAO.getRentsByMapBoundaries(MIN_LATITUDE, MAX_LATITUDE, MIN_LONGITUDE,
-					MAX_LONGITUDE, RentStatus.AVAILABLE.getStatus(), TestUtil.PAGE_SIZE, "");
+					MAX_LONGITUDE, RentStatus.AVAILABLE.getStatus(), RentForm.NORMAL.getForm(), 
+					TestUtil.PAGE_SIZE, "");
 		} finally {
 			session.close();
 		}
@@ -101,7 +110,8 @@ public class RentDAOTest extends TestCase {
 			RentDAO rentDAO = session.getMapper(RentDAO.class);
 			result = rentDAO.getRentsNextPageByMapBoundaries(MIN_LATITUDE, MAX_LATITUDE,
 					MIN_LONGITUDE, MAX_LONGITUDE, lastRent.getRentAddDate(), lastRent.getRentId(),
-					RentStatus.AVAILABLE.getStatus(), TestUtil.PAGE_SIZE, "");
+					RentStatus.AVAILABLE.getStatus(), RentForm.NORMAL.getForm(),
+					TestUtil.PAGE_SIZE, "");
 		} finally {
 			session.close();
 		}
@@ -131,7 +141,7 @@ public class RentDAOTest extends TestCase {
 		try {
 			RentDAO rentDAO = (RentDAO) session.getMapper(RentDAO.class);
 			result = rentDAO.getNoOfRentsByMapBoundaries(MIN_LATITUDE, MAX_LATITUDE, MIN_LONGITUDE,
-					MAX_LONGITUDE, RentStatus.AVAILABLE.getStatus());
+					MAX_LONGITUDE, RentStatus.AVAILABLE.getStatus(), RentForm.NORMAL.getForm());
 		} finally {
 			session.close();
 		}
@@ -162,7 +172,8 @@ public class RentDAOTest extends TestCase {
 			result = rentDAO.searchResultSize(MIN_LATITUDE, MAX_LATITUDE, MIN_LONGITUDE,
 					MAX_LONGITUDE, minPrice, maxPrice, minSurface, maxSurface, minRooms, maxRooms,
 					minBaths, maxBaths, rentParty, rentParty, rentType, rentType, rentArchitecture,
-					rentArchitecture, rentAge, rentAge, rentPetsAllowed, true, rentStatus);
+					rentArchitecture, rentAge, rentAge, rentPetsAllowed, true, rentStatus, 
+					RentForm.NORMAL.getForm());
 		} finally {
 			session.close();
 		}
@@ -194,8 +205,8 @@ public class RentDAOTest extends TestCase {
 			results = rentDAO.search(MIN_LATITUDE, MAX_LATITUDE, MIN_LONGITUDE,
 					MAX_LONGITUDE, minPrice, maxPrice, minSurface, maxSurface, minRooms, maxRooms,
 					minBaths, maxBaths, rentParty, rentParty, rentType, rentType, rentArchitecture,
-					rentArchitecture, rentAge, rentAge, rentPetsAllowed, true, rentStatus,
-					TestUtil.PAGE_SIZE,"");
+					rentArchitecture, rentAge, rentAge, rentPetsAllowed, true, rentStatus, 
+					RentForm.NORMAL.getForm(), TestUtil.PAGE_SIZE,"");
 		} finally {
 			session.close();
 		}
@@ -252,7 +263,7 @@ public class RentDAOTest extends TestCase {
 					MAX_LONGITUDE, minPrice, maxPrice, minSurface, maxSurface, minRooms, maxRooms,
 					minBaths, maxBaths, minParty, maxParty, minType, maxType, minArchitecture,
 					maxArchitecture, minAge, maxAge, rentPetsAllowed, true, rentStatus,
-					TestUtil.PAGE_SIZE, "");
+					RentForm.NORMAL.getForm(), TestUtil.PAGE_SIZE, "");
 		} finally {
 			session.close();
 		}
@@ -267,8 +278,9 @@ public class RentDAOTest extends TestCase {
 			results = rentDAO.searchNextPage(MIN_LATITUDE, MAX_LATITUDE, MIN_LONGITUDE,
 					MAX_LONGITUDE, minPrice, maxPrice, minSurface, maxSurface, minRooms, maxRooms,
 					minBaths, maxBaths, minParty, maxParty, minType, maxType, minArchitecture,
-					maxArchitecture, minAge, maxAge, rentPetsAllowed, true, rentStatus, 
-					lastRent.getRentAddDate(), lastRent.getRentId(), TestUtil.PAGE_SIZE, "");
+					maxArchitecture, minAge, maxAge, rentPetsAllowed, true, rentStatus,
+					RentForm.NORMAL.getForm(), lastRent.getRentAddDate(), lastRent.getRentId(),
+					TestUtil.PAGE_SIZE, "");
 		} finally {
 			session.close();
 		}

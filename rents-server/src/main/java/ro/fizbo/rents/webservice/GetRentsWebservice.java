@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
@@ -18,6 +19,7 @@ import javax.ws.rs.core.MediaType;
 import ro.fizbo.rents.dto.RentsCounter;
 import ro.fizbo.rents.logic.RentManager;
 import ro.fizbo.rents.model.Rent;
+import ro.fizbo.rents.model.RentForm;
 import ro.fizbo.rents.model.RentStatus;
 import ro.fizbo.rents.util.Constants;
 import ro.fizbo.rents.webservice.exception.InvalidDataException;
@@ -32,9 +34,27 @@ public class GetRentsWebservice {
 	public RentsCounter getRentsByMapBoundaries(@QueryParam("minLatitude") double minLatitude,
 			@QueryParam("maxLatitude") double maxLatitude, 
 			@QueryParam("minLongitude") double minLongitude,
-			@QueryParam("maxLongitude") double maxLongitude, @QueryParam("pageSize") int pageSize) {
+			@QueryParam("maxLongitude") double maxLongitude, 
+			@QueryParam("pageSize") int pageSize) {
 		RentsCounter rentsCounter = RentManager.getRentsByMapBoundaries(minLatitude, maxLatitude,
-				minLongitude, maxLongitude, RentStatus.AVAILABLE.getStatus(), pageSize);
+				minLongitude, maxLongitude, RentStatus.AVAILABLE.getStatus(), 
+				RentForm.NORMAL.getForm(), pageSize);
+		
+		return rentsCounter;
+	}
+	
+	@Path("map/{rentForm}")
+	@GET
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public RentsCounter getRentsByMapBoundariesWithRentForm(
+			@QueryParam("minLatitude") double minLatitude,
+			@QueryParam("maxLatitude") double maxLatitude, 
+			@QueryParam("minLongitude") double minLongitude,
+			@QueryParam("maxLongitude") double maxLongitude, 
+			@PathParam("rentForm") byte rentForm, @QueryParam("pageSize") int pageSize) {
+		RentsCounter rentsCounter = RentManager.getRentsByMapBoundaries(minLatitude, maxLatitude,
+				minLongitude, maxLongitude, RentStatus.AVAILABLE.getStatus(), rentForm, pageSize);
 		
 		return rentsCounter;
 	}
@@ -60,7 +80,33 @@ public class GetRentsWebservice {
 
 		List<Rent> rents = RentManager.getRentsNextPageByMapBoundaries(minLatitude, maxLatitude,
 				minLongitude, maxLongitude, date, lastRentId, RentStatus.AVAILABLE.getStatus(),
-				pageSize);
+				RentForm.NORMAL.getForm(), pageSize);
+		
+		return rents;
+	}
+	
+	@Path("map/page/{rentForm}")
+	@GET
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Rent> getRentsNextPageByMapBoundaries(@QueryParam("minLatitude") double minLatitude,
+			@QueryParam("maxLatitude") double maxLatitude, 
+			@QueryParam("minLongitude") double minLongitude,
+			@QueryParam("maxLongitude") double maxLongitude, 
+			@QueryParam("lastRentDate") String lastRentDate,
+			@QueryParam("lastRentId") int lastRentId, @PathParam("rentForm") byte rentForm,
+			@QueryParam("pageSize") int pageSize,@Context HttpServletResponse response) {
+		DateFormat dateFormat = new SimpleDateFormat(Constants.DATE_FORMAT);
+		Date date = null;
+		try {
+			date = dateFormat.parse(lastRentDate);
+		} catch (ParseException e) {
+			throw new InvalidDataException();
+		}
+
+		List<Rent> rents = RentManager.getRentsNextPageByMapBoundaries(minLatitude, maxLatitude,
+				minLongitude, maxLongitude, date, lastRentId, RentStatus.AVAILABLE.getStatus(),
+				rentForm, pageSize);
 		
 		return rents;
 	}

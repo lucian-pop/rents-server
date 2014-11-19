@@ -17,10 +17,11 @@ public interface RentDAO {
 
 	public static final String INSERT = "insert into rent (accountId, addressId, rentPrice,"
 			+ "rentSurface, rentRooms, rentBaths, rentParty, rentType, rentArchitecture, rentAge,"
-			+ "rentDescription, rentPetsAllowed, rentPhone, rentAddDate, rentStatus)"
+			+ "rentDescription, rentPetsAllowed, rentPhone, rentAddDate, rentStatus, rentForm)"
 			+ " values(#{accountId}, #{addressId}, #{rentPrice}, #{rentSurface}, #{rentRooms},"
 			+ "#{rentBaths}, #{rentParty}, #{rentType}, #{rentArchitecture}, #{rentAge},"
-			+ "#{rentDescription}, #{rentPetsAllowed}, #{rentPhone}, #{rentAddDate}, #{rentStatus})";
+			+ "#{rentDescription}, #{rentPetsAllowed}, #{rentPhone}, #{rentAddDate}, #{rentStatus},"
+			+ "#{rentForm})";
 	
 	public static final String EAGER_SELECT_BY_ID= "select rent.*, address.*,"
 			+ " rentImageId, concat(#{appURL}, rentImageURI) as rentImageURI from rent"
@@ -49,18 +50,18 @@ public interface RentDAO {
 			+ " inner join address on rent.addressId=address.addressId"
 			+ " where address.addressLatitude between #{minLatitude} and #{maxLatitude}"
 			+ " and address.addressLongitude between #{minLongitude} and #{maxLongitude}"
-			+ " and rentStatus=#{rentStatus}";
+			+ " and rentStatus=#{rentStatus} and rentForm=#{rentForm}";
 	
 	public static final String SELECT_BY_MAP_BOUNDARIES = LIGHT_RENT_PROJECTION
 			+ " where address.addressLatitude between #{minLatitude} and #{maxLatitude}"
 			+ " and address.addressLongitude between #{minLongitude} and #{maxLongitude}"
-			+ " and rentStatus=#{rentStatus}"
+			+ " and rentStatus=#{rentStatus} and rentForm=#{rentForm}"
 			+ DATE_RESTRICTION;
 	
 	public static final String SELECT_NEXT_PAGE_BY_MAP_BOUNDARIES = LIGHT_RENT_PROJECTION
 			+ " where address.addressLatitude between #{minLatitude} and #{maxLatitude}"
 			+ " and address.addressLongitude between #{minLongitude} and #{maxLongitude}"
-			+ " and rentStatus=#{rentStatus}"
+			+ " and rentStatus=#{rentStatus} and rentForm=#{rentForm}"
 			+ " and " + DATE_PAGINATION_CONDITION + DATE_RESTRICTION;
 	
 	public static final String SELECT_COUNT_BY_CRITERIA = "select count(*) from rent "
@@ -76,7 +77,7 @@ public interface RentDAO {
 			+ " and rentArchitecture between #{minArchitecture} and #{maxArchitecture}"
 			+ " and rentAge between #{minAge} and #{maxAge}"
 			+ " and (rentPetsAllowed=#{lowRentPetsAllowed} or rentPetsAllowed=#{highRentPetsAllowed})"
-			+ " and rentStatus=#{rentStatus}";
+			+ " and rentStatus=#{rentStatus} and rentForm=#{rentForm}";
 	
 	public static final String SELECT_BY_CRITERIA = LIGHT_RENT_PROJECTION 
 			+ " where address.addressLatitude between #{minLatitude} and #{maxLatitude}"
@@ -90,7 +91,7 @@ public interface RentDAO {
 			+ " and rentArchitecture between #{minArchitecture} and #{maxArchitecture}"
 			+ " and rentAge between #{minAge} and #{maxAge}"
 			+ " and (rentPetsAllowed=#{lowRentPetsAllowed} or rentPetsAllowed=#{highRentPetsAllowed})"
-			+ " and rentStatus=#{rentStatus}"
+			+ " and rentStatus=#{rentStatus} and rentForm=#{rentForm}"
 			+ DATE_RESTRICTION;
 	
 	public static final String SELECT_NEXT_PAGE_BY_CRITERIA = LIGHT_RENT_PROJECTION 
@@ -105,7 +106,7 @@ public interface RentDAO {
 			+ " and rentArchitecture between #{minArchitecture} and #{maxArchitecture}"
 			+ " and rentAge between #{minAge} and #{maxAge}"
 			+ " and (rentPetsAllowed=#{lowRentPetsAllowed} or rentPetsAllowed=#{highRentPetsAllowed})"
-			+ " and rentStatus=#{rentStatus}"
+			+ " and rentStatus=#{rentStatus} and rentForm=#{rentForm}"
 			+ " and " + DATE_PAGINATION_CONDITION + DATE_RESTRICTION;
 	
 	public static final String SELECT_COUNT_USER_ADDED_RENTS = "select count(*) from rent"
@@ -155,14 +156,16 @@ public interface RentDAO {
 	@Select(SELECT_COUNT_BY_MAP_BOUNDARIES)
 	public int getNoOfRentsByMapBoundaries(@Param("minLatitude") double minLatitude,
 			@Param("maxLatitude") double maxLatitude, @Param("minLongitude") double minLongitude,
-			@Param("maxLongitude") double maxLongitude, @Param("rentStatus") byte rentStatus);
+			@Param("maxLongitude") double maxLongitude, @Param("rentStatus") byte rentStatus,
+			@Param("rentForm") byte rentForm);
 	
 	@Select(SELECT_BY_MAP_BOUNDARIES)
 	@ResultMap("RentMapper.LightRentMap")
 	public List<Rent> getRentsByMapBoundaries(@Param("minLatitude") double minLatitude,
 			@Param("maxLatitude") double maxLatitude, @Param("minLongitude") double minLongitude,
 			@Param("maxLongitude") double maxLongitude, @Param("rentStatus") byte rentStatus,
-			@Param("pageSize") int pageSize, @Param("appURL") String appURL);
+			@Param("rentForm") byte rentForm, @Param("pageSize") int pageSize,
+			@Param("appURL") String appURL);
 	
 	@Select(SELECT_NEXT_PAGE_BY_MAP_BOUNDARIES)
 	@ResultMap("RentMapper.LightRentMap")
@@ -170,7 +173,8 @@ public interface RentDAO {
 			@Param("maxLatitude") double maxLatitude, @Param("minLongitude") double minLongitude,
 			@Param("maxLongitude") double maxLongitude, @Param("lastRentDate") Date lastRentDate, 
 			@Param("lastRentId") int lastRentId, @Param("rentStatus") byte rentStatus, 
-			@Param("pageSize") int pageSize, @Param("appURL") String appURL);
+			@Param("rentForm") byte rentForm, @Param("pageSize") int pageSize, 
+			@Param("appURL") String appURL);
 	
 	@Select(SELECT_COUNT_BY_CRITERIA)
 	public int searchResultSize(@Param("minLatitude") double minLatitude,
@@ -185,7 +189,7 @@ public interface RentDAO {
 			@Param("maxArchitecture") byte maxArchitecture, @Param("minAge") short minAge,
 			@Param("maxAge") short maxAge, @Param("lowRentPetsAllowed") boolean lowRentPetsAllowed,
 			@Param("highRentPetsAllowed") boolean highRentPetsAllowed,
-			@Param("rentStatus") byte rentStatus);
+			@Param("rentStatus") byte rentStatus, @Param("rentForm") byte rentForm);
 	
 	@Select(SELECT_BY_CRITERIA)
 	@ResultMap("RentMapper.LightRentMap")
@@ -201,7 +205,8 @@ public interface RentDAO {
 			@Param("maxArchitecture") byte maxArchitecture, @Param("minAge") short minAge,
 			@Param("maxAge") short maxAge, @Param("lowRentPetsAllowed") boolean lowRentPetsAllowed,
 			@Param("highRentPetsAllowed") boolean highRentPetsAllowed,
-			@Param("rentStatus") byte rentStatus, @Param("pageSize") int pageSize, @Param("appURL") String appURL);
+			@Param("rentStatus") byte rentStatus, @Param("rentForm") byte rentForm,
+			@Param("pageSize") int pageSize, @Param("appURL") String appURL);
 	
 	@Select(SELECT_NEXT_PAGE_BY_CRITERIA)
 	@ResultMap("RentMapper.LightRentMap")
@@ -217,9 +222,9 @@ public interface RentDAO {
 			@Param("maxArchitecture") byte maxArchitecture, @Param("minAge") short minAge,
 			@Param("maxAge") short maxAge, @Param("lowRentPetsAllowed") boolean lowRentPetsAllowed,
 			@Param("highRentPetsAllowed") boolean highRentPetsAllowed,
-			@Param("rentStatus") byte rentStatus, @Param("lastRentDate") Date lastRentDate, 
-			@Param("lastRentId") int lastRentId, @Param("pageSize") int pageSize, 
-			@Param("appURL") String appURL);
+			@Param("rentStatus") byte rentStatus, @Param("rentForm") byte rentForm,
+			@Param("lastRentDate") Date lastRentDate, @Param("lastRentId") int lastRentId,
+			@Param("pageSize") int pageSize, @Param("appURL") String appURL);
 	
 	@Select(SELECT_COUNT_USER_ADDED_RENTS)
 	public int getNoOfUserAddedRents(@Param("accountId") int accountId, 

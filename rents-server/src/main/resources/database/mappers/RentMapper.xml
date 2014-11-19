@@ -51,6 +51,7 @@
         <result property="rentPhone" column="rentPhone"/>
         <result property="rentAddDate" column="rentAddDate"/>
         <result property="rentStatus" column="rentStatus"/>
+        <result property="rentForm" column="rentForm"/>
         <association property="address" javaType="ro.fizbo.rents.model.Address">
             <id property="addressId" column="addressId"/>
             <result property="addressStreetNo" column="addressStreetNo"/>
@@ -101,7 +102,8 @@
     		<if test="rentDescription != null">rentDescription=#{rentDescription},</if>
     		<if test="rentPetsAllowed != null">rentPetsAllowed=#{rentPetsAllowed},</if>
     		<if test="rentPhone != null">rentPhone=#{rentPhone},</if>
-    		<if test="rentAddDate != null">rentAddDate=#{rentAddDate}</if>
+    		<if test="rentAddDate != null">rentAddDate=#{rentAddDate},</if>
+    		<if test="rentForm != null">rentForm=#{rentForm}</if>
     	</set>
     	where rentId=#{rentId}
     </update>

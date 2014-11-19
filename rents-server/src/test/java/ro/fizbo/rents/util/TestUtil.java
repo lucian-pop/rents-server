@@ -49,7 +49,7 @@ public class TestUtil {
 	
 	public static final String ACCOUNT_PASSWORD = "account password";
 
-	public static final String BASE_URI = "http://192.168.1.2:8080/rents-server/ws/";
+	public static final String BASE_URI = "http://192.168.1.4:8080/rents-server/ws/";
 	
 	public static final double MIN_LATITUDE = 46.7379424563698;
 
@@ -301,7 +301,7 @@ public class TestUtil {
 		}
 	}
 	
-	public static Rent addRent(int accountId) {
+	public static Rent addRent(int accountId, byte rentForm) {
 		Address address = addAddress();
 		
 		Rent rent = new Rent();
@@ -320,6 +320,7 @@ public class TestUtil {
 		rent.setRentPhone("0750110440");
 		rent.setRentAddDate(new Date());
 		rent.setRentStatus((byte) 0);
+		rent.setRentForm(rentForm);
 		
 		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
 		try {
@@ -331,6 +332,10 @@ public class TestUtil {
 		}
 		
 		return rent;
+	}
+	
+	public static Rent addRent(int accountId) {
+		return addRent(accountId, (byte) 0);
 	}
 	
 	public static void deleteRent(Rent rent) {

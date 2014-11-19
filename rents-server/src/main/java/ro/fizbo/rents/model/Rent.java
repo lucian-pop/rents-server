@@ -37,6 +37,8 @@ public class Rent {
 	
 	private Byte rentStatus;
 	
+	private Byte rentForm;
+	
 	private List<RentImage> rentImages;
 	
 	public Rent() {
@@ -176,6 +178,14 @@ public class Rent {
 
 	public void setRentStatus(Byte rentStatus) {
 		this.rentStatus = rentStatus;
+	}
+
+	public Byte getRentForm() {
+		return rentForm;
+	}
+
+	public void setRentForm(Byte rentForm) {
+		this.rentForm = rentForm;
 	}
 
 	public List<RentImage> getRentImages() {
