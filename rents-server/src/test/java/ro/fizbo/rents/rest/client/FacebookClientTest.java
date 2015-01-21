@@ -6,25 +6,35 @@ import junit.framework.TestCase;
 public class FacebookClientTest extends TestCase {
 	
 	public void testSuccessfullyGetAppAccessToken() {
-		String appAccessToken = FacebookClient.getAppAccessToken();
+		String appAccessToken = FacebookClient.getAndroidAppAccessToken();
 		
 		assertNotNull(appAccessToken);
 	}
 	
-	public void testValidateValidUserAccessToken() {
-		boolean isValid = FacebookClient.validateUserAccessToken(TestUtil.USER_EXTERNAL_ID, TestUtil.USER_ACCESS_TOKEN);
+	public void testValidateAndroidValidUserAccessToken() {
+		boolean isValid = FacebookClient.validateUserAccessToken(TestUtil.USER_EXTERNAL_ID,
+				TestUtil.USER_ACCESS_TOKEN, false);
+		
+		assertEquals(true, isValid);
+	}
+	
+	public void testValidateIosValidUserAccessToken() {
+		boolean isValid = FacebookClient.validateUserAccessToken(TestUtil.USER_EXTERNAL_ID,
+				TestUtil.USER_ACCESS_TOKEN, true);
 		
 		assertEquals(true, isValid);
 	}
 	
 	public void testValidateAccessTokenWithInvalidUserId() {
-		boolean isValid = FacebookClient.validateUserAccessToken("123455574545", TestUtil.USER_ACCESS_TOKEN);
+		boolean isValid = FacebookClient.validateUserAccessToken("123455574545",
+				TestUtil.USER_ACCESS_TOKEN, false);
 		
 		assertEquals(false, isValid);
 	}
 	
 	public void testValidateAccessTokenWithInvalidUserAccessToken() {
-		boolean isValid = FacebookClient.validateUserAccessToken(TestUtil.USER_EXTERNAL_ID, "dsfsdfSDFSDFSDFSDfsdfsdf");
+		boolean isValid = FacebookClient.validateUserAccessToken(TestUtil.USER_EXTERNAL_ID,
+				"dsfsdfSDFSDFSDFSDfsdfsdf", false);
 		
 		assertEquals(false, isValid);
 	}

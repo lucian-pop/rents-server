@@ -25,10 +25,10 @@ public final class AccountManager {
 	
 	private static Logger logger = Logger.getLogger(AccountManager.class);
 	
-	public static Account facebookLogin(Account account) {
+	public static Account facebookLogin(Account account, boolean isIosClient) {
 		logger.info("Validate facebook access token for " + account.getAccountEmail());
 		final boolean isTokenAccessValid = FacebookClient.validateUserAccessToken(
-				account.getAccountExternalId(), account.getTokenKey());
+				account.getAccountExternalId(), account.getTokenKey(), isIosClient);
 		if(!isTokenAccessValid) {
 			throw new UnauthorizedException();
 		}
@@ -207,11 +207,11 @@ public final class AccountManager {
 	
 	}
 	
-	public static Account updateExternalAccount(Account editedAccount) {
+	public static Account updateExternalAccount(Account editedAccount, boolean isIosClient) {
 		logger.info("Validate facebook access token for account " 
 				+ editedAccount.getAccountEmail());
 		final boolean isTokenAccessValid = FacebookClient.validateUserAccessToken(
-				editedAccount.getAccountExternalId(), editedAccount.getTokenKey());
+				editedAccount.getAccountExternalId(), editedAccount.getTokenKey(), isIosClient);
 		if(!isTokenAccessValid) {
 			throw new UnauthorizedException();
 		}

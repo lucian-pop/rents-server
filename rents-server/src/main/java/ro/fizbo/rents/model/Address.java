@@ -30,6 +30,13 @@ public class Address {
 	
 	private String addressAp;
 
+	public Address() {
+	}
+	
+	public Address(Integer addressId) {
+		this.addressId = addressId;
+	}
+
 	public Integer getAddressId() {
 		return addressId;
 	}

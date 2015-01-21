@@ -7,6 +7,13 @@ public class RentImage {
 	private Integer rentId;
 	
 	private String rentImageURI;
+	
+	public RentImage() {
+	}
+	
+	public RentImage(Integer rentImageId) {
+		this.rentImageId = rentImageId;
+	}
 
 	public Integer getRentImageId() {
 		return rentImageId;

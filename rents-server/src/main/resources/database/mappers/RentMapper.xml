@@ -107,5 +107,27 @@
     	</set>
     	where rentId=#{rentId}
     </update>
+    
+   	<select id="searchCount" parameterType="ro.fizbo.rents.model.RentSearch" resultType="Integer">
+    	select count(*) from rent inner join address on rent.addressId=address.addressId
+    	<where>
+    		<if test="lowRent.rentSurface != null">rentSurface >= #{lowRent.rentSurface}</if>
+    		<if test="highRent.rentSurface != null">and #{highRent.rentSurface} >= rentSurface</if>
+    	</where>
+    </select>
+    
+    <select id="search" parameterType="ro.fizbo.rents.model.RentSearch" resultMap="LightRentMap">
+    	select rent.rentId as rentId, rentPrice, rentSurface, rentRooms, rentBaths, rentType,
+    	rentArchitecture, rentAddDate, rentStatus, address.addressId as addressId,
+    	addressStreetName, addressNeighbourhood, addressLatitude, addressLongitude,
+    	min(rentImageId) as rentImageId, concat(#{appUrl}, rentImageURI) as rentImageURI
+    	from rent inner join address on rent.addressId=address.addressId
+    	left join rent_image on rent_image.rentId = rent.rentId
+    	<where>
+    		<if test="lowRent.rentSurface != null">rentSurface >= #{lowRent.rentSurface}</if>
+    		<if test="highRent.rentSurface != null">and #{highRent.rentSurface} >= rentSurface</if>
+    	</where>
+    	group by rent.rentId
+    </select>
 
 </mapper>

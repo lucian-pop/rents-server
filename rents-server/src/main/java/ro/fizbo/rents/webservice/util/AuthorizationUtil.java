@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import ro.fizbo.rents.logic.TokenManager;
 import ro.fizbo.rents.model.Token;
+import ro.fizbo.rents.util.Constants;
 
 public final class AuthorizationUtil {
 	
@@ -33,5 +34,14 @@ public final class AuthorizationUtil {
 		}
 		
 		return true;
+	}
+	
+	public static boolean isIosClient(HttpServletRequest request) {
+		String userAgent = request.getHeader(ContextConstants.USER_AGENT);
+		if(userAgent != null && userAgent.toLowerCase().contains(Constants.IOS)) {
+			return true;
+		}
+
+		return false;
 	}
 }

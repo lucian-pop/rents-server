@@ -17,4 +17,6 @@ public final class ContextConstants {
 	public static final String RENT_IMAGE_ID = "rentImageId";
 
 	public static final String RENT_IMAGE_URI = "rentImageURI";
+	
+	public static final String USER_AGENT = "user-agent";
 }

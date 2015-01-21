@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import ro.fizbo.rents.dto.AccountUpdate;
 import ro.fizbo.rents.logic.AccountManager;
 import ro.fizbo.rents.model.Account;
+import ro.fizbo.rents.webservice.util.AuthorizationUtil;
 
 @Path("account")
 public class AccountWebservice {
@@ -38,11 +39,11 @@ public class AccountWebservice {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Account externalLogin(Account account) {
+	public Account externalLogin(Account account, @Context HttpServletRequest request) {
 		logger.info("An external login request was received for account with email " 
 				+ account.getAccountEmail());
 		
-		return AccountManager.facebookLogin(account);
+		return AccountManager.facebookLogin(account, AuthorizationUtil.isIosClient(request));
 	}
 	
 	@Path("login")
@@ -69,7 +70,8 @@ public class AccountWebservice {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Account updateExternalAccount(Account account, 
 			@Context HttpServletRequest request) {
-		return AccountManager.updateExternalAccount(account);
+		return AccountManager.updateExternalAccount(account, 
+				AuthorizationUtil.isIosClient(request));
 	}
 	
 	@Path("changepassword")
