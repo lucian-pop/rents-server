@@ -15,13 +15,16 @@ import ro.fizbo.rents.model.view.RentFavoriteView;
 
 public interface RentDAO {
 
-	public static final String INSERT = "insert into rent (accountId, addressId, rentPrice,"
-			+ "rentSurface, rentRooms, rentBaths, rentParty, rentType, rentArchitecture, rentAge,"
-			+ "rentDescription, rentPetsAllowed, rentPhone, rentAddDate, rentStatus, rentForm)"
-			+ " values(#{accountId}, #{addressId}, #{rentPrice}, #{rentSurface}, #{rentRooms},"
-			+ "#{rentBaths}, #{rentParty}, #{rentType}, #{rentArchitecture}, #{rentAge},"
-			+ "#{rentDescription}, #{rentPetsAllowed}, #{rentPhone}, #{rentAddDate}, #{rentStatus},"
-			+ "#{rentForm})";
+	public static final String INSERT = "insert into rent (accountId, addressId, rentForm,"
+			+ " rentPrice, rentCurrency, rentPhone, rentType, rentRooms, rentGuests, rentSingleBeds,"
+			+ " rentDoubleBeds, rentBaths, rentArchitecture, rentSurface, rentAge, rentParty, "
+			+ " rentDescription, rentPetsAllowed, rentParkingPlace, rentSmokersAllowed, rentAddDate,"
+			+ " rentStatus)"
+			+ " values(#{accountId}, #{addressId}, #{rentForm}, #{rentPrice}, #{rentCurrency},"
+			+ " #{rentPhone}, #{rentType}, #{rentRooms}, #{rentGuests}, #{rentSingleBeds},"
+			+ " #{rentDoubleBeds}, #{rentBaths}, #{rentArchitecture}, #{rentSurface}, #{rentAge},"
+			+ " #{rentParty}, #{rentDescription}, #{rentPetsAllowed}, #{rentParkingPlace},"
+			+ " #{rentSmokersAllowed}, #{rentAddDate}, #{rentStatus})";
 	
 	public static final String EAGER_SELECT_BY_ID= "select rent.*, address.*,"
 			+ " rentImageId, concat(#{appURL}, rentImageURI) as rentImageURI from rent"
@@ -31,9 +34,9 @@ public interface RentDAO {
 	
 	public static final String DELETE_BY_ID = "delete from rent where rent.rentId=#{rentId}";
 	
-	public static final String LIGHT_RENT_PROJECTION = "select rent.rentId, rent.rentPrice,"
-			+ "rentSurface, rentRooms, rentBaths, rentType, rentArchitecture,"
-			+ "rentAddDate, rentStatus,"
+	public static final String LIGHT_RENT_PROJECTION = "select rent.rentId, rent.rentForm,"
+			+ " rent.rentPrice, rentCurrency, rentSurface, rentRooms, rentBaths, rentType,"
+			+ " rentArchitecture, rentAddDate, rentStatus,"
 			+ "address.addressId, addressStreetName, addressNeighbourhood, addressLatitude,"
 			+ "addressLongitude,"
 			+ "concat(#{appURL}, rentImageURI) as rentImageURI, min(rent_image.rentImageId)"
@@ -120,9 +123,9 @@ public interface RentDAO {
 			+ " where rent.accountId=#{accountId} and rent.rentStatus=#{rentStatus}"
 			+ " and " + DATE_PAGINATION_CONDITION + DATE_RESTRICTION;
 	
-	public static final String LIGHT_RENT_FAVORITE_VIEW_PROJECTION = "select rent.rentId, rent.rentPrice,"
-			+ "rentSurface, rentRooms, rentBaths, rentType, rentArchitecture,"
-			+ "rentAddDate, rentStatus,"
+	public static final String LIGHT_RENT_FAVORITE_VIEW_PROJECTION = "select rent.rentId,"
+			+ "rent.rentPrice, rentCurrency, rentSurface, rentRooms, rentBaths, rentType,"
+			+ "rentArchitecture,rentAddDate, rentStatus,"
 			+ "address.addressId, addressStreetNo, addressStreetName, addressLatitude,"
 			+ "addressLongitude,"
 			+ "concat(#{appURL}, rentImageURI) as rentImageURI, min(rent_image.rentImageId),"

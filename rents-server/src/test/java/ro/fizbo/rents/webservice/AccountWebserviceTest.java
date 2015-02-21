@@ -14,8 +14,10 @@ import org.junit.After;
 
 import ro.fizbo.rents.dto.AccountUpdate;
 import ro.fizbo.rents.model.Account;
+import ro.fizbo.rents.util.Constants;
 import ro.fizbo.rents.util.TestUtil;
 import ro.fizbo.rents.webservice.response.WebserviceResponseStatus;
+import ro.fizbo.rents.webservice.util.ContextConstants;
 
 public class AccountWebserviceTest extends TestCase {
 	
@@ -98,13 +100,13 @@ public class AccountWebserviceTest extends TestCase {
 		System.out.println("Status shouldn't be OK: " + response.getStatus());
 	}
 	
-	public void testFacebookLoginExistingNonFacebookUser() {
+	public void testAndroidFacebookLoginExistingNonFacebookUser() {
 		account = TestUtil.createAccount();
 		
 		Account externalAccount = new Account();
 		externalAccount.setAccountEmail(TestUtil.ACCOUNT_EMAIL);
-		externalAccount.setAccountExternalId(TestUtil.USER_EXTERNAL_ID);
-		externalAccount.setTokenKey(TestUtil.USER_ACCESS_TOKEN);
+		externalAccount.setAccountExternalId(TestUtil.FACEBOOK_ANDROID_EXTERNAL_ID);
+		externalAccount.setTokenKey(TestUtil.FACEBOOK_ANDROID_ACCESS_TOKEN);
 		
 		Response response = target.path("account/externallogin").request(MediaType.APPLICATION_JSON)
 				.post(Entity.json(externalAccount));
@@ -116,19 +118,44 @@ public class AccountWebserviceTest extends TestCase {
 		
 		// assert account has expected fields
 		assertTrue(account.getAccountEmail().equals(TestUtil.ACCOUNT_EMAIL));
-		assertTrue(account.getAccountExternalId().equals(TestUtil.USER_EXTERNAL_ID));
-		assertTrue(account.getTokenKey().equals(TestUtil.USER_ACCESS_TOKEN));
+		assertTrue(account.getAccountExternalId().equals(TestUtil.FACEBOOK_ANDROID_EXTERNAL_ID));
+		assertTrue(account.getTokenKey().equals(TestUtil.FACEBOOK_ANDROID_ACCESS_TOKEN));
 
 		assertNotNull(account);
 	}
 	
-	public void testFacebookLoginExistingFacebookUser() {
-		account = TestUtil.createAccountWithExternalInfo();
+	public void testIoSFacebookLoginExistingNonFacebookUser() {
+		account = TestUtil.createAccount();
 		
 		Account externalAccount = new Account();
 		externalAccount.setAccountEmail(TestUtil.ACCOUNT_EMAIL);
-		externalAccount.setAccountExternalId(TestUtil.USER_EXTERNAL_ID);
-		externalAccount.setTokenKey(TestUtil.USER_ACCESS_TOKEN);
+		externalAccount.setAccountExternalId(TestUtil.FACEBOOK_IOS_EXTERNAL_ID);
+		externalAccount.setTokenKey(TestUtil.FACEBOOK_IOS_ACCESS_TOKEN);
+		
+		Response response = target.path("account/externallogin").request(MediaType.APPLICATION_JSON)
+				.header(ContextConstants.USER_AGENT, Constants.IOS)
+				.post(Entity.json(externalAccount));
+		
+		assertTrue("Status should be OK" , response.getStatus() == 
+				WebserviceResponseStatus.OK.getCode());
+		
+		account = response.readEntity(Account.class);
+		
+		// assert account has expected fields
+		assertTrue(account.getAccountEmail().equals(TestUtil.ACCOUNT_EMAIL));
+		assertTrue(account.getAccountExternalId().equals(TestUtil.FACEBOOK_IOS_EXTERNAL_ID));
+		assertTrue(account.getTokenKey().equals(TestUtil.FACEBOOK_IOS_ACCESS_TOKEN));
+
+		assertNotNull(account);
+	}
+	
+	public void testAndroidFacebookLoginExistingFacebookUser() {
+		account = TestUtil.createAndroidAccountWithExternalInfo();
+		
+		Account externalAccount = new Account();
+		externalAccount.setAccountEmail(TestUtil.ACCOUNT_EMAIL);
+		externalAccount.setAccountExternalId(TestUtil.FACEBOOK_ANDROID_EXTERNAL_ID);
+		externalAccount.setTokenKey(TestUtil.FACEBOOK_ANDROID_ACCESS_TOKEN);
 		
 		Response response = target.path("account/externallogin").request(MediaType.APPLICATION_JSON)
 				.post(Entity.json(externalAccount));
@@ -140,18 +167,43 @@ public class AccountWebserviceTest extends TestCase {
 		
 		// assert account has expected fields
 		assertTrue(account.getAccountEmail().equals(TestUtil.ACCOUNT_EMAIL));
-		assertTrue(account.getAccountExternalId().equals(TestUtil.USER_EXTERNAL_ID));
-		assertTrue(account.getTokenKey().equals(TestUtil.USER_ACCESS_TOKEN));
+		assertTrue(account.getAccountExternalId().equals(TestUtil.FACEBOOK_ANDROID_EXTERNAL_ID));
+		assertTrue(account.getTokenKey().equals(TestUtil.FACEBOOK_ANDROID_ACCESS_TOKEN));
 
 		assertNotNull(account);
 	}
 	
-	public void testFacebookLoginNonExistingUser() {
+	public void testIoSFacebookLoginExistingFacebookUser() {
+		account = TestUtil.createIoSAccountWithExternalInfo();
+		
+		Account externalAccount = new Account();
+		externalAccount.setAccountEmail(TestUtil.ACCOUNT_EMAIL);
+		externalAccount.setAccountExternalId(TestUtil.FACEBOOK_IOS_EXTERNAL_ID);
+		externalAccount.setTokenKey(TestUtil.FACEBOOK_IOS_ACCESS_TOKEN);
+		
+		Response response = target.path("account/externallogin").request(MediaType.APPLICATION_JSON)
+				.header(ContextConstants.USER_AGENT, Constants.IOS)
+				.post(Entity.json(externalAccount));
+		
+		assertTrue("Status should be OK" , response.getStatus() == 
+				WebserviceResponseStatus.OK.getCode());
+		
+		account = response.readEntity(Account.class);
+		
+		// assert account has expected fields
+		assertTrue(account.getAccountEmail().equals(TestUtil.ACCOUNT_EMAIL));
+		assertTrue(account.getAccountExternalId().equals(TestUtil.FACEBOOK_IOS_EXTERNAL_ID));
+		assertTrue(account.getTokenKey().equals(TestUtil.FACEBOOK_IOS_ACCESS_TOKEN));
+
+		assertNotNull(account);
+	}
+	
+	public void testAndroidFacebookLoginNonExistingUser() {
 		Account externalAccount = new Account();
 		externalAccount.setAccountEmail(TestUtil.ACCOUNT_EMAIL);
 		externalAccount.setAccountFirstname(TestUtil.ACCOUNT_NAME);
-		externalAccount.setAccountExternalId(TestUtil.USER_EXTERNAL_ID);
-		externalAccount.setTokenKey(TestUtil.USER_ACCESS_TOKEN);
+		externalAccount.setAccountExternalId(TestUtil.FACEBOOK_ANDROID_EXTERNAL_ID);
+		externalAccount.setTokenKey(TestUtil.FACEBOOK_ANDROID_ACCESS_TOKEN);
 		externalAccount.setAccountType((byte) 0);
 		externalAccount.setAccountSignupDate(new Date());
 		Response response = target.path("account/externallogin").request(MediaType.APPLICATION_JSON)
@@ -165,8 +217,36 @@ public class AccountWebserviceTest extends TestCase {
 		// assert account has expected fields
 		assertTrue(account.getAccountEmail().equals(TestUtil.ACCOUNT_EMAIL));
 		assertTrue(account.getAccountFirstname().equals(TestUtil.ACCOUNT_NAME));
-		assertTrue(account.getAccountExternalId().equals(TestUtil.USER_EXTERNAL_ID));
-		assertTrue(account.getTokenKey().equals(TestUtil.USER_ACCESS_TOKEN));
+		assertTrue(account.getAccountExternalId().equals(TestUtil.FACEBOOK_ANDROID_EXTERNAL_ID));
+		assertTrue(account.getTokenKey().equals(TestUtil.FACEBOOK_ANDROID_ACCESS_TOKEN));
+
+		assertNotNull(account);
+	}
+	
+	public void testIoSFacebookLoginNonExistingUser() {
+		Account externalAccount = new Account();
+		externalAccount.setAccountEmail(TestUtil.ACCOUNT_EMAIL);
+		externalAccount.setAccountFirstname(TestUtil.ACCOUNT_NAME);
+		externalAccount.setAccountExternalId(TestUtil.FACEBOOK_IOS_EXTERNAL_ID);
+		externalAccount.setTokenKey(TestUtil.FACEBOOK_IOS_ACCESS_TOKEN);
+		externalAccount.setAccountType((byte) 0);
+		externalAccount.setAccountSignupDate(new Date());
+		Response response = target.path("account/externallogin").request(MediaType.APPLICATION_JSON)
+				.header(ContextConstants.USER_AGENT, Constants.IOS)
+				.post(Entity.json(externalAccount));
+		
+		System.out.println("****Response status is " + response.getStatus());
+		
+		assertTrue("Status should be OK" , response.getStatus() == 
+				WebserviceResponseStatus.OK.getCode());
+		
+		account = response.readEntity(Account.class);
+		
+		// assert account has expected fields
+		assertTrue(account.getAccountEmail().equals(TestUtil.ACCOUNT_EMAIL));
+		assertTrue(account.getAccountFirstname().equals(TestUtil.ACCOUNT_NAME));
+		assertTrue(account.getAccountExternalId().equals(TestUtil.FACEBOOK_IOS_EXTERNAL_ID));
+		assertTrue(account.getTokenKey().equals(TestUtil.FACEBOOK_IOS_ACCESS_TOKEN));
 
 		assertNotNull(account);
 	}
@@ -288,9 +368,9 @@ public class AccountWebserviceTest extends TestCase {
 		account.setAccountEmail(ACCOUNT_EMAIL);
 	}
 	
-	public void testUpdateExternalAccount() {
+	public void testUpdateExternalAndroidAccount() {
 		String updatedPhone = "0260222111";
-		account = TestUtil.createAccountWithExternalInfo();
+		account = TestUtil.createAndroidAccountWithExternalInfo();
 		account.setAccountPhone(updatedPhone);
 		
 		Response response = target.path("account/updateexternal").request(MediaType.APPLICATION_JSON)
@@ -304,9 +384,26 @@ public class AccountWebserviceTest extends TestCase {
 		assertNull(result.getAccountId());
 	}
 	
+	public void testUpdateExternalIoSAccount() {
+		String updatedPhone = "0260222111";
+		account = TestUtil.createIoSAccountWithExternalInfo();
+		account.setAccountPhone(updatedPhone);
+		
+		Response response = target.path("account/updateexternal").request(MediaType.APPLICATION_JSON)
+				.header(ContextConstants.USER_AGENT, Constants.IOS)
+				.post(Entity.json(account));
+		
+		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
+		Account result = response.readEntity(Account.class);
+		
+		assertNotNull(result);
+		assertEquals(updatedPhone, result.getAccountPhone());
+		assertNull(result.getAccountId());
+	}
+	
 	public void testUpdateExternalAccountWithInvalidToken() {
 		String updatedPhone = "0260222111";
-		account = TestUtil.createAccountWithExternalInfo();
+		account = TestUtil.createAndroidAccountWithExternalInfo();
 		account.setAccountPhone(updatedPhone);
 		account.setTokenKey("sasajdbsadjsasahsahjsahjsa");
 		
@@ -321,7 +418,7 @@ public class AccountWebserviceTest extends TestCase {
 	
 	public void testUpdateExternalAccountWithInvalidUserId() {
 		String updatedPhone = "0260222111";
-		account = TestUtil.createAccountWithExternalInfo();
+		account = TestUtil.createAndroidAccountWithExternalInfo();
 		account.setAccountPhone(updatedPhone);
 		account.setAccountExternalId("111111111111111111111111111");
 		

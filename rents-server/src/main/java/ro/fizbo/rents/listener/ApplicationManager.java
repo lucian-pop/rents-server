@@ -2,10 +2,13 @@ package ro.fizbo.rents.listener;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.math.BigDecimal;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.servlet.ServletContextEvent;
@@ -24,6 +27,8 @@ import ro.fizbo.rents.dao.RentDAO;
 import ro.fizbo.rents.dao.RentFavoriteDAO;
 import ro.fizbo.rents.dao.RentImageDAO;
 import ro.fizbo.rents.dao.TokenDAO;
+import ro.fizbo.rents.logic.CurrencyManager;
+import ro.fizbo.rents.logic.SchedulerManager;
 
 /**
  * Server startup listener that creates the sql session factory and returns it
@@ -31,16 +36,16 @@ import ro.fizbo.rents.dao.TokenDAO;
  */
 public class ApplicationManager implements ServletContextListener {
 	
-	// database configuration resources
+	private static Logger logger = Logger.getLogger(ApplicationManager.class);
+	
+	/** Database configuration resources. */
 	private final String DATABASE_PROPERTIES_FILE = "database/database.properties";
 
 	private final String DATABASE_CONFIGURATION_FILE = "database/mybatis-config.xml";
 	
-	private static Logger logger = Logger.getLogger(ApplicationManager.class);
-	
 	private static SqlSessionFactory sqlSessionFactory;
 	
-	// paths
+	/** Paths. */
 	private static final String DOMAIN_NAME="test.fizbo.ro";
 	
 	private static String appRealPath;
@@ -48,12 +53,12 @@ public class ApplicationManager implements ServletContextListener {
 	private static String appURL;
 	
 	private static String appFacebookAccessToken;
-
+	
 	/**
 	 * Creates and configures the sql session factory and store application paths.
 	 */
 	@Override
-	public void contextInitialized(ServletContextEvent event) {		
+	public void contextInitialized(ServletContextEvent event) {	
 		logger.info("Create database session factory");
 		try {
 			Properties databaseProperties = Resources.getResourceAsProperties(
@@ -82,13 +87,20 @@ public class ApplicationManager implements ServletContextListener {
 		appRealPath = event.getServletContext().getRealPath("/");
 		appURL = buildAppURL(event.getServletContext().getContextPath());
 		logger.info("Stored application paths");
+		
+		logger.info("Get conversion rates and schedule update.");
+		CurrencyManager.scheduleConversionRatesUpdate();
 	}
 	
 	/**
-	 * Destroys the sql session factory
+	 * Releases the application resources.
 	 */
 	@Override
-	public void contextDestroyed(ServletContextEvent arg0) {
+	public void contextDestroyed(ServletContextEvent event) {
+		logger.info("Stop scheduler for conversions rates update.");
+		SchedulerManager.stop();
+
+		logger.info("Unregister database drivers.");
 		sqlSessionFactory = null;
 		Enumeration<Driver> drivers = DriverManager.getDrivers();     
         Driver driver = null;
@@ -97,14 +109,14 @@ public class ApplicationManager implements ServletContextListener {
                 driver = drivers.nextElement();
                 DriverManager.deregisterDriver(driver);
             } catch (SQLException ex) {
-            	logger.error("Failed to de-register database driver", ex);
+            	logger.error("Failed to unregister database driver.", ex);
             }
         }
 
         try {
             AbandonedConnectionCleanupThread.shutdown();
         } catch (InterruptedException ie) {
-        	logger.error("Failed while trying to shutdown database connection", ie);
+        	logger.error("Failed while trying to shutdown database connection.", ie);
         }
 	}
 	
@@ -133,7 +145,7 @@ public class ApplicationManager implements ServletContextListener {
 		
 		return null;
 	}
-	
+
 	private static final String buildAppURL(String contextPath) {
 		StringBuilder appURLBuilder = new StringBuilder();
 		appURLBuilder.append("http://");

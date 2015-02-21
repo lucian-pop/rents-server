@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -17,12 +17,14 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import ro.fizbo.rents.dto.RentsCounter;
+import ro.fizbo.rents.logic.CurrencyManager;
 import ro.fizbo.rents.logic.RentManager;
 import ro.fizbo.rents.model.Rent;
 import ro.fizbo.rents.model.RentForm;
 import ro.fizbo.rents.model.RentStatus;
 import ro.fizbo.rents.util.Constants;
 import ro.fizbo.rents.webservice.exception.InvalidDataException;
+import ro.fizbo.rents.webservice.util.ContextUtil;
 
 @Path("rents")
 public class GetRentsWebservice {
@@ -35,10 +37,13 @@ public class GetRentsWebservice {
 			@QueryParam("maxLatitude") double maxLatitude, 
 			@QueryParam("minLongitude") double minLongitude,
 			@QueryParam("maxLongitude") double maxLongitude, 
-			@QueryParam("pageSize") int pageSize) {
+			@QueryParam("pageSize") int pageSize,
+			@Context HttpServletRequest request) {
 		RentsCounter rentsCounter = RentManager.getRentsByMapBoundaries(minLatitude, maxLatitude,
 				minLongitude, maxLongitude, RentStatus.AVAILABLE.getStatus(), 
 				RentForm.NORMAL.getForm(), pageSize);
+		
+		CurrencyManager.convertRentsListPrices(ContextUtil.getCurrency(request), rentsCounter.rents);
 		
 		return rentsCounter;
 	}
@@ -52,10 +57,13 @@ public class GetRentsWebservice {
 			@QueryParam("maxLatitude") double maxLatitude, 
 			@QueryParam("minLongitude") double minLongitude,
 			@QueryParam("maxLongitude") double maxLongitude, 
-			@PathParam("rentForm") byte rentForm, @QueryParam("pageSize") int pageSize) {
+			@PathParam("rentForm") byte rentForm, @QueryParam("pageSize") int pageSize,
+			@Context HttpServletRequest request) {
 		RentsCounter rentsCounter = RentManager.getRentsByMapBoundaries(minLatitude, maxLatitude,
 				minLongitude, maxLongitude, RentStatus.AVAILABLE.getStatus(), rentForm, pageSize);
 		
+		CurrencyManager.convertRentsListPrices(ContextUtil.getCurrency(request), rentsCounter.rents);
+
 		return rentsCounter;
 	}
 	
@@ -69,7 +77,7 @@ public class GetRentsWebservice {
 			@QueryParam("maxLongitude") double maxLongitude, 
 			@QueryParam("lastRentDate") String lastRentDate,
 			@QueryParam("lastRentId") int lastRentId, @QueryParam("pageSize") int pageSize,
-			@Context HttpServletResponse response) {
+			@Context HttpServletRequest request) {
 		DateFormat dateFormat = new SimpleDateFormat(Constants.DATE_FORMAT);
 		Date date = null;
 		try {
@@ -81,6 +89,8 @@ public class GetRentsWebservice {
 		List<Rent> rents = RentManager.getRentsNextPageByMapBoundaries(minLatitude, maxLatitude,
 				minLongitude, maxLongitude, date, lastRentId, RentStatus.AVAILABLE.getStatus(),
 				RentForm.NORMAL.getForm(), pageSize);
+		
+		CurrencyManager.convertRentsListPrices(ContextUtil.getCurrency(request), rents);
 		
 		return rents;
 	}
@@ -95,7 +105,7 @@ public class GetRentsWebservice {
 			@QueryParam("maxLongitude") double maxLongitude, 
 			@QueryParam("lastRentDate") String lastRentDate,
 			@QueryParam("lastRentId") int lastRentId, @PathParam("rentForm") byte rentForm,
-			@QueryParam("pageSize") int pageSize,@Context HttpServletResponse response) {
+			@QueryParam("pageSize") int pageSize, @Context HttpServletRequest request) {
 		DateFormat dateFormat = new SimpleDateFormat(Constants.DATE_FORMAT);
 		Date date = null;
 		try {
@@ -107,6 +117,8 @@ public class GetRentsWebservice {
 		List<Rent> rents = RentManager.getRentsNextPageByMapBoundaries(minLatitude, maxLatitude,
 				minLongitude, maxLongitude, date, lastRentId, RentStatus.AVAILABLE.getStatus(),
 				rentForm, pageSize);
+		
+		CurrencyManager.convertRentsListPrices(ContextUtil.getCurrency(request), rents);
 		
 		return rents;
 	}

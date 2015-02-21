@@ -26,13 +26,17 @@ public final class AccountManager {
 	private static Logger logger = Logger.getLogger(AccountManager.class);
 	
 	public static Account facebookLogin(Account account, boolean isIosClient) {
+		if(account.getAccountType() == null) {
+			account.setAccountType((byte) 0);
+			account.setAccountSignupDate(new Date());
+		}
 		logger.info("Validate facebook access token for " + account.getAccountEmail());
 		final boolean isTokenAccessValid = FacebookClient.validateUserAccessToken(
 				account.getAccountExternalId(), account.getTokenKey(), isIosClient);
 		if(!isTokenAccessValid) {
 			throw new UnauthorizedException();
 		}
-		
+
 		logger.info("Facebook login for " + account.getAccountEmail());
 		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
 		try {
@@ -102,6 +106,7 @@ public final class AccountManager {
 	}
 	
 	private static Account createAccount(Account account, Token token, boolean verifyExisting) {
+		account.setAccountSignupDate(new Date());
 		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
 		try {
 			AccountDAO accountDAO = session.getMapper(AccountDAO.class);

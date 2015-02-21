@@ -59,7 +59,7 @@ public class RentDAOTest extends TestCase {
 		TestUtil.deleteRent(rent);
 	}
 	
-	public void testInsertHotelierRent() {
+	public void testInsertAccommodation() {
 		Rent rent = TestUtil.addRent(account.getAccountId(), (byte) 1);
 		
 		TestUtil.deleteRent(rent);
@@ -544,113 +544,113 @@ public class RentDAOTest extends TestCase {
 		TestUtil.deleteRent(rent);
 	}
 	
-	public void testSearchCountWithSurfaceInBounds() {
-		int minSurface = 20;
-		int maxSurface = 70;
-		Rent lowRent = new Rent();
-		lowRent.setRentSurface(minSurface);
-		Rent highRent = new Rent();
-		highRent.setRentSurface(maxSurface);
-		
-		RentSearch rentSearch = new RentSearch();
-		rentSearch.setLowRent(lowRent);
-		rentSearch.setHighRent(highRent);
-		rentSearch.setAppUrl(ApplicationManager.getAppURL());
-		
-		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
-		int count = -1;
-		try {
-			count = session.selectOne("RentMapper.searchCount", rentSearch);
-			session.commit();
-		} finally {
-			session.close();
-		}
-
-		assertTrue(count > 0);
-	}
-	
-	public void testSearchWithSurfaceInBounds() {
-		int minSurface = 20;
-		int maxSurface = 70;
-		Rent lowRent = new Rent();
-		lowRent.setRentSurface(minSurface);
-		
-		Rent highRent = new Rent();
-		highRent.setRentSurface(maxSurface);
-		
-		RentSearch rentSearch = new RentSearch();
-		rentSearch.setLowRent(lowRent);
-		rentSearch.setHighRent(highRent);
-		rentSearch.setAppUrl(ApplicationManager.getAppURL());
-		
-		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
-		List<Rent> result = null;
-		try {
-			result = session.selectList("RentMapper.search", rentSearch);
-			session.commit();
-		} finally {
-			session.close();
-		}
-		
-		assertNotNull(result);
-		assertTrue(result.size() > 0);
-		for(Rent rent : result) {
-			assertTrue(rent.getRentSurface() >= minSurface);
-			assertTrue(rent.getRentSurface() <= maxSurface);
-		}
-	}
-	
-	public void testSearchWithLowSurface() {
-		int minSurface = 100;
-		Rent lowRent = new Rent();
-		lowRent.setRentSurface(minSurface);
-		Rent highRent = new Rent();
-		
-		RentSearch rentSearch = new RentSearch();
-		rentSearch.setLowRent(lowRent);
-		rentSearch.setHighRent(highRent);
-		rentSearch.setAppUrl(ApplicationManager.getAppURL());
-		
-		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
-		List<Rent> result = null;
-		try {
-			result = session.selectList("RentMapper.search", rentSearch);
-			session.commit();
-		} finally {
-			session.close();
-		}
-		
-		assertNotNull(result);
-		assertTrue(result.size() > 0);
-		for(Rent rent : result) {
-			assertTrue(rent.getRentSurface() >= minSurface);
-		}
-	}
-	
-	public void testSearchWithMaxSurface() {
-		int maxSurface = 70;
-		Rent highRent = new Rent();
-		highRent.setRentSurface(maxSurface);
-		Rent lowRent = new Rent();
-		
-		RentSearch rentSearch = new RentSearch();
-		rentSearch.setLowRent(lowRent);
-		rentSearch.setHighRent(highRent);
-		rentSearch.setAppUrl(ApplicationManager.getAppURL());
-		
-		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
-		List<Rent> result = null;
-		try {
-			result = session.selectList("RentMapper.search", rentSearch);
-			session.commit();
-		} finally {
-			session.close();
-		}
-
-		assertNotNull(result);
-		assertTrue(result.size() > 0);
-		for(Rent rent : result) {
-			assertTrue(rent.getRentSurface() <= maxSurface);
-		}
-	}
+//	public void testSearchCountWithSurfaceInBounds() {
+//		int minSurface = 20;
+//		int maxSurface = 70;
+//		Rent lowRent = new Rent();
+//		lowRent.setRentSurface(minSurface);
+//		Rent highRent = new Rent();
+//		highRent.setRentSurface(maxSurface);
+//		
+//		RentSearch rentSearch = new RentSearch();
+//		rentSearch.setLowRent(lowRent);
+//		rentSearch.setHighRent(highRent);
+//		rentSearch.setAppUrl(ApplicationManager.getAppURL());
+//		
+//		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
+//		int count = -1;
+//		try {
+//			count = session.selectOne("RentMapper.searchCount", rentSearch);
+//			session.commit();
+//		} finally {
+//			session.close();
+//		}
+//
+//		assertTrue(count > 0);
+//	}
+//	
+//	public void testSearchWithSurfaceInBounds() {
+//		int minSurface = 20;
+//		int maxSurface = 70;
+//		Rent lowRent = new Rent();
+//		lowRent.setRentSurface(minSurface);
+//		
+//		Rent highRent = new Rent();
+//		highRent.setRentSurface(maxSurface);
+//		
+//		RentSearch rentSearch = new RentSearch();
+//		rentSearch.setLowRent(lowRent);
+//		rentSearch.setHighRent(highRent);
+//		rentSearch.setAppUrl(ApplicationManager.getAppURL());
+//		
+//		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
+//		List<Rent> result = null;
+//		try {
+//			result = session.selectList("RentMapper.search", rentSearch);
+//			session.commit();
+//		} finally {
+//			session.close();
+//		}
+//		
+//		assertNotNull(result);
+//		assertTrue(result.size() > 0);
+//		for(Rent rent : result) {
+//			assertTrue(rent.getRentSurface() >= minSurface);
+//			assertTrue(rent.getRentSurface() <= maxSurface);
+//		}
+//	}
+//	
+//	public void testSearchWithLowSurface() {
+//		int minSurface = 100;
+//		Rent lowRent = new Rent();
+//		lowRent.setRentSurface(minSurface);
+//		Rent highRent = new Rent();
+//		
+//		RentSearch rentSearch = new RentSearch();
+//		rentSearch.setLowRent(lowRent);
+//		rentSearch.setHighRent(highRent);
+//		rentSearch.setAppUrl(ApplicationManager.getAppURL());
+//		
+//		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
+//		List<Rent> result = null;
+//		try {
+//			result = session.selectList("RentMapper.search", rentSearch);
+//			session.commit();
+//		} finally {
+//			session.close();
+//		}
+//		
+//		assertNotNull(result);
+//		assertTrue(result.size() > 0);
+//		for(Rent rent : result) {
+//			assertTrue(rent.getRentSurface() >= minSurface);
+//		}
+//	}
+//	
+//	public void testSearchWithMaxSurface() {
+//		int maxSurface = 70;
+//		Rent highRent = new Rent();
+//		highRent.setRentSurface(maxSurface);
+//		Rent lowRent = new Rent();
+//		
+//		RentSearch rentSearch = new RentSearch();
+//		rentSearch.setLowRent(lowRent);
+//		rentSearch.setHighRent(highRent);
+//		rentSearch.setAppUrl(ApplicationManager.getAppURL());
+//		
+//		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
+//		List<Rent> result = null;
+//		try {
+//			result = session.selectList("RentMapper.search", rentSearch);
+//			session.commit();
+//		} finally {
+//			session.close();
+//		}
+//
+//		assertNotNull(result);
+//		assertTrue(result.size() > 0);
+//		for(Rent rent : result) {
+//			assertTrue(rent.getRentSurface() <= maxSurface);
+//		}
+//	}
 }

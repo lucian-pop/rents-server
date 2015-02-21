@@ -13,9 +13,17 @@ public class Rent {
 	
 	private Integer rentPrice;
 	
+	private String rentCurrency;
+	
 	private Integer rentSurface;
 	
 	private Short rentRooms;
+	
+	private Short rentGuests;
+	
+	private Short rentSingleBeds;
+	
+	private Short rentDoubleBeds;
 	
 	private Short rentBaths;
 	
@@ -30,6 +38,10 @@ public class Rent {
 	private String rentDescription;
 	
 	private Boolean rentPetsAllowed;
+	
+	private Boolean rentParkingPlace;
+	
+	private Boolean rentSmokersAllowed;
 	
 	private String rentPhone;
 	
@@ -83,6 +95,14 @@ public class Rent {
 	public void setRentPrice(Integer rentPrice) {
 		this.rentPrice = rentPrice;
 	}
+	
+	public String getRentCurrency() {
+		return rentCurrency;
+	}
+	
+	public void setRentCurrency(String rentCurrency) {
+		this.rentCurrency = rentCurrency;
+	}
 
 	public Integer getRentSurface() {
 		return rentSurface;
@@ -98,6 +118,30 @@ public class Rent {
 
 	public void setRentRooms(Short rentRooms) {
 		this.rentRooms = rentRooms;
+	}
+
+	public Short getRentGuests() {
+		return rentGuests;
+	}
+
+	public void setRentGuests(Short rentGuests) {
+		this.rentGuests = rentGuests;
+	}
+
+	public Short getRentSingleBeds() {
+		return rentSingleBeds;
+	}
+
+	public void setRentSingleBeds(Short rentSingleBeds) {
+		this.rentSingleBeds = rentSingleBeds;
+	}
+
+	public Short getRentDoubleBeds() {
+		return rentDoubleBeds;
+	}
+
+	public void setRentDoubleBeds(Short rentDoubleBeds) {
+		this.rentDoubleBeds = rentDoubleBeds;
 	}
 
 	public Short getRentBaths() {
@@ -154,6 +198,22 @@ public class Rent {
 
 	public void setRentPetsAllowed(Boolean rentPetsAllowed) {
 		this.rentPetsAllowed = rentPetsAllowed;
+	}
+
+	public Boolean isRentParkingPlace() {
+		return rentParkingPlace;
+	}
+
+	public void setRentParkingPlace(Boolean rentParkingPlace) {
+		this.rentParkingPlace = rentParkingPlace;
+	}
+
+	public Boolean isRentSmokersAllowed() {
+		return rentSmokersAllowed;
+	}
+
+	public void setRentSmokersAllowed(Boolean rentSmokersAllowed) {
+		this.rentSmokersAllowed = rentSmokersAllowed;
 	}
 
 	public String getRentPhone() {

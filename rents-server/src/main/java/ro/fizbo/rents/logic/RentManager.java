@@ -14,6 +14,7 @@ import ro.fizbo.rents.dto.RentFavoriteViewsCounter;
 import ro.fizbo.rents.dto.RentsCounter;
 import ro.fizbo.rents.listener.ApplicationManager;
 import ro.fizbo.rents.model.Rent;
+import ro.fizbo.rents.model.Currency;
 import ro.fizbo.rents.model.RentForm;
 import ro.fizbo.rents.model.RentSearch;
 import ro.fizbo.rents.model.view.RentFavoriteView;
@@ -24,11 +25,7 @@ public class RentManager {
 	private static Logger logger = Logger.getLogger(RentManager.class);
 
 	public static Rent addRent(Rent rent) {
-		// add support to client before adding hotelier rents.
-		if(rent.getRentForm() == null) {
-			rent.setRentForm(RentForm.NORMAL.getForm());
-		}
-		
+		addSupportForOldClients(rent);
 		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
 		try {
 			AddressDAO addressDAO = session.getMapper(AddressDAO.class);
@@ -54,6 +51,7 @@ public class RentManager {
 	}
 	
 	public static int updateRent(Rent rent) {
+		addSupportForOldClients(rent);
 		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
 		int updateRentCount = -1;
 		int updateAddressCount = -1;
@@ -78,6 +76,16 @@ public class RentManager {
 		}
 		
 		return 1;
+	}
+	
+	/** Support clients before adding accommodations.*/
+	private static void addSupportForOldClients(Rent rent) {
+		if(rent.getRentForm() == null) {
+			rent.setRentForm(RentForm.NORMAL.getForm());
+		}
+		if(rent.getRentCurrency() == null) {
+			rent.setRentCurrency(Currency.EUR.toString());
+		}
 	}
 	
 	public static Rent getDetailedRent(int rentId) {
@@ -136,10 +144,7 @@ public class RentManager {
 		Rent lowRent = rentSearch.getLowRent();
 		Rent highRent = rentSearch.getHighRent();
 		
-		// add support for clients before the adding of hotelier rents.
-		if(lowRent.getRentForm() == null) {
-			lowRent.setRentForm(RentForm.NORMAL.getForm());
-		}
+		addSupportForOldClients(lowRent);
 
 		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
 		try {
@@ -178,6 +183,8 @@ public class RentManager {
 	public static List<Rent> searchNextPage(RentSearch rentSearch) {
 		Rent lowRent = rentSearch.getLowRent();
 		Rent highRent = rentSearch.getHighRent();
+
+		addSupportForOldClients(lowRent);
 
 		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
 		List<Rent> result = null;

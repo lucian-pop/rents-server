@@ -28,6 +28,7 @@ import ro.fizbo.rents.logic.TokenGenerator;
 import ro.fizbo.rents.model.Account;
 import ro.fizbo.rents.model.Address;
 import ro.fizbo.rents.model.Rent;
+import ro.fizbo.rents.model.Currency;
 import ro.fizbo.rents.model.Token;
 import ro.fizbo.rents.util.PasswordHashing;
 import ro.fizbo.rents.webservice.jsonprovider.GsonMessageBodyHandler;
@@ -38,18 +39,25 @@ public class TestUtil {
 	
 	public static final String ACCOUNT_NAME= "John Smith";
 	
-	public static final String USER_EXTERNAL_ID = "805939182760843";
+	public static final String FACEBOOK_ANDROID_EXTERNAL_ID = "805939182760843";
 	
-	public static final String USER_ACCESS_TOKEN = "CAAFJNhhy1CYBAPQXYbVLT5poxOAcStBocYpDI2rSlnEB2F"
-			+ "NVnIZB7VZCf3CgcbwQNu1qOAkl9ZBQqsZB1NmZCAX67w8x2bWZCDaNjLjrH261cNMen2Re7YjsdhBUgbuyoi"
-			+ "xMJZAkR9gqbgPBwrGg0DfSwZCQxbONollObHXzk9ul4jZBxDmVKAQiZByCAPrVJwwgoIuk0we47USxuxgSAC"
-			+ "29j6me1zi8q8BdHZCQJfpftpuSAZDZD";
+	public static final String FACEBOOK_ANDROID_ACCESS_TOKEN = "CAAFJNhhy1CYBAPQXYbVLT5poxOAcStBocY"
+			+ "pDI2rSlnEB2FNVnIZB7VZCf3CgcbwQNu1qOAkl9ZBQqsZB1NmZCAX67w8x2bWZCDaNjLjrH261cNMen2Re7Y"
+			+ "jsdhBUgbuyoixMJZAkR9gqbgPBwrGg0DfSwZCQxbONollObHXzk9ul4jZBxDmVKAQiZByCAPrVJwwgoIuk0w"
+			+ "e47USxuxgSAC29j6me1zi8q8BdHZCQJfpftpuSAZDZD";
+	
+	public static final String FACEBOOK_IOS_EXTERNAL_ID = "409872045826974";
+	
+	public static final String FACEBOOK_IOS_ACCESS_TOKEN = "CAAFnTYuAqZAwBAFgIySPxvaIZCf1bSLEQk6ZBj"
+			+ "RlSIcNkLmSkYnt0dNtNM8B8l2p18VxFyfnCCzBqG3xuEbLdRKqiZBK25Vby28oEL1RXCdZAmufONC44kZA8g"
+			+ "GU76mxWXsBg3LcieIZBWylZAZAOU9XC8KZBRINUXAhS66dm3QSLZBgo0YitPbZAu6o5gR1edzgdsdLdAi9RW"
+			+ "zqfDBdYTZAZAhIyxQHf0OGqhIbZB2GbqgZAvFK9gZDZD";
 	
 	public static final String ACCOUNT_PHONE = "+40100900900";
 	
 	public static final String ACCOUNT_PASSWORD = "account password";
 
-	public static final String BASE_URI = "http://192.168.1.3:8080/rents-server/ws/";
+	public static final String BASE_URI = "http://192.168.1.6:8080/rents-server/ws/";
 	
 	public static final double MIN_LATITUDE = 46.7379424563698;
 
@@ -59,7 +67,7 @@ public class TestUtil {
 	
 	public static final double MAX_LONGITUDE = 23.59537862241268;
 	
-	public static final int PAGE_SIZE = 50;
+	public static final int PAGE_SIZE = 10;
 	
 	private static final double LATITUDE = 46.7457380;
 	
@@ -148,12 +156,12 @@ public class TestUtil {
 		return account;
 	}
 	
-	public static Account createAccountWithExternalInfo() {
+	public static Account createAndroidAccountWithExternalInfo() {
 		//Insert account into database
 		Account account = new Account();
 		account.setAccountType((byte) 0);
 		account.setAccountEmail(ACCOUNT_EMAIL);
-		account.setAccountExternalId(USER_EXTERNAL_ID);
+		account.setAccountExternalId(FACEBOOK_ANDROID_EXTERNAL_ID);
 		account.setAccountFirstname("account firstname");
 		account.setAccountLastname("account lastname");
 		account.setAccountPhone(ACCOUNT_PHONE);
@@ -168,7 +176,7 @@ public class TestUtil {
 			// Generate token
 			Token token = new Token();
 			token.setAccountId(account.getAccountId());
-			token.setTokenKey(USER_ACCESS_TOKEN);
+			token.setTokenKey(FACEBOOK_ANDROID_ACCESS_TOKEN);
 			token.setTokenCreationDate(new Date());
 					
 			// insert token into database
@@ -176,7 +184,43 @@ public class TestUtil {
 			tokenDAO.insertToken(token);
 			session.commit();
 			
-			account.setTokenKey(USER_ACCESS_TOKEN);
+			account.setTokenKey(FACEBOOK_ANDROID_ACCESS_TOKEN);
+		} finally {
+			session.close();
+		}
+		
+		return account;
+	}
+	
+	public static Account createIoSAccountWithExternalInfo() {
+		//Insert account into database
+		Account account = new Account();
+		account.setAccountType((byte) 0);
+		account.setAccountEmail(ACCOUNT_EMAIL);
+		account.setAccountExternalId(FACEBOOK_IOS_EXTERNAL_ID);
+		account.setAccountFirstname("account firstname");
+		account.setAccountLastname("account lastname");
+		account.setAccountPhone(ACCOUNT_PHONE);
+		account.setAccountSignupDate(new Date());
+
+		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
+		try {
+			AccountDAO accountMapper = session.getMapper(AccountDAO.class);
+			accountMapper.insertAccount(account);
+			session.commit();
+			
+			// Generate token
+			Token token = new Token();
+			token.setAccountId(account.getAccountId());
+			token.setTokenKey(FACEBOOK_IOS_ACCESS_TOKEN);
+			token.setTokenCreationDate(new Date());
+					
+			// insert token into database
+			TokenDAO tokenDAO = session.getMapper(TokenDAO.class);
+			tokenDAO.insertToken(token);
+			session.commit();
+			
+			account.setTokenKey(FACEBOOK_IOS_ACCESS_TOKEN);
 		} finally {
 			session.close();
 		}
@@ -308,6 +352,7 @@ public class TestUtil {
 		rent.setAccountId(accountId);
 		rent.setAddress(address);
 		rent.setRentPrice(500);
+		rent.setRentCurrency(Currency.EUR.toString());
 		rent.setRentSurface(120);
 		rent.setRentRooms((short) 3);
 		rent.setRentBaths((short) 3);

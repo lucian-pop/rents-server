@@ -6,12 +6,14 @@ import java.util.List;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import ro.fizbo.rents.dto.RentsCounter;
 import ro.fizbo.rents.model.Account;
 import ro.fizbo.rents.model.Address;
+import ro.fizbo.rents.model.Currency;
 import ro.fizbo.rents.model.Rent;
 import ro.fizbo.rents.model.RentAge;
 import ro.fizbo.rents.model.RentArchitecture;
@@ -21,6 +23,7 @@ import ro.fizbo.rents.model.RentStatus;
 import ro.fizbo.rents.model.RentType;
 import ro.fizbo.rents.util.TestUtil;
 import ro.fizbo.rents.webservice.response.WebserviceResponseStatus;
+import ro.fizbo.rents.webservice.util.ContextConstants;
 import junit.framework.TestCase;
 
 public class RentsSearchWebServiceTest extends TestCase {
@@ -189,7 +192,70 @@ public class RentsSearchWebServiceTest extends TestCase {
 		assertTrue(rentsCounter.counter >= rentsCounter.rents.size());
 	}
 	
-	public void testSearchNextPage() {
+	public void testSearchWithCurrency() {
+		int minPrice = 0;
+		int maxPrice = Integer.MAX_VALUE;
+		int minSurface = 0;
+		int maxSurface = Integer.MAX_VALUE;
+		short minRooms = 1;
+		short maxRooms = Short.MAX_VALUE;
+		short minBaths = 1;
+		short maxBaths = Short.MAX_VALUE;
+		boolean rentPetsAllowed = false;
+		byte rentStatus = RentStatus.AVAILABLE.getStatus();
+		
+		RentSearch rentSearch = new RentSearch();
+		Rent lowRent = new Rent();
+		Rent highRent = new Rent();
+		Address lowAddress = new Address();
+		Address highAddress = new Address();
+		lowAddress.setAddressLatitude(MIN_LATITUDE);
+		lowAddress.setAddressLongitude(MIN_LONGITUDE);
+		highAddress.setAddressLatitude(MAX_LATITUDE);
+		highAddress.setAddressLongitude(MAX_LONGITUDE);
+		
+		lowRent.setAddress(lowAddress);
+		lowRent.setRentPrice(minPrice);
+		lowRent.setRentSurface(minSurface);
+		lowRent.setRentRooms(minRooms);
+		lowRent.setRentBaths(minBaths);
+		lowRent.setRentParty(Byte.MIN_VALUE);
+		lowRent.setRentType(Byte.MIN_VALUE);
+		lowRent.setRentArchitecture(Byte.MIN_VALUE);
+		lowRent.setRentAge(Short.MIN_VALUE);
+		lowRent.setRentPetsAllowed(rentPetsAllowed);
+		lowRent.setRentStatus(rentStatus);
+		
+		highRent.setAddress(highAddress);
+		highRent.setRentPrice(maxPrice);
+		highRent.setRentSurface(maxSurface);
+		highRent.setRentRooms(maxRooms);
+		highRent.setRentBaths(maxBaths);
+		highRent.setRentParty(Byte.MAX_VALUE);
+		highRent.setRentType(Byte.MAX_VALUE);
+		highRent.setRentArchitecture(Byte.MAX_VALUE);
+		highRent.setRentAge(Short.MAX_VALUE);
+		highRent.setRentPetsAllowed(rentPetsAllowed);
+
+		rentSearch.setLowRent(lowRent);
+		rentSearch.setHighRent(highRent);
+		rentSearch.setPageSize(TestUtil.PAGE_SIZE);
+
+		Response response = target.path("rents/search").request(MediaType.APPLICATION_JSON)
+				.header(ContextConstants.CURRENCY, Currency.RON.toString())
+				.post(Entity.json(rentSearch));
+		assertTrue(response.getStatus()==WebserviceResponseStatus.OK.getCode());
+		
+		RentsCounter rentsCounter = response.readEntity(RentsCounter.class);
+		assertTrue(rentsCounter.rents.size() > 0);
+		assertTrue(rentsCounter.rents.size() <= TestUtil.PAGE_SIZE);
+		assertTrue(rentsCounter.counter >= rentsCounter.rents.size());
+		for(Rent rent : rentsCounter.rents) {
+			assertEquals(Currency.RON.toString(), rent.getRentCurrency());
+		}
+	}
+	
+	public void testSearchNextPageWithoutCurrency() {
 		int minPrice = 0;
 		int maxPrice = Integer.MAX_VALUE;
 		int minSurface = 0;
@@ -244,5 +310,69 @@ public class RentsSearchWebServiceTest extends TestCase {
 				.post(Entity.json(rentSearch));
 
 		assertTrue(response.getStatus()==WebserviceResponseStatus.OK.getCode());
+	}
+	
+	public void testSearchNextPageWithCurrency() {
+		int minPrice = 0;
+		int maxPrice = Integer.MAX_VALUE;
+		int minSurface = 0;
+		int maxSurface = Integer.MAX_VALUE;
+		short minRooms = 1;
+		short maxRooms = Short.MAX_VALUE;
+		short minBaths = 1;
+		short maxBaths = Short.MAX_VALUE;
+		boolean rentPetsAllowed = false;
+		byte rentStatus = RentStatus.AVAILABLE.getStatus();
+		
+		RentSearch rentSearch = new RentSearch();
+		Rent lowRent = new Rent();
+		Rent highRent = new Rent();
+		Address lowAddress = new Address();
+		Address highAddress = new Address();
+		lowAddress.setAddressLatitude(MIN_LATITUDE);
+		lowAddress.setAddressLongitude(MIN_LONGITUDE);
+		highAddress.setAddressLatitude(MAX_LATITUDE);
+		highAddress.setAddressLongitude(MAX_LONGITUDE);
+		
+		lowRent.setAddress(lowAddress);
+		lowRent.setRentPrice(minPrice);
+		lowRent.setRentSurface(minSurface);
+		lowRent.setRentRooms(minRooms);
+		lowRent.setRentBaths(minBaths);
+		lowRent.setRentParty(Byte.MIN_VALUE);
+		lowRent.setRentType(Byte.MIN_VALUE);
+		lowRent.setRentArchitecture(Byte.MIN_VALUE);
+		lowRent.setRentAge(Short.MIN_VALUE);
+		lowRent.setRentPetsAllowed(rentPetsAllowed);
+		lowRent.setRentStatus(rentStatus);
+		
+		highRent.setAddress(highAddress);
+		highRent.setRentPrice(maxPrice);
+		highRent.setRentSurface(maxSurface);
+		highRent.setRentRooms(maxRooms);
+		highRent.setRentBaths(maxBaths);
+		highRent.setRentParty(Byte.MAX_VALUE);
+		highRent.setRentType(Byte.MAX_VALUE);
+		highRent.setRentArchitecture(Byte.MAX_VALUE);
+		highRent.setRentAge(Short.MAX_VALUE);
+		highRent.setRentPetsAllowed(true);
+		highRent.setRentAddDate(new Date());
+		highRent.setRentId(Integer.MAX_VALUE);
+		
+		rentSearch.setLowRent(lowRent);
+		rentSearch.setHighRent(highRent);
+		rentSearch.setPageSize(TestUtil.PAGE_SIZE);
+
+		Response response = target.path("rents/search/page").request(MediaType.APPLICATION_JSON)
+				.header(ContextConstants.CURRENCY, Currency.RON.toString())
+				.post(Entity.json(rentSearch));
+
+		assertTrue(response.getStatus()==WebserviceResponseStatus.OK.getCode());
+		List<Rent> rents = response.readEntity(new GenericType<List<Rent>>(){});
+		assertTrue(rents.size() > 0);
+		assertTrue(rents.size() <= TestUtil.PAGE_SIZE);
+		for(Rent rent : rents) {
+			assertEquals(Currency.RON.toString(), rent.getRentCurrency());
+		}
 	}
 }

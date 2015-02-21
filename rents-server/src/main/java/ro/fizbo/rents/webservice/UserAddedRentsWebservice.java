@@ -17,6 +17,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import ro.fizbo.rents.dto.RentsCounter;
+import ro.fizbo.rents.logic.CurrencyManager;
 import ro.fizbo.rents.logic.RentManager;
 import ro.fizbo.rents.model.Rent;
 import ro.fizbo.rents.model.RentStatus;
@@ -25,6 +26,7 @@ import ro.fizbo.rents.util.Constants;
 import ro.fizbo.rents.webservice.exception.InvalidDataException;
 import ro.fizbo.rents.webservice.exception.UnauthorizedException;
 import ro.fizbo.rents.webservice.util.AuthorizationUtil;
+import ro.fizbo.rents.webservice.util.ContextUtil;
 
 @Path("account/rents")
 public class UserAddedRentsWebservice {
@@ -40,8 +42,11 @@ public class UserAddedRentsWebservice {
 			throw new UnauthorizedException();
 		}
 
-		return RentManager.getUserAddedRents(token.getAccountId(), RentStatus.AVAILABLE.getStatus(),
-				pageSize);
+		RentsCounter rentsCounter = RentManager.getUserAddedRents(token.getAccountId(), 
+				RentStatus.AVAILABLE.getStatus(), pageSize);
+		CurrencyManager.convertRentsListPrices(ContextUtil.getCurrency(request), 
+				rentsCounter.rents);
+		return rentsCounter;
 	}
 	
 	@Path("added/page")
@@ -63,9 +68,12 @@ public class UserAddedRentsWebservice {
 		} catch (ParseException e) {
 			throw new InvalidDataException();
 		}
-
-		return RentManager.getUserAddedRentsNextPage(token.getAccountId(),
+		
+		List<Rent> rents = RentManager.getUserAddedRentsNextPage(token.getAccountId(),
 				RentStatus.AVAILABLE.getStatus(), date, lastRentId, pageSize);
+		CurrencyManager.convertRentsListPrices(ContextUtil.getCurrency(request), rents);
+
+		return rents;
 	}
 	
 	@Path("added/delete")

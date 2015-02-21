@@ -17,6 +17,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import ro.fizbo.rents.dto.RentFavoriteViewsCounter;
+import ro.fizbo.rents.logic.CurrencyManager;
 import ro.fizbo.rents.logic.RentFavoriteManager;
 import ro.fizbo.rents.logic.RentManager;
 import ro.fizbo.rents.model.Token;
@@ -25,6 +26,7 @@ import ro.fizbo.rents.util.Constants;
 import ro.fizbo.rents.webservice.exception.InvalidDataException;
 import ro.fizbo.rents.webservice.exception.UnauthorizedException;
 import ro.fizbo.rents.webservice.util.AuthorizationUtil;
+import ro.fizbo.rents.webservice.util.ContextUtil;
 
 @Path("account/rents")
 public class UserFavoritesWebservice {
@@ -40,7 +42,12 @@ public class UserFavoritesWebservice {
 			throw new UnauthorizedException();
 		}
 		
-		return RentManager.getUserFavoriteRents(token.getAccountId(), pageSize);
+		RentFavoriteViewsCounter rentFavoriteViewsCounter = 
+				RentManager.getUserFavoriteRents(token.getAccountId(), pageSize);
+		CurrencyManager.convertRentsFavoritesListPrices(ContextUtil.getCurrency(request), 
+				rentFavoriteViewsCounter.rentFavoriteViews);
+		
+		return rentFavoriteViewsCounter;
 	}
 	
 	@Path("favorites/page")
@@ -63,20 +70,25 @@ public class UserFavoritesWebservice {
 			throw new InvalidDataException();
 		}
 		
-		return RentManager.getUserFavoriteRentsNextPage(token.getAccountId(), date, pageSize);
+		List<RentFavoriteView> rentsFavoritesViews = 
+				RentManager.getUserFavoriteRentsNextPage(token.getAccountId(), date, pageSize);
+		CurrencyManager.convertRentsFavoritesListPrices(ContextUtil.getCurrency(request),
+				rentsFavoritesViews);
+		
+		return rentsFavoritesViews;
 	}
 	
 	@Path("favorites/add")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public boolean addRentToFavorites(int rentId, @Context HttpServletRequest request) {
+	public boolean addRentToFavorites(String rentId, @Context HttpServletRequest request) {
 		Token token = AuthorizationUtil.authorize(request);
 		if(!AuthorizationUtil.isAuthorized(token)) {
 			throw new UnauthorizedException();
 		}
 		
-		return RentFavoriteManager.addRentToFavorites(token.getAccountId(), rentId);
+		return RentFavoriteManager.addRentToFavorites(token.getAccountId(), Integer.parseInt(rentId));
 	}
 	
 	@Path("favorites/delete")

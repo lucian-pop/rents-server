@@ -6,7 +6,6 @@ public final class ContextUtil {
 
 	private static String baseURL;
 	
-	
 	public static String getBaseURL(HttpServletRequest request) {
 		if(baseURL == null) {
 			String url = request.getRequestURL().toString();
@@ -15,6 +14,14 @@ public final class ContextUtil {
 		}
 		
 		return baseURL;
+	}
+	
+	public static String getCurrency(HttpServletRequest request) {
+		String currency = request.getHeader(ContextConstants.CURRENCY);
+		if(currency == null || currency == "") {
+			currency = ro.fizbo.rents.model.Currency.EUR.toString();
+		}
+		return currency;
 	}
 
 }

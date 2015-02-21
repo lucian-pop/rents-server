@@ -15,6 +15,7 @@ import javax.ws.rs.core.Response;
 import ro.fizbo.rents.dto.RentFavoriteViewsCounter;
 import ro.fizbo.rents.logic.TokenGenerator;
 import ro.fizbo.rents.model.Account;
+import ro.fizbo.rents.model.Currency;
 import ro.fizbo.rents.model.Rent;
 import ro.fizbo.rents.model.view.RentFavoriteView;
 import ro.fizbo.rents.util.Constants;
@@ -99,7 +100,7 @@ public class UserFavoritesWebserviceTest extends TestCase {
 		assertTrue(response.getStatus() == WebserviceResponseStatus.UNAUTHORIZED.getCode());
 	}
 	
-	public void testGetUserFavoriteRents() {
+	public void testGetUserFavoriteRentsWithoutCurrency() {
 		Form form = new Form();
 		form.param("email", TEST_ACCOUNT_EMAIL);
 		form.param("password", TEST_ACCOUNT_PASSWORD);
@@ -123,7 +124,35 @@ public class UserFavoritesWebserviceTest extends TestCase {
 		assertTrue(result.rentFavoriteViews.size() <= TestUtil.PAGE_SIZE);
 	}
 	
-	public void testGetUserFavoriteRentsNextPage() {
+	public void testGetUserFavoriteRentsWithCurrency() {
+		Form form = new Form();
+		form.param("email", TEST_ACCOUNT_EMAIL);
+		form.param("password", TEST_ACCOUNT_PASSWORD);
+		Response response = target.path("account/login").request(MediaType.APPLICATION_JSON)
+				.post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
+		
+		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
+		Account loginResult = response.readEntity(Account.class);
+		assertNotNull(loginResult);
+		
+		response = target.path("account/rents/favorites")
+				.queryParam("pageSize", TestUtil.PAGE_SIZE)
+				.request(MediaType.APPLICATION_JSON)
+				.header(ContextConstants.CURRENCY, Currency.RON.toString())
+				.header(ContextConstants.TOKEN_KEY, loginResult.getTokenKey()).get();
+		
+		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
+
+		RentFavoriteViewsCounter result = response.readEntity(RentFavoriteViewsCounter.class);
+		assertNotNull(result);
+		assertTrue(result.rentFavoriteViews.size() > 0);
+		assertTrue(result.rentFavoriteViews.size() <= TestUtil.PAGE_SIZE);
+		for(RentFavoriteView rentFavoriteView : result.rentFavoriteViews) {
+			assertEquals(Currency.RON.toString(), rentFavoriteView.getRent().getRentCurrency());
+		}
+	}
+	
+	public void testGetUserFavoriteRentsNextPageWithoutCurrency() {
 		Form form = new Form();
 		form.param("email", TEST_ACCOUNT_EMAIL);
 		form.param("password", TEST_ACCOUNT_PASSWORD);
@@ -144,6 +173,35 @@ public class UserFavoritesWebserviceTest extends TestCase {
 				response.readEntity(new GenericType<List<RentFavoriteView>>(){});
 		assertNotNull(result);
 		assertTrue(result.size() > 0);
+	}
+	
+	public void testGetUserFavoriteRentsNextPageWithCurrency() {
+		Form form = new Form();
+		form.param("email", TEST_ACCOUNT_EMAIL);
+		form.param("password", TEST_ACCOUNT_PASSWORD);
+		Response response = target.path("account/login").request(MediaType.APPLICATION_JSON)
+				.post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
+		
+		Account testAccount = response.readEntity(Account.class);
+		String date = (new SimpleDateFormat(Constants.DATE_FORMAT)).format(new Date());
+		response = target.path("account/rents/favorites/page")
+				.queryParam("lastDate", date)
+				.queryParam("pageSize", TestUtil.PAGE_SIZE)
+				.request(MediaType.APPLICATION_JSON)
+				.header(ContextConstants.CURRENCY, Currency.RON.toString())
+				.header(ContextConstants.TOKEN_KEY, testAccount.getTokenKey()).get();
+		
+		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
+
+		List<RentFavoriteView> result = 
+				response.readEntity(new GenericType<List<RentFavoriteView>>(){});
+		assertNotNull(result);
+		assertTrue(result.size() > 0);
+		System.out.println("Page size is " + result.size());
+		assertTrue(result.size() <= TestUtil.PAGE_SIZE);
+		for(RentFavoriteView rentFavoriteView : result) {
+			assertEquals(Currency.RON.toString(), rentFavoriteView.getRent().getRentCurrency());
+		}
 	}
 	
 	public void testDeleteUserFavoriteRents() {

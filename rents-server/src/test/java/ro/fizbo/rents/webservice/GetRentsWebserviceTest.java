@@ -6,16 +6,19 @@ import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import ro.fizbo.rents.dto.RentsCounter;
 import ro.fizbo.rents.model.Account;
+import ro.fizbo.rents.model.Currency;
 import ro.fizbo.rents.model.Rent;
 import ro.fizbo.rents.model.RentForm;
 import ro.fizbo.rents.util.Constants;
 import ro.fizbo.rents.util.TestUtil;
 import ro.fizbo.rents.webservice.response.WebserviceResponseStatus;
+import ro.fizbo.rents.webservice.util.ContextConstants;
 import junit.framework.TestCase;
 
 public class GetRentsWebserviceTest extends TestCase {
@@ -59,7 +62,7 @@ public class GetRentsWebserviceTest extends TestCase {
 		super.tearDown();
 	}
 
-	public void testGetRentsByMapBoundaries() {
+	public void testGetRentsByMapBoundariesWithoutCurrency() {
 		Response response = target.path("rents/map")
 				.queryParam("minLatitude", TestUtil.MIN_LATITUDE)
 				.queryParam("maxLatitude", TestUtil.MAX_LATITUDE)
@@ -77,7 +80,29 @@ public class GetRentsWebserviceTest extends TestCase {
 		assertTrue(rentsCounter.counter >= rentsCounter.rents.size());
 	}
 	
-	public void testGetRentsByMapBoundariesWithHotelierRentForm() {
+	public void testGetRentsByMapBoundariesWithCurrency() {
+		Response response = target.path("rents/map")
+				.queryParam("minLatitude", TestUtil.MIN_LATITUDE)
+				.queryParam("maxLatitude", TestUtil.MAX_LATITUDE)
+				.queryParam("minLongitude", TestUtil.MIN_LONGITUDE)
+				.queryParam("maxLongitude", TestUtil.MAX_LONGITUDE)
+				.queryParam("pageSize", TestUtil.PAGE_SIZE)
+				.request(MediaType.APPLICATION_JSON)
+				.header(ContextConstants.CURRENCY, Currency.RON.toString()).get();
+		
+		assertTrue(response.getStatus()==WebserviceResponseStatus.OK.getCode());
+		
+		RentsCounter rentsCounter = response.readEntity(RentsCounter.class);
+
+		assertTrue(rentsCounter.rents.size() > 0);
+		assertTrue(rentsCounter.rents.size() <= TestUtil.PAGE_SIZE);
+		assertTrue(rentsCounter.counter >= rentsCounter.rents.size());
+		for(Rent rent : rentsCounter.rents) {
+			assertTrue(rent.getRentCurrency().equals(Currency.RON.toString()));
+		}
+	}
+	
+	public void testGetAccommodationsByMapBoundariesWithoutCurrency() {
 		Response response = target.path("rents/map/1")
 				.queryParam("minLatitude", TestUtil.MIN_LATITUDE)
 				.queryParam("maxLatitude", TestUtil.MAX_LATITUDE)
@@ -95,7 +120,29 @@ public class GetRentsWebserviceTest extends TestCase {
 		assertTrue(rentsCounter.counter >= rentsCounter.rents.size());
 	}
 	
-	public void testGetRentsNextPageByMapBoundaries() {
+	public void testGetAccommodationsByMapBoundariesWithCurrency() {
+		Response response = target.path("rents/map/1")
+				.queryParam("minLatitude", TestUtil.MIN_LATITUDE)
+				.queryParam("maxLatitude", TestUtil.MAX_LATITUDE)
+				.queryParam("minLongitude", TestUtil.MIN_LONGITUDE)
+				.queryParam("maxLongitude", TestUtil.MAX_LONGITUDE)
+				.queryParam("pageSize", TestUtil.PAGE_SIZE)
+				.request(MediaType.APPLICATION_JSON).header(ContextConstants.CURRENCY,
+						Currency.RON.toString()).get();
+		
+		assertTrue(response.getStatus()==WebserviceResponseStatus.OK.getCode());
+		
+		RentsCounter rentsCounter = response.readEntity(RentsCounter.class);
+
+		assertTrue(rentsCounter.rents.size() > 0);
+		assertTrue(rentsCounter.rents.size() <= TestUtil.PAGE_SIZE);
+		assertTrue(rentsCounter.counter >= rentsCounter.rents.size());
+		for(Rent rent : rentsCounter.rents) {
+			assertTrue(rent.getRentCurrency().equals(Currency.RON.toString()));
+		}
+	}
+	
+	public void testGetRentsNextPageByMapBoundariesWithoutCurrency() {
 		String date = (new SimpleDateFormat(Constants.DATE_FORMAT)).format(new Date());
 		Response response = target.path("rents/map/page")
 				.queryParam("minLatitude", TestUtil.MIN_LATITUDE)
@@ -107,9 +154,33 @@ public class GetRentsWebserviceTest extends TestCase {
 				.request(MediaType.APPLICATION_JSON).get();
 		
 		assertTrue(response.getStatus()==WebserviceResponseStatus.OK.getCode());
+		List<Rent> rents = response.readEntity(new GenericType<List<Rent>>(){});
+		assertTrue(rents.size() > 0);
+		assertTrue(rents.size() <= TestUtil.PAGE_SIZE);
 	}
 	
-	public void testGetRentsNextPageByMapBoundariesWithHotelierRentForm() {
+	public void testGetRentsNextPageByMapBoundariesWithCurrency() {
+		String date = (new SimpleDateFormat(Constants.DATE_FORMAT)).format(new Date());
+		Response response = target.path("rents/map/page")
+				.queryParam("minLatitude", TestUtil.MIN_LATITUDE)
+				.queryParam("maxLatitude", TestUtil.MAX_LATITUDE)
+				.queryParam("minLongitude", TestUtil.MIN_LONGITUDE)
+				.queryParam("maxLongitude", TestUtil.MAX_LONGITUDE).queryParam("lastRentDate", date)
+				.queryParam("lastRentId", Integer.MAX_VALUE)
+				.queryParam("pageSize", TestUtil.PAGE_SIZE)
+				.request(MediaType.APPLICATION_JSON)
+				.header(ContextConstants.CURRENCY, Currency.RON.toString()).get();
+		
+		assertTrue(response.getStatus()==WebserviceResponseStatus.OK.getCode());
+		List<Rent> rents = response.readEntity(new GenericType<List<Rent>>(){});
+		assertTrue(rents.size() > 0);
+		assertTrue(rents.size() <= TestUtil.PAGE_SIZE);
+		for(Rent rent : rents) {
+			assertTrue(rent.getRentCurrency().equals(Currency.RON.toString()));
+		}
+	}
+	
+	public void testGetAccommodationsNextPageByMapBoundariesWithoutCurrency() {
 		String date = (new SimpleDateFormat(Constants.DATE_FORMAT)).format(new Date());
 		Response response = target.path("rents/map/page/1")
 				.queryParam("minLatitude", TestUtil.MIN_LATITUDE)
@@ -121,6 +192,28 @@ public class GetRentsWebserviceTest extends TestCase {
 				.request(MediaType.APPLICATION_JSON).get();
 		
 		assertTrue(response.getStatus()==WebserviceResponseStatus.OK.getCode());
+	}
+	
+	public void testGetAccommodationsNextPageByMapBoundariesWithCurrency() {
+		String date = (new SimpleDateFormat(Constants.DATE_FORMAT)).format(new Date());
+		Response response = target.path("rents/map/page/1")
+				.queryParam("minLatitude", TestUtil.MIN_LATITUDE)
+				.queryParam("maxLatitude", TestUtil.MAX_LATITUDE)
+				.queryParam("minLongitude", TestUtil.MIN_LONGITUDE)
+				.queryParam("maxLongitude", TestUtil.MAX_LONGITUDE).queryParam("lastRentDate", date)
+				.queryParam("lastRentId", Integer.MAX_VALUE)
+				.queryParam("pageSize", TestUtil.PAGE_SIZE)
+				.request(MediaType.APPLICATION_JSON).
+				header(ContextConstants.CURRENCY, Currency.RON.toString()).get();
+		
+		assertTrue(response.getStatus()==WebserviceResponseStatus.OK.getCode());
+		assertTrue(response.getStatus()==WebserviceResponseStatus.OK.getCode());
+		List<Rent> rents = response.readEntity(new GenericType<List<Rent>>(){});
+		assertTrue(rents.size() > 0);
+		assertTrue(rents.size() <= TestUtil.PAGE_SIZE);
+		for(Rent rent : rents) {
+			assertTrue(rent.getRentCurrency().equals(Currency.RON.toString()));
+		}
 	}
 
 }

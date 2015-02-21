@@ -10,7 +10,9 @@
    			<idArg column="rentId" javaType="int"/>
    		</constructor>
         <id property="rentId" column="rentId"/>
+        <result property="rentForm" column="rentForm"/>
         <result property="rentPrice" column="rentPrice"/>
+        <result property="rentCurrency" column="rentCurrency"/>
         <result property="rentSurface" column="rentSurface"/>
         <result property="rentRooms" column="rentRooms"/>
         <result property="rentBaths" column="rentBaths"/>
@@ -39,8 +41,12 @@
         <id property="rentId" column="rentId"/>
         <result property="accountId" column="accountId"/>
         <result property="rentPrice" column="rentPrice"/>
+        <result property="rentCurrency" column="rentCurrency"/>
         <result property="rentSurface" column="rentSurface"/>
         <result property="rentRooms" column="rentRooms"/>
+        <result property="rentGuests" column="rentGuests"/>
+        <result property="rentSingleBeds" column="rentSingleBeds"/>
+        <result property="rentDoubleBeds" column="rentDoubleBeds"/>
         <result property="rentBaths" column="rentBaths"/>
         <result property="rentParty" column="rentParty"/>
         <result property="rentType" column="rentType"/>
@@ -48,6 +54,8 @@
         <result property="rentAge" column="rentAge"/>
         <result property="rentDescription" column="rentDescription"/>
         <result property="rentPetsAllowed" column="rentPetsAllowed"/>
+        <result property="rentParkingPlace" column="rentParkingPlace"/>
+        <result property="rentSmokersAllowed" column="rentSmokersAllowed"/>
         <result property="rentPhone" column="rentPhone"/>
         <result property="rentAddDate" column="rentAddDate"/>
         <result property="rentStatus" column="rentStatus"/>
@@ -91,19 +99,25 @@
     <update id="updateRent" parameterType="ro.fizbo.rents.model.Rent">
     	update rent
     	<set>
+    		<if test="rentForm != null">rentForm=#{rentForm},</if>
     		<if test="rentPrice != null">rentPrice=#{rentPrice},</if>
-    		<if test="rentSurface != null">rentSurface=#{rentSurface},</if>
-    		<if test="rentRooms != null">rentRooms=#{rentRooms},</if>
-    		<if test="rentBaths != null">rentBaths=#{rentBaths},</if>
-    		<if test="rentParty != null">rentParty=#{rentParty},</if>
+    		<if test="rentCurrency != null">rentCurrency=#{rentCurrency},</if>
+    		<if test="rentPhone != null">rentPhone=#{rentPhone},</if>
     		<if test="rentType != null">rentType=#{rentType},</if>
+    		<if test="rentRooms != null">rentRooms=#{rentRooms},</if>
+    		<if test="rentGuests != null">rentGuests=#{rentGuests},</if>
+    		<if test="rentSingleBeds != null">rentSingleBeds=#{rentSingleBeds},</if>
+    		<if test="rentDoubleBeds != null">rentDoubleBeds=#{rentDoubleBeds},</if>
+    		<if test="rentBaths != null">rentBaths=#{rentBaths},</if>
     		<if test="rentArchitecture != null">rentArchitecture=#{rentArchitecture},</if>
+    		<if test="rentSurface != null">rentSurface=#{rentSurface},</if>
+    		<if test="rentParty != null">rentParty=#{rentParty},</if>
     		<if test="rentAge != null">rentAge=#{rentAge},</if>
     		<if test="rentDescription != null">rentDescription=#{rentDescription},</if>
     		<if test="rentPetsAllowed != null">rentPetsAllowed=#{rentPetsAllowed},</if>
-    		<if test="rentPhone != null">rentPhone=#{rentPhone},</if>
-    		<if test="rentAddDate != null">rentAddDate=#{rentAddDate},</if>
-    		<if test="rentForm != null">rentForm=#{rentForm}</if>
+			<if test="rentParkingPlace != null">rentParkingPlace=#{rentParkingPlace},</if>
+			<if test="rentSmokersAllowed != null">rentSmokersAllowed=#{rentSmokersAllowed},</if>
+			<if test="rentAddDate != null">rentAddDate=#{rentAddDate}</if>
     	</set>
     	where rentId=#{rentId}
     </update>
@@ -117,8 +131,8 @@
     </select>
     
     <select id="search" parameterType="ro.fizbo.rents.model.RentSearch" resultMap="LightRentMap">
-    	select rent.rentId as rentId, rentPrice, rentSurface, rentRooms, rentBaths, rentType,
-    	rentArchitecture, rentAddDate, rentStatus, address.addressId as addressId,
+    	select rent.rentId as rentId, rentPrice, rentCurrency, rentSurface, rentRooms, rentBaths,
+    	rentType,rentArchitecture, rentAddDate, rentStatus, address.addressId as addressId,
     	addressStreetName, addressNeighbourhood, addressLatitude, addressLongitude,
     	min(rentImageId) as rentImageId, concat(#{appUrl}, rentImageURI) as rentImageURI
     	from rent inner join address on rent.addressId=address.addressId
