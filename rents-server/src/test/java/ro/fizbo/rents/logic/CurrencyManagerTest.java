@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import ro.fizbo.rents.listener.ApplicationManager;
 import ro.fizbo.rents.model.Currency;
 import ro.fizbo.rents.model.CurrencyPair;
 import ro.fizbo.rents.model.Rent;
@@ -15,8 +16,8 @@ public class CurrencyManagerTest extends TestCase {
 	private static final int RENT_PRICE = 800;
 	
 	public void testUpdateConversionRates() {
-		CurrencyManager.updateConversionRates();
-		Map<String, BigDecimal> conversionRatesMap = CurrencyManager.getConversionRatesMap();
+		CurrencyManagerMock.updateConversionRates();
+		Map<String, BigDecimal> conversionRatesMap = ApplicationManager.getConversionRatesMap();
 		assertTrue(conversionRatesMap.values().size() == CurrencyPair.values().length);
 		for(BigDecimal conversionRate: conversionRatesMap.values()) {
 			assertNotNull(conversionRate);
@@ -24,7 +25,7 @@ public class CurrencyManagerTest extends TestCase {
 	}
 	
 	public void testConvertRentPrice() {
-		CurrencyManager.updateConversionRates();
+		CurrencyManagerMock.updateConversionRates();
 		Rent rent = new Rent();
 		rent.setRentCurrency(Currency.RON.toString());
 		rent.setRentPrice(RENT_PRICE);
@@ -38,7 +39,7 @@ public class CurrencyManagerTest extends TestCase {
 	}
 
 	public void testConvertRentsListsPrices() {
-		CurrencyManager.updateConversionRates();
+		CurrencyManagerMock.updateConversionRates();
 		List<Rent> rents = new ArrayList<Rent>();
 		Rent rent = null;
 		for(int i = 0; i < 6; i++) {

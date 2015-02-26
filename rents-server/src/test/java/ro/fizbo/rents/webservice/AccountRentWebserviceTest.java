@@ -80,7 +80,7 @@ public class AccountRentWebserviceTest extends TestCase {
 
 	/** Test adding rent with old rent model structure. */
 	public void testAddRentWithOldStructure() {
-		rent.setRentForm(RentForm.NORMAL.getForm());
+		rent.setRentForm(RentForm.RENT.getForm());
 		Response response = target.path("account/rent/add").request(MediaType.APPLICATION_JSON)
 				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
 				.post(Entity.json(rent));
@@ -92,7 +92,7 @@ public class AccountRentWebserviceTest extends TestCase {
 	}
 	
 	public void testAddAccommodationWithOldStructure() {
-		rent.setRentForm(RentForm.HOTELIER.getForm());
+		rent.setRentForm(RentForm.ACCOMMODATION.getForm());
 		Response response = target.path("account/rent/add").request(MediaType.APPLICATION_JSON)
 				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
 				.post(Entity.json(rent));
@@ -101,12 +101,12 @@ public class AccountRentWebserviceTest extends TestCase {
 
 		rent = response.readEntity(Rent.class);
 		assertTrue(rent.getRentId() != null);
-		assertTrue(rent.getRentForm() == RentForm.HOTELIER.getForm());
+		assertTrue(rent.getRentForm() == RentForm.ACCOMMODATION.getForm());
 	}
 	
 	/** Test adding rent without old rent required fields that are no longer required. */
 	public void testAddRentWithNewStructureWithoutPartyAndAge() {
-		rent.setRentForm(RentForm.NORMAL.getForm());
+		rent.setRentForm(RentForm.RENT.getForm());
 		rent.setRentParty(null);
 		rent.setRentAge(null);
 		rent.setRentCurrency(Currency.EUR.toString());
@@ -123,7 +123,7 @@ public class AccountRentWebserviceTest extends TestCase {
 	
 	/** Test adding rent for the new structure and just with required fields.*/
 	public void testAddRentWithNewStructureWithJustRequiredValues() {
-		rent.setRentForm(RentForm.NORMAL.getForm());
+		rent.setRentForm(RentForm.RENT.getForm());
 		rent.setRentParty(null);
 		rent.setRentAge(null);
 		rent.setRentBaths(null);
@@ -148,7 +148,7 @@ public class AccountRentWebserviceTest extends TestCase {
 	}
 	
 	public void testtAddRentWithNewStructureAndAllFields() {
-		rent.setRentForm(RentForm.NORMAL.getForm());
+		rent.setRentForm(RentForm.RENT.getForm());
 		rent.setRentBaths((short) 2);
 		rent.setRentArchitecture((byte) 1);
 		rent.setRentSurface(60);
@@ -169,7 +169,7 @@ public class AccountRentWebserviceTest extends TestCase {
 	}
 	
 	public void testAddAccommodationWithNewStructureAndAllFields() {
-		rent.setRentForm(RentForm.HOTELIER.getForm());
+		rent.setRentForm(RentForm.ACCOMMODATION.getForm());
 		rent.setRentBaths((short) 2);
 		rent.setRentArchitecture((byte) 1);
 		rent.setRentSurface(60);
@@ -201,7 +201,7 @@ public class AccountRentWebserviceTest extends TestCase {
 	}
 	
 	public void testUpdateRentWithOldStructure() {
-		rent.setRentForm(RentForm.NORMAL.getForm());
+		rent.setRentForm(RentForm.RENT.getForm());
 		rent.setRentCurrency(Currency.EUR.toString());
 		Response response = target.path("account/rent/add").request(MediaType.APPLICATION_JSON)
 				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
@@ -220,7 +220,7 @@ public class AccountRentWebserviceTest extends TestCase {
 	}
 	
 	public void testUpdateRentWithOldStructureChangeRentForm() {
-		rent.setRentForm(RentForm.NORMAL.getForm());
+		rent.setRentForm(RentForm.RENT.getForm());
 		Response response = target.path("account/rent/add").request(MediaType.APPLICATION_JSON)
 				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
 				.post(Entity.json(rent));
@@ -228,7 +228,7 @@ public class AccountRentWebserviceTest extends TestCase {
 		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
 
 		rent = response.readEntity(Rent.class);
-		rent.setRentForm(RentForm.HOTELIER.getForm());
+		rent.setRentForm(RentForm.ACCOMMODATION.getForm());
 
 		response = target.path("account/rent/update").request(MediaType.APPLICATION_JSON)
 				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
@@ -240,7 +240,7 @@ public class AccountRentWebserviceTest extends TestCase {
 	
 	/** Test update rent without old rent required fields that are no longer required. */
 	public void testUpdateRentWithNewStructureWithoutPartyAndAge() {
-		rent.setRentForm(RentForm.NORMAL.getForm());
+		rent.setRentForm(RentForm.RENT.getForm());
 		rent.setRentCurrency(Currency.EUR.toString());
 		Response response = target.path("account/rent/add").request(MediaType.APPLICATION_JSON)
 				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
@@ -261,7 +261,7 @@ public class AccountRentWebserviceTest extends TestCase {
 	}
 	
 	public void testUpdateRentWithNewStructureAndJustWithRequiredFields() {
-		rent.setRentForm(RentForm.NORMAL.getForm());
+		rent.setRentForm(RentForm.RENT.getForm());
 		rent.setRentCurrency(Currency.EUR.toString());
 		Response response = target.path("account/rent/add").request(MediaType.APPLICATION_JSON)
 				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
@@ -291,7 +291,7 @@ public class AccountRentWebserviceTest extends TestCase {
 	}
 	
 	public void testUpdateRentWithNewStructureAndAllFields() {
-		rent.setRentForm(RentForm.NORMAL.getForm());
+		rent.setRentForm(RentForm.RENT.getForm());
 		rent.setRentCurrency(Currency.EUR.toString());
 		Response response = target.path("account/rent/add").request(MediaType.APPLICATION_JSON)
 				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
@@ -319,7 +319,7 @@ public class AccountRentWebserviceTest extends TestCase {
 	}
 	
 	public void testUpdateAccommodationWithNewStructureAndAllFields() {
-		rent.setRentForm(RentForm.HOTELIER.getForm());
+		rent.setRentForm(RentForm.RENT.getForm());
 		rent.setRentCurrency(Currency.EUR.toString());
 		Response response = target.path("account/rent/add").request(MediaType.APPLICATION_JSON)
 				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())

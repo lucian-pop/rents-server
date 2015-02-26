@@ -6,7 +6,7 @@ import ro.fizbo.rents.model.Rent;
 
 public class RentsCounter {
 	
-	public int counter;
+	public Integer counter;
 	
 	public List<Rent> rents;
 }

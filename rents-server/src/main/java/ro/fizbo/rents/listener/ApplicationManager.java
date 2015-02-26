@@ -23,6 +23,7 @@ import com.mysql.jdbc.AbandonedConnectionCleanupThread;
 
 import ro.fizbo.rents.dao.AccountDAO;
 import ro.fizbo.rents.dao.AddressDAO;
+import ro.fizbo.rents.dao.CurrencyDAO;
 import ro.fizbo.rents.dao.RentDAO;
 import ro.fizbo.rents.dao.RentFavoriteDAO;
 import ro.fizbo.rents.dao.RentImageDAO;
@@ -54,6 +55,9 @@ public class ApplicationManager implements ServletContextListener {
 	
 	private static String appFacebookAccessToken;
 	
+	/** Conversion rates map.*/
+	private static Map<String, BigDecimal> conversionRatesMap = new HashMap<String, BigDecimal>();
+	
 	/**
 	 * Creates and configures the sql session factory and store application paths.
 	 */
@@ -75,6 +79,7 @@ public class ApplicationManager implements ServletContextListener {
 			sqlSessionFactory.getConfiguration().addMapper(RentImageDAO.class);
 			sqlSessionFactory.getConfiguration().addMapper(RentFavoriteDAO.class);
 			sqlSessionFactory.getConfiguration().addMapper(TokenDAO.class);
+			sqlSessionFactory.getConfiguration().addMapper(CurrencyDAO.class);
 			
 			logger.info("Database session factory created succesfully");
 		} catch (IOException e) {
@@ -144,6 +149,10 @@ public class ApplicationManager implements ServletContextListener {
 		}
 		
 		return null;
+	}
+	
+	public static Map<String, BigDecimal> getConversionRatesMap() {
+		return conversionRatesMap;
 	}
 
 	private static final String buildAppURL(String contextPath) {

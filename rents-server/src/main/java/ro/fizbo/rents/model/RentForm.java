@@ -1,8 +1,8 @@
 package ro.fizbo.rents.model;
 
 public enum RentForm {
-	NORMAL((byte) 0),
-	HOTELIER((byte) 1);
+	RENT((byte) 0),
+	ACCOMMODATION((byte) 1);
 	
 	private byte form;
 	

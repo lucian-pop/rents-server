@@ -42,7 +42,7 @@ public class GetRentsWebserviceTest extends TestCase {
 			if(i % 2 == 0) {
 				rent = TestUtil.addRent(account.getAccountId());
 			} else {
-				rent = TestUtil.addRent(account.getAccountId(), RentForm.HOTELIER.getForm());
+				rent = TestUtil.addRent(account.getAccountId(), RentForm.ACCOMMODATION.getForm());
 			}
 			
 			rents.add(rent);

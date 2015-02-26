@@ -20,6 +20,7 @@ import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
 import ro.fizbo.rents.dao.AccountDAO;
 import ro.fizbo.rents.dao.AddressDAO;
+import ro.fizbo.rents.dao.CurrencyDAO;
 import ro.fizbo.rents.dao.RentDAO;
 import ro.fizbo.rents.dao.RentFavoriteDAO;
 import ro.fizbo.rents.dao.RentImageDAO;
@@ -57,7 +58,7 @@ public class TestUtil {
 	
 	public static final String ACCOUNT_PASSWORD = "account password";
 
-	public static final String BASE_URI = "http://192.168.1.6:8080/rents-server/ws/";
+	public static final String BASE_URI = "http://192.168.1.7:8080/rents-server/ws/";
 	
 	public static final double MIN_LATITUDE = 46.7379424563698;
 
@@ -67,7 +68,7 @@ public class TestUtil {
 	
 	public static final double MAX_LONGITUDE = 23.59537862241268;
 	
-	public static final int PAGE_SIZE = 10;
+	public static final int PAGE_SIZE = 20;
 	
 	private static final double LATITUDE = 46.7457380;
 	
@@ -101,6 +102,7 @@ public class TestUtil {
 				sqlSessionFactory.getConfiguration().addMapper(RentImageDAO.class);
 				sqlSessionFactory.getConfiguration().addMapper(RentFavoriteDAO.class);
 				sqlSessionFactory.getConfiguration().addMapper(TokenDAO.class);
+				sqlSessionFactory.getConfiguration().addMapper(CurrencyDAO.class);
 
 				logger.info("Test database session factory created succesfully");
 			} catch (IOException e) {
@@ -438,5 +440,4 @@ public class TestUtil {
 		
 		return target;
 	}
-
 }

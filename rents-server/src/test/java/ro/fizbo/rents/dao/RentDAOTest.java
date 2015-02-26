@@ -12,26 +12,17 @@ import ro.fizbo.rents.listener.ApplicationManager;
 import ro.fizbo.rents.model.Account;
 import ro.fizbo.rents.model.Address;
 import ro.fizbo.rents.model.Rent;
-import ro.fizbo.rents.model.RentAge;
 import ro.fizbo.rents.model.RentArchitecture;
 import ro.fizbo.rents.model.RentForm;
-import ro.fizbo.rents.model.RentParty;
 import ro.fizbo.rents.model.RentSearch;
 import ro.fizbo.rents.model.RentStatus;
 import ro.fizbo.rents.model.RentType;
 import ro.fizbo.rents.model.view.RentFavoriteView;
+import ro.fizbo.rents.util.RentSearchTestUtil;
 import ro.fizbo.rents.util.TestUtil;
 import junit.framework.TestCase;
 
 public class RentDAOTest extends TestCase {
-	
-	private static final double MIN_LATITUDE = -90;
-
-	private static final double MAX_LATITUDE = 90;
-
-	private static final double MIN_LONGITUDE = -180;
-	
-	private static final double MAX_LONGITUDE = 180;
 
 	private Account account;
 	
@@ -70,9 +61,9 @@ public class RentDAOTest extends TestCase {
 		List<Rent> result = null;
 		try {
 			RentDAO rentDAO = session.getMapper(RentDAO.class);
-			result = rentDAO.getRentsByMapBoundaries(MIN_LATITUDE, MAX_LATITUDE, MIN_LONGITUDE,
-					MAX_LONGITUDE, RentStatus.AVAILABLE.getStatus(), RentForm.NORMAL.getForm(),
-					TestUtil.PAGE_SIZE, "");
+			result = rentDAO.getRentsByMapBoundaries(TestUtil.MIN_LATITUDE, TestUtil.MAX_LATITUDE,
+					TestUtil.MIN_LONGITUDE, TestUtil.MAX_LONGITUDE,
+					RentStatus.AVAILABLE.getStatus(), RentForm.RENT.getForm(), TestUtil.PAGE_SIZE, "");
 		} finally {
 			session.close();
 		}
@@ -84,10 +75,10 @@ public class RentDAOTest extends TestCase {
 		for(Rent rent : result) {
 			address = rent.getAddress();
 			
-			assertTrue(address.getAddressLatitude() >= MIN_LATITUDE);
-			assertTrue(address.getAddressLatitude() <= MAX_LATITUDE);
-			assertTrue(address.getAddressLongitude() >= MIN_LONGITUDE);
-			assertTrue(address.getAddressLongitude() <= MAX_LONGITUDE);
+			assertTrue(address.getAddressLatitude() >= TestUtil.MIN_LATITUDE);
+			assertTrue(address.getAddressLatitude() <= TestUtil.MAX_LATITUDE);
+			assertTrue(address.getAddressLongitude() >= TestUtil.MIN_LONGITUDE);
+			assertTrue(address.getAddressLongitude() <= TestUtil.MAX_LONGITUDE);
 		}
 	}
 	
@@ -96,8 +87,9 @@ public class RentDAOTest extends TestCase {
 		List<Rent> result = null;
 		try {
 			RentDAO rentDAO = session.getMapper(RentDAO.class);
-			result = rentDAO.getRentsByMapBoundaries(MIN_LATITUDE, MAX_LATITUDE, MIN_LONGITUDE,
-					MAX_LONGITUDE, RentStatus.AVAILABLE.getStatus(), RentForm.NORMAL.getForm(), 
+			result = rentDAO.getRentsByMapBoundaries(TestUtil.MIN_LATITUDE, TestUtil.MAX_LATITUDE,
+					TestUtil.MIN_LONGITUDE, TestUtil.MAX_LONGITUDE, 
+					RentStatus.AVAILABLE.getStatus(), RentForm.RENT.getForm(), 
 					TestUtil.PAGE_SIZE, "");
 		} finally {
 			session.close();
@@ -110,9 +102,10 @@ public class RentDAOTest extends TestCase {
 		session = TestUtil.getSqlSessionFactory().openSession();
 		try {
 			RentDAO rentDAO = session.getMapper(RentDAO.class);
-			result = rentDAO.getRentsNextPageByMapBoundaries(MIN_LATITUDE, MAX_LATITUDE,
-					MIN_LONGITUDE, MAX_LONGITUDE, lastRent.getRentAddDate(), lastRent.getRentId(),
-					RentStatus.AVAILABLE.getStatus(), RentForm.NORMAL.getForm(),
+			result = rentDAO.getRentsNextPageByMapBoundaries(TestUtil.MIN_LATITUDE, 
+					TestUtil.MAX_LATITUDE, TestUtil.MIN_LONGITUDE, TestUtil.MAX_LONGITUDE,
+					lastRent.getRentAddDate(), lastRent.getRentId(),
+					RentStatus.AVAILABLE.getStatus(), RentForm.RENT.getForm(),
 					TestUtil.PAGE_SIZE, "");
 		} finally {
 			session.close();
@@ -130,10 +123,10 @@ public class RentDAOTest extends TestCase {
 		for(Rent rent : result) {
 			address = rent.getAddress();
 			
-			assertTrue(address.getAddressLatitude() >= MIN_LATITUDE);
-			assertTrue(address.getAddressLatitude() <= MAX_LATITUDE);
-			assertTrue(address.getAddressLongitude() >= MIN_LONGITUDE);
-			assertTrue(address.getAddressLongitude() <= MAX_LONGITUDE);
+			assertTrue(address.getAddressLatitude() >= TestUtil.MIN_LATITUDE);
+			assertTrue(address.getAddressLatitude() <= TestUtil.MAX_LATITUDE);
+			assertTrue(address.getAddressLongitude() >= TestUtil.MIN_LONGITUDE);
+			assertTrue(address.getAddressLongitude() <= TestUtil.MAX_LONGITUDE);
 		}
 	}
 	
@@ -142,170 +135,16 @@ public class RentDAOTest extends TestCase {
 		int result = 0;
 		try {
 			RentDAO rentDAO = (RentDAO) session.getMapper(RentDAO.class);
-			result = rentDAO.getNoOfRentsByMapBoundaries(MIN_LATITUDE, MAX_LATITUDE, MIN_LONGITUDE,
-					MAX_LONGITUDE, RentStatus.AVAILABLE.getStatus(), RentForm.NORMAL.getForm());
+			result = rentDAO.getNoOfRentsByMapBoundaries(TestUtil.MIN_LATITUDE, 
+					TestUtil.MAX_LATITUDE, TestUtil.MIN_LONGITUDE, TestUtil.MAX_LONGITUDE,
+					RentStatus.AVAILABLE.getStatus(), RentForm.RENT.getForm());
 		} finally {
 			session.close();
 		}
 		
 		assertTrue(result > 0);
 	}
-	
-	public void testSearchResultSize() {
-		int minPrice = 100;
-		int maxPrice = 5000;
-		int minSurface = 20;
-		int maxSurface = 500;
-		short minRooms = 2;
-		short maxRooms = 6;
-		short minBaths = 1;
-		short maxBaths = 5;
-		byte rentParty = RentParty.INDIVIDUAL.getParty();
-		byte rentType = RentType.APARTMENT.getType();
-		byte rentArchitecture = RentArchitecture.DETACHED.getArchitecture();
-		short rentAge = RentAge.NEW.getAge();
-		boolean rentPetsAllowed = false;
-		byte rentStatus = RentStatus.AVAILABLE.getStatus();
 
-		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
-		int result = 0;
-		try {
-			RentDAO rentDAO = (RentDAO) session.getMapper(RentDAO.class);
-			result = rentDAO.searchResultSize(MIN_LATITUDE, MAX_LATITUDE, MIN_LONGITUDE,
-					MAX_LONGITUDE, minPrice, maxPrice, minSurface, maxSurface, minRooms, maxRooms,
-					minBaths, maxBaths, rentParty, rentParty, rentType, rentType, rentArchitecture,
-					rentArchitecture, rentAge, rentAge, rentPetsAllowed, true, rentStatus, 
-					RentForm.NORMAL.getForm());
-		} finally {
-			session.close();
-		}
-		
-		assertTrue(result > 0);
-	}
-	
-	public void testSearch() {
-		int minPrice = 100;
-		int maxPrice = 10000;
-		int minSurface = 50;
-		int maxSurface = 1000;
-		short minRooms = 1;
-		short maxRooms = 6;
-		short minBaths = 1;
-		short maxBaths = 5;
-		byte rentParty = RentParty.INDIVIDUAL.getParty();
-		byte rentType = RentType.APARTMENT.getType();
-		byte rentArchitecture = RentArchitecture.DETACHED.getArchitecture();
-		short rentAge = RentAge.NEW.getAge();
-		boolean rentPetsAllowed = false;
-		byte rentStatus = RentStatus.AVAILABLE.getStatus();
-		
-		// retrieve rents that meet out criteria.
-		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
-		List<Rent> results = null;
-		try {
-			RentDAO rentDAO = session.getMapper(RentDAO.class);
-			results = rentDAO.search(MIN_LATITUDE, MAX_LATITUDE, MIN_LONGITUDE,
-					MAX_LONGITUDE, minPrice, maxPrice, minSurface, maxSurface, minRooms, maxRooms,
-					minBaths, maxBaths, rentParty, rentParty, rentType, rentType, rentArchitecture,
-					rentArchitecture, rentAge, rentAge, rentPetsAllowed, true, rentStatus, 
-					RentForm.NORMAL.getForm(), TestUtil.PAGE_SIZE,"");
-		} finally {
-			session.close();
-		}
-
-		assertTrue(results.size() > 0);
-		assertTrue(results.size() <= TestUtil.PAGE_SIZE);
-		
-		// verify if the results meet our criteria.
-		for(Rent resultRent : results) {
-			assertTrue(resultRent.getAddress().getAddressLatitude() <=  MAX_LATITUDE);
-			assertTrue(resultRent.getAddress().getAddressLatitude() >=  MIN_LATITUDE);
-			assertTrue(resultRent.getAddress().getAddressLongitude() <=  MAX_LONGITUDE);
-			assertTrue(resultRent.getAddress().getAddressLongitude() >=  MIN_LONGITUDE);
-			assertTrue(resultRent.getRentPrice() <=  maxPrice);
-			assertTrue(resultRent.getRentPrice() >=  minPrice);
-			assertTrue(resultRent.getRentSurface() <= maxSurface);
-			assertTrue(resultRent.getRentSurface() >= minSurface);
-			assertTrue(resultRent.getRentRooms() <=  maxRooms);
-			assertTrue(resultRent.getRentRooms() >=  minRooms);
-			assertTrue(resultRent.getRentBaths() <=  maxBaths);
-			assertTrue(resultRent.getRentBaths() >=  minBaths);
-			assertTrue(resultRent.getRentType() == rentType);
-			assertTrue(resultRent.getRentArchitecture() == rentArchitecture);
-			assertTrue(resultRent.getRentStatus() == rentStatus);
-		}
-	}
-	
-	public void testSearchNextPage() {
-		int minPrice = 0;
-		int maxPrice = Integer.MAX_VALUE;
-		int minSurface = 0;
-		int maxSurface = Integer.MAX_VALUE;
-		short minRooms = 1;
-		short maxRooms = Short.MAX_VALUE;
-		short minBaths = 1;
-		short maxBaths = Short.MAX_VALUE;
-		byte minParty = RentParty.INDIVIDUAL.getParty();
-		byte maxParty = RentParty.REALTOR.getParty();
-		byte minType = RentType.APARTMENT.getType();
-		byte maxType = RentType.OFFICE.getType();
-		byte minArchitecture = RentArchitecture.DETACHED.getArchitecture();
-		byte maxArchitecture = RentArchitecture.UNDETACHED.getArchitecture();
-		short minAge = RentAge.NEW.getAge();
-		short maxAge = RentAge.OLD.getAge();
-		boolean rentPetsAllowed = false;
-		byte rentStatus = RentStatus.AVAILABLE.getStatus();
-		
-		// retrieve rents that meet out criteria.
-		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
-		List<Rent> results = null;
-		try {
-			RentDAO rentDAO = session.getMapper(RentDAO.class);
-			results = rentDAO.search(MIN_LATITUDE, MAX_LATITUDE, MIN_LONGITUDE,
-					MAX_LONGITUDE, minPrice, maxPrice, minSurface, maxSurface, minRooms, maxRooms,
-					minBaths, maxBaths, minParty, maxParty, minType, maxType, minArchitecture,
-					maxArchitecture, minAge, maxAge, rentPetsAllowed, true, rentStatus,
-					RentForm.NORMAL.getForm(), TestUtil.PAGE_SIZE, "");
-		} finally {
-			session.close();
-		}
-
-		assertTrue(results.size() > 0);
-		assertTrue(results.size() <= TestUtil.PAGE_SIZE);
-		
-		Rent lastRent = results.get(results.size() - 1);
-		session = TestUtil.getSqlSessionFactory().openSession();
-		try {
-			RentDAO rentDAO = session.getMapper(RentDAO.class);
-			results = rentDAO.searchNextPage(MIN_LATITUDE, MAX_LATITUDE, MIN_LONGITUDE,
-					MAX_LONGITUDE, minPrice, maxPrice, minSurface, maxSurface, minRooms, maxRooms,
-					minBaths, maxBaths, minParty, maxParty, minType, maxType, minArchitecture,
-					maxArchitecture, minAge, maxAge, rentPetsAllowed, true, rentStatus,
-					RentForm.NORMAL.getForm(), lastRent.getRentAddDate(), lastRent.getRentId(),
-					TestUtil.PAGE_SIZE, "");
-		} finally {
-			session.close();
-		}
-
-		assertTrue(results.size() > 0);
-		assertTrue(results.size() <= TestUtil.PAGE_SIZE);
-		
-		Rent pageFirstRent = results.get(0);
-		assertTrue(pageFirstRent.getRentAddDate().getTime() <= lastRent.getRentAddDate().getTime());
-		assertTrue((pageFirstRent.getRentAddDate().getTime() < lastRent.getRentAddDate().getTime())
-				|| (pageFirstRent.getRentId() < lastRent.getRentId()));
-		
-		Address address = null;
-		for(Rent rent : results) {
-			address = rent.getAddress();
-			
-			assertTrue(address.getAddressLatitude() >= MIN_LATITUDE);
-			assertTrue(address.getAddressLatitude() <= MAX_LATITUDE);
-			assertTrue(address.getAddressLongitude() >= MIN_LONGITUDE);
-			assertTrue(address.getAddressLongitude() <= MAX_LONGITUDE);
-		}
-	}
-	
 	public void testGetRentDetails() {
 		Rent rent = TestUtil.addRent(account.getAccountId());
 		
@@ -544,113 +383,236 @@ public class RentDAOTest extends TestCase {
 		TestUtil.deleteRent(rent);
 	}
 	
-//	public void testSearchCountWithSurfaceInBounds() {
-//		int minSurface = 20;
-//		int maxSurface = 70;
-//		Rent lowRent = new Rent();
-//		lowRent.setRentSurface(minSurface);
-//		Rent highRent = new Rent();
-//		highRent.setRentSurface(maxSurface);
-//		
-//		RentSearch rentSearch = new RentSearch();
-//		rentSearch.setLowRent(lowRent);
-//		rentSearch.setHighRent(highRent);
-//		rentSearch.setAppUrl(ApplicationManager.getAppURL());
-//		
-//		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
-//		int count = -1;
-//		try {
-//			count = session.selectOne("RentMapper.searchCount", rentSearch);
-//			session.commit();
-//		} finally {
-//			session.close();
-//		}
-//
-//		assertTrue(count > 0);
-//	}
-//	
-//	public void testSearchWithSurfaceInBounds() {
-//		int minSurface = 20;
-//		int maxSurface = 70;
-//		Rent lowRent = new Rent();
-//		lowRent.setRentSurface(minSurface);
-//		
-//		Rent highRent = new Rent();
-//		highRent.setRentSurface(maxSurface);
-//		
-//		RentSearch rentSearch = new RentSearch();
-//		rentSearch.setLowRent(lowRent);
-//		rentSearch.setHighRent(highRent);
-//		rentSearch.setAppUrl(ApplicationManager.getAppURL());
-//		
-//		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
-//		List<Rent> result = null;
-//		try {
-//			result = session.selectList("RentMapper.search", rentSearch);
-//			session.commit();
-//		} finally {
-//			session.close();
-//		}
-//		
-//		assertNotNull(result);
-//		assertTrue(result.size() > 0);
-//		for(Rent rent : result) {
-//			assertTrue(rent.getRentSurface() >= minSurface);
-//			assertTrue(rent.getRentSurface() <= maxSurface);
-//		}
-//	}
-//	
-//	public void testSearchWithLowSurface() {
-//		int minSurface = 100;
-//		Rent lowRent = new Rent();
-//		lowRent.setRentSurface(minSurface);
-//		Rent highRent = new Rent();
-//		
-//		RentSearch rentSearch = new RentSearch();
-//		rentSearch.setLowRent(lowRent);
-//		rentSearch.setHighRent(highRent);
-//		rentSearch.setAppUrl(ApplicationManager.getAppURL());
-//		
-//		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
-//		List<Rent> result = null;
-//		try {
-//			result = session.selectList("RentMapper.search", rentSearch);
-//			session.commit();
-//		} finally {
-//			session.close();
-//		}
-//		
-//		assertNotNull(result);
-//		assertTrue(result.size() > 0);
-//		for(Rent rent : result) {
-//			assertTrue(rent.getRentSurface() >= minSurface);
-//		}
-//	}
-//	
-//	public void testSearchWithMaxSurface() {
-//		int maxSurface = 70;
-//		Rent highRent = new Rent();
-//		highRent.setRentSurface(maxSurface);
-//		Rent lowRent = new Rent();
-//		
-//		RentSearch rentSearch = new RentSearch();
-//		rentSearch.setLowRent(lowRent);
-//		rentSearch.setHighRent(highRent);
-//		rentSearch.setAppUrl(ApplicationManager.getAppURL());
-//		
-//		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
-//		List<Rent> result = null;
-//		try {
-//			result = session.selectList("RentMapper.search", rentSearch);
-//			session.commit();
-//		} finally {
-//			session.close();
-//		}
-//
-//		assertNotNull(result);
-//		assertTrue(result.size() > 0);
-//		for(Rent rent : result) {
-//			assertTrue(rent.getRentSurface() <= maxSurface);
-//		}
-//	}
+	public void testSearchCount() {
+		RentSearch rentSearch = RentSearchTestUtil.getRentSearch();
+		
+		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
+		Integer count = -1;
+		try {
+			count = session.selectOne("RentMapper.searchCount", rentSearch);
+			session.commit();
+		} finally {
+			session.close();
+		}
+
+		assertTrue(count > 0);
+	}
+	
+	public void testNewSearchWithSurfaceInBounds() {
+		int minSurface = 20;
+		int maxSurface = 70;
+		Rent lowRent = new Rent();
+		Address lowAddress = new Address();
+		lowAddress.setAddressLatitude(TestUtil.MIN_LATITUDE);
+		lowAddress.setAddressLongitude(TestUtil.MIN_LONGITUDE);
+		lowRent.setAddress(lowAddress);
+		lowRent.setRentSurface(minSurface);
+		lowRent.setRentStatus(RentStatus.AVAILABLE.getStatus());
+		lowRent.setRentForm(RentForm.RENT.getForm());
+		lowRent.setRentPetsAllowed(false);
+		lowRent.setRentParkingPlace(false);
+		lowRent.setRentSmokersAllowed(false);
+		
+		Rent highRent = new Rent();
+		Address highAddress = new Address();
+		highAddress.setAddressLatitude(TestUtil.MAX_LATITUDE);
+		highAddress.setAddressLongitude(TestUtil.MAX_LONGITUDE);
+		highRent.setRentSurface(maxSurface);
+		highRent.setAddress(highAddress);
+		highRent.setRentPetsAllowed(true);
+		highRent.setRentParkingPlace(true);
+		highRent.setRentSmokersAllowed(true);
+		
+		RentSearch rentSearch = new RentSearch();
+		rentSearch.setPageSize(TestUtil.PAGE_SIZE);
+		rentSearch.setLowRent(lowRent);
+		rentSearch.setHighRent(highRent);
+		rentSearch.setAppUrl(ApplicationManager.getAppURL());
+		
+		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
+		List<Rent> result = null;
+		try {
+			result = session.selectList("RentMapper.search", rentSearch);
+			session.commit();
+		} finally {
+			session.close();
+		}
+		
+		assertNotNull(result);
+		assertTrue(result.size() > 0);
+		for(Rent rent : result) {
+			assertTrue(rent.getRentSurface() >= minSurface);
+			assertTrue(rent.getRentSurface() <= maxSurface);
+		}
+	}
+	
+	public void testNewSearchWithLowSurface() {
+		int minSurface = 100;
+		Rent lowRent = new Rent();
+		Address lowAddress = new Address();
+		lowAddress.setAddressLatitude(TestUtil.MIN_LATITUDE);
+		lowAddress.setAddressLongitude(TestUtil.MIN_LONGITUDE);
+		lowRent.setAddress(lowAddress);
+		lowRent.setRentSurface(minSurface);
+		lowRent.setRentStatus(RentStatus.AVAILABLE.getStatus());
+		lowRent.setRentForm(RentForm.RENT.getForm());
+		lowRent.setRentPetsAllowed(false);
+		lowRent.setRentParkingPlace(false);
+		lowRent.setRentSmokersAllowed(false);
+		
+		Rent highRent = new Rent();
+		Address highAddress = new Address();
+		highAddress.setAddressLatitude(TestUtil.MAX_LATITUDE);
+		highAddress.setAddressLongitude(TestUtil.MAX_LONGITUDE);
+		highRent.setAddress(highAddress);
+		highRent.setRentPetsAllowed(true);
+		highRent.setRentParkingPlace(true);
+		highRent.setRentSmokersAllowed(true);
+		
+		RentSearch rentSearch = new RentSearch();
+		rentSearch.setPageSize(TestUtil.PAGE_SIZE);
+		rentSearch.setLowRent(lowRent);
+		rentSearch.setHighRent(highRent);
+		rentSearch.setAppUrl(ApplicationManager.getAppURL());
+		
+		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
+		List<Rent> result = null;
+		try {
+			result = session.selectList("RentMapper.search", rentSearch);
+			session.commit();
+		} finally {
+			session.close();
+		}
+		
+		assertNotNull(result);
+		assertTrue(result.size() > 0);
+		for(Rent rent : result) {
+			assertTrue(rent.getRentSurface() >= minSurface);
+		}
+	}
+	
+	public void testNewSearchWithMaxSurface() {
+		int maxSurface = 70;
+		Rent lowRent = new Rent();
+		Address lowAddress = new Address();
+		lowAddress.setAddressLatitude(TestUtil.MIN_LATITUDE);
+		lowAddress.setAddressLongitude(TestUtil.MIN_LONGITUDE);
+		lowRent.setAddress(lowAddress);
+		lowRent.setRentStatus(RentStatus.AVAILABLE.getStatus());
+		lowRent.setRentForm(RentForm.RENT.getForm());
+		lowRent.setRentPetsAllowed(false);
+		lowRent.setRentParkingPlace(false);
+		lowRent.setRentSmokersAllowed(false);
+		
+		Rent highRent = new Rent();
+		Address highAddress = new Address();
+		highAddress.setAddressLatitude(TestUtil.MAX_LATITUDE);
+		highAddress.setAddressLongitude(TestUtil.MAX_LONGITUDE);
+		highRent.setRentSurface(maxSurface);
+		highRent.setAddress(highAddress);
+		highRent.setRentPetsAllowed(true);
+		highRent.setRentParkingPlace(true);
+		highRent.setRentSmokersAllowed(true);
+		
+		RentSearch rentSearch = new RentSearch();
+		rentSearch.setPageSize(TestUtil.PAGE_SIZE);
+		rentSearch.setLowRent(lowRent);
+		rentSearch.setHighRent(highRent);
+		rentSearch.setAppUrl(ApplicationManager.getAppURL());
+		
+		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
+		List<Rent> result = null;
+		try {
+			result = session.selectList("RentMapper.search", rentSearch);
+			session.commit();
+		} finally {
+			session.close();
+		}
+
+		assertNotNull(result);
+		assertTrue(result.size() > 0);
+		for(Rent rent : result) {
+			assertTrue(rent.getRentSurface() <= maxSurface);
+		}
+	}
+	
+	public void testSearch() {
+		RentSearch rentSearch = RentSearchTestUtil.getRentSearch();
+		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
+		List<Rent> rents = null;
+		try {
+			rents = session.selectList("RentMapper.search", rentSearch);
+			session.commit();
+		} finally {
+			session.close();
+		}
+
+		assertTrue(rents.size() > 0);
+		assertTrue(rents.size() <= rentSearch.getPageSize());
+		for(Rent rent : rents) {
+			assertTrue(rent.getAddress().getAddressLatitude() >= TestUtil.MIN_LATITUDE);
+			assertTrue(rent.getAddress().getAddressLatitude() <= TestUtil.MAX_LATITUDE);
+			assertTrue(rent.getAddress().getAddressLongitude() >= TestUtil.MIN_LONGITUDE);
+			assertTrue(rent.getAddress().getAddressLongitude() <= TestUtil.MAX_LONGITUDE);
+			assertTrue(rent.getRentSurface() >= RentSearchTestUtil.MIN_SURFACE);
+			assertTrue(rent.getRentSurface() <= RentSearchTestUtil.MAX_SURFACE);
+			assertTrue(rent.getRentPrice() >= RentSearchTestUtil.MIN_PRICE);
+			assertTrue(rent.getRentPrice() <= RentSearchTestUtil.MAX_PRICE);
+			assertTrue(rent.getRentRooms() >= RentSearchTestUtil.MIN_ROOMS);
+			assertTrue(rent.getRentRooms() <= RentSearchTestUtil.MAX_ROOMS);
+			assertTrue(rent.getRentBaths() >= RentSearchTestUtil.MIN_BATHS);
+			assertTrue(rent.getRentBaths() <= RentSearchTestUtil.MAX_BATHS);
+			assertTrue(rent.getRentType() == RentType.APARTMENT.getType());
+			assertTrue(rent.getRentArchitecture() == RentArchitecture.DETACHED.getArchitecture());
+		}
+	}
+	
+	public void testSearchNextPage() {
+		RentSearch rentSearch = RentSearchTestUtil.getRentSearch();
+		
+		SqlSession session = TestUtil.getSqlSessionFactory().openSession();
+		List<Rent> rents = null;
+		try {
+			rents = session.selectList("RentMapper.search", rentSearch);
+			session.commit();
+		} finally {
+			session.close();
+		}
+
+		assertTrue(rents.size() > 0);
+		assertTrue(rents.size() <= rentSearch.getPageSize()	);
+		Rent lastRent = rents.get(rents.size() - 1);
+		rentSearch.getHighRent().setRentAddDate(lastRent.getRentAddDate());
+		rentSearch.getHighRent().setRentId(lastRent.getRentId());
+		session = TestUtil.getSqlSessionFactory().openSession();
+		try {
+			rents = session.selectList("RentMapper.searchNextPage", rentSearch);
+			session.commit();
+		} finally {
+			session.close();
+		}
+
+		assertTrue(rents.size() > 0);
+		assertTrue(rents.size() <= TestUtil.PAGE_SIZE);
+		Rent pageFirstRent = rents.get(0);
+		assertTrue(pageFirstRent.getRentAddDate().getTime() <= lastRent.getRentAddDate().getTime());
+		assertTrue((pageFirstRent.getRentAddDate().getTime() < lastRent.getRentAddDate().getTime())
+				|| (pageFirstRent.getRentId() < lastRent.getRentId()));
+		for(Rent rent : rents) {
+			assertTrue(rent.getAddress().getAddressLatitude() >= TestUtil.MIN_LATITUDE);
+			assertTrue(rent.getAddress().getAddressLatitude() <= TestUtil.MAX_LATITUDE);
+			assertTrue(rent.getAddress().getAddressLongitude() >= TestUtil.MIN_LONGITUDE);
+			assertTrue(rent.getAddress().getAddressLongitude() <= TestUtil.MAX_LONGITUDE);
+			assertTrue(rent.getRentSurface() >= RentSearchTestUtil.MIN_SURFACE);
+			assertTrue(rent.getRentSurface() <= RentSearchTestUtil.MAX_SURFACE);
+			assertTrue(rent.getRentPrice() >= RentSearchTestUtil.MIN_PRICE);
+			assertTrue(rent.getRentPrice() <= RentSearchTestUtil.MAX_PRICE);
+			assertTrue(rent.getRentRooms() >= RentSearchTestUtil.MIN_ROOMS);
+			assertTrue(rent.getRentRooms() <= RentSearchTestUtil.MAX_ROOMS);
+			assertTrue(rent.getRentBaths() >= RentSearchTestUtil.MIN_BATHS);
+			assertTrue(rent.getRentBaths() <= RentSearchTestUtil.MAX_BATHS);
+			assertTrue(rent.getRentType() == RentType.APARTMENT.getType());
+			assertTrue(rent.getRentArchitecture() == RentArchitecture.DETACHED.getArchitecture());
+		}
+	}
 }

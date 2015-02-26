@@ -81,7 +81,7 @@ public class RentManager {
 	/** Support clients before adding accommodations.*/
 	private static void addSupportForOldClients(Rent rent) {
 		if(rent.getRentForm() == null) {
-			rent.setRentForm(RentForm.NORMAL.getForm());
+			rent.setRentForm(RentForm.RENT.getForm());
 		}
 		if(rent.getRentCurrency() == null) {
 			rent.setRentCurrency(Currency.EUR.toString());
@@ -141,38 +141,13 @@ public class RentManager {
 	
 	public static RentsCounter search(RentSearch rentSearch) {
 		RentsCounter rentsCounter = new RentsCounter();
-		Rent lowRent = rentSearch.getLowRent();
-		Rent highRent = rentSearch.getHighRent();
-		
+		Rent lowRent = rentSearch.getLowRent();		
 		addSupportForOldClients(lowRent);
 
 		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
 		try {
-			RentDAO rentDAO = session.getMapper(RentDAO.class);
-			rentsCounter.counter = rentDAO.searchResultSize(
-					lowRent.getAddress().getAddressLatitude(), 
-					highRent.getAddress().getAddressLatitude(), 
-					lowRent.getAddress().getAddressLongitude(),
-					highRent.getAddress().getAddressLongitude(), lowRent.getRentPrice(),
-					highRent.getRentPrice(), lowRent.getRentSurface(), highRent.getRentSurface(),
-					lowRent.getRentRooms(), highRent.getRentRooms(), lowRent.getRentBaths(),
-					highRent.getRentBaths(), lowRent.getRentParty(), highRent.getRentParty(),
-					lowRent.getRentType(), highRent.getRentType(), lowRent.getRentArchitecture(),
-					highRent.getRentArchitecture(), lowRent.getRentAge(), highRent.getRentAge(),
-					lowRent.isRentPetsAllowed(), highRent.isRentPetsAllowed(), lowRent.getRentStatus(),
-					lowRent.getRentForm());
-			rentsCounter.rents = rentDAO.search(lowRent.getAddress().getAddressLatitude(), 
-					highRent.getAddress().getAddressLatitude(), 
-					lowRent.getAddress().getAddressLongitude(),
-					highRent.getAddress().getAddressLongitude(), lowRent.getRentPrice(),
-					highRent.getRentPrice(), lowRent.getRentSurface(), highRent.getRentSurface(),
-					lowRent.getRentRooms(), highRent.getRentRooms(), lowRent.getRentBaths(),
-					highRent.getRentBaths(), lowRent.getRentParty(), highRent.getRentParty(),
-					lowRent.getRentType(), highRent.getRentType(), lowRent.getRentArchitecture(),
-					highRent.getRentArchitecture(), lowRent.getRentAge(), highRent.getRentAge(),
-					lowRent.isRentPetsAllowed(), highRent.isRentPetsAllowed(),
-					lowRent.getRentStatus(), lowRent.getRentForm(), rentSearch.getPageSize(),
-					ApplicationManager.getAppURL());
+			rentsCounter.counter = session.selectOne("RentMapper.searchCount", rentSearch);
+			rentsCounter.rents = session.selectList("RentMapper.search", rentSearch);
 		} finally {
 			session.close();
 		}
@@ -182,26 +157,12 @@ public class RentManager {
 	
 	public static List<Rent> searchNextPage(RentSearch rentSearch) {
 		Rent lowRent = rentSearch.getLowRent();
-		Rent highRent = rentSearch.getHighRent();
-
 		addSupportForOldClients(lowRent);
 
-		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
 		List<Rent> result = null;
+		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
 		try {
-			RentDAO rentDAO = session.getMapper(RentDAO.class);
-			result = rentDAO.searchNextPage(lowRent.getAddress().getAddressLatitude(), 
-					highRent.getAddress().getAddressLatitude(), 
-					lowRent.getAddress().getAddressLongitude(),
-					highRent.getAddress().getAddressLongitude(), lowRent.getRentPrice(),
-					highRent.getRentPrice(), lowRent.getRentSurface(), highRent.getRentSurface(),
-					lowRent.getRentRooms(), highRent.getRentRooms(), lowRent.getRentBaths(),
-					highRent.getRentBaths(), lowRent.getRentParty(), highRent.getRentParty(),
-					lowRent.getRentType(), highRent.getRentType(), lowRent.getRentArchitecture(),
-					highRent.getRentArchitecture(), lowRent.getRentAge(), highRent.getRentAge(),
-					lowRent.isRentPetsAllowed(), highRent.isRentPetsAllowed(), 
-					lowRent.getRentStatus(), lowRent.getRentForm(), highRent.getRentAddDate(),
-					highRent.getRentId(), rentSearch.getPageSize(), ApplicationManager.getAppURL());
+			result = session.selectList("RentMapper.searchNextPage", rentSearch);
 		} finally {
 			session.close();
 		}

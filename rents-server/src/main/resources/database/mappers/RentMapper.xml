@@ -5,12 +5,11 @@
  
 <mapper namespace="RentMapper">
 
-   <resultMap id="LightRentMap" type="ro.fizbo.rents.model.Rent">
+	<resultMap id="LightRentMap" type="ro.fizbo.rents.model.Rent">
    		<constructor>
    			<idArg column="rentId" javaType="int"/>
    		</constructor>
         <id property="rentId" column="rentId"/>
-        <result property="rentForm" column="rentForm"/>
         <result property="rentPrice" column="rentPrice"/>
         <result property="rentCurrency" column="rentCurrency"/>
         <result property="rentSurface" column="rentSurface"/>
@@ -19,6 +18,7 @@
         <result property="rentType" column="rentType"/>
         <result property="rentArchitecture" column="rentArchitecture"/>
         <result property="rentAddDate" column="rentAddDate"/>
+		<result property="rentForm" column="rentForm"/>
         <result property="rentStatus" column="rentStatus"/>
         <association property="address" javaType="ro.fizbo.rents.model.Address">
             <id property="addressId" column="addressId"/>
@@ -124,24 +124,106 @@
     
    	<select id="searchCount" parameterType="ro.fizbo.rents.model.RentSearch" resultType="Integer">
     	select count(*) from rent inner join address on rent.addressId=address.addressId
+    	inner join currency on rent.rentCurrency=currency.currencyName
     	<where>
-    		<if test="lowRent.rentSurface != null">rentSurface >= #{lowRent.rentSurface}</if>
+    		address.addressLatitude between #{lowRent.address.addressLatitude} and #{highRent.address.addressLatitude}
+			and address.addressLongitude between #{lowRent.address.addressLongitude} and #{highRent.address.addressLongitude}
+			<if test="lowRent.rentPrice != null">and rentPrice*currency.currencyConversionRate >= #{lowRent.rentPrice}</if>
+    		<if test="highRent.rentPrice != null">and #{highRent.rentPrice} >= rentPrice*currency.currencyConversionRate</if>
+    		<if test="lowRent.rentType != null">and rentType=#{lowRent.rentType}</if>
+    		<if test="lowRent.rentSurface != null">and rentSurface >= #{lowRent.rentSurface}</if>
     		<if test="highRent.rentSurface != null">and #{highRent.rentSurface} >= rentSurface</if>
+    		<if test="lowRent.rentRooms != null">and rentRooms >= #{lowRent.rentRooms}</if>
+    		<if test="highRent.rentRooms != null">and #{highRent.rentRooms} >= rentRooms</if>
+    		<if test="lowRent.rentGuests != null">and rentGuests >= #{lowRent.rentGuests}</if>
+    		<if test="highRent.rentGuests != null">and #{highRent.rentGuests} >= rentGuests</if>
+    		<if test="lowRent.rentSingleBeds != null">and rentSingleBeds >= #{lowRent.rentSingleBeds}</if>
+    		<if test="highRent.rentSingleBeds != null">and #{highRent.rentSingleBeds} >= rentSingleBeds</if>
+    		<if test="lowRent.rentDoubleBeds != null">and rentDoubleBeds >= #{lowRent.rentDoubleBeds}</if>
+    		<if test="highRent.rentDoubleBeds != null">and #{highRent.rentDoubleBeds} >= rentDoubleBeds</if>
+    		<if test="lowRent.rentBaths != null">and rentBaths >=#{lowRent.rentBaths}</if>
+    		<if test="highRent.rentBaths != null">and #{highRent.rentBaths} >= rentBaths</if>
+    		<if test="lowRent.rentArchitecture != null"> and rentArchitecture=#{lowRent.rentArchitecture}</if>
+    		and (rentPetsAllowed=#{lowRent.rentPetsAllowed} or rentPetsAllowed=#{highRent.rentPetsAllowed})
+    		and (rentParkingPlace=#{lowRent.rentParkingPlace} or rentParkingPlace=#{highRent.rentParkingPlace})
+    		and (rentSmokersAllowed=#{lowRent.rentSmokersAllowed} or rentSmokersAllowed=#{highRent.rentSmokersAllowed})
+    		and rentStatus=#{lowRent.rentStatus} and rentForm=#{lowRent.rentForm}
     	</where>
     </select>
     
     <select id="search" parameterType="ro.fizbo.rents.model.RentSearch" resultMap="LightRentMap">
-    	select rent.rentId as rentId, rentPrice, rentCurrency, rentSurface, rentRooms, rentBaths,
-    	rentType,rentArchitecture, rentAddDate, rentStatus, address.addressId as addressId,
-    	addressStreetName, addressNeighbourhood, addressLatitude, addressLongitude,
-    	min(rentImageId) as rentImageId, concat(#{appUrl}, rentImageURI) as rentImageURI
+    	select rent.rentId as rentId, rentPrice, rentCurrency, rentSurface, rentRooms, 
+    	rentBaths, rentType, rentArchitecture, rentAddDate, address.addressId as addressId,
+    	addressStreetName, addressNeighbourhood, addressLatitude,
+    	addressLongitude, min(rentImageId) as rentImageId, 
+    	concat(#{appUrl}, rentImageURI) as rentImageURI
     	from rent inner join address on rent.addressId=address.addressId
     	left join rent_image on rent_image.rentId = rent.rentId
+    	inner join currency on rent.rentCurrency=currency.currencyName
     	<where>
-    		<if test="lowRent.rentSurface != null">rentSurface >= #{lowRent.rentSurface}</if>
+    		address.addressLatitude between #{lowRent.address.addressLatitude} and #{highRent.address.addressLatitude}
+			and address.addressLongitude between #{lowRent.address.addressLongitude} and #{highRent.address.addressLongitude}
+			<if test="lowRent.rentPrice != null">and rentPrice*currency.currencyConversionRate >= #{lowRent.rentPrice}</if>
+    		<if test="highRent.rentPrice != null">and #{highRent.rentPrice} >= rentPrice*currency.currencyConversionRate</if>
+    		<if test="lowRent.rentType != null">and rentType=#{lowRent.rentType}</if>
+    		<if test="lowRent.rentSurface != null">and rentSurface >= #{lowRent.rentSurface}</if>
     		<if test="highRent.rentSurface != null">and #{highRent.rentSurface} >= rentSurface</if>
+    		<if test="lowRent.rentRooms != null">and rentRooms >= #{lowRent.rentRooms}</if>
+    		<if test="highRent.rentRooms != null">and #{highRent.rentRooms} >= rentRooms</if>
+    		<if test="lowRent.rentGuests != null">and rentGuests >= #{lowRent.rentGuests}</if>
+    		<if test="highRent.rentGuests != null">and #{highRent.rentGuests} >= rentGuests</if>
+    		<if test="lowRent.rentSingleBeds != null">and rentSingleBeds >= #{lowRent.rentSingleBeds}</if>
+    		<if test="highRent.rentSingleBeds != null">and #{highRent.rentSingleBeds} >= rentSingleBeds</if>
+    		<if test="lowRent.rentDoubleBeds != null">and rentDoubleBeds >= #{lowRent.rentDoubleBeds}</if>
+    		<if test="highRent.rentDoubleBeds != null">and #{highRent.rentDoubleBeds} >= rentDoubleBeds</if>
+    		<if test="lowRent.rentBaths != null">and rentBaths >=#{lowRent.rentBaths}</if>
+    		<if test="highRent.rentBaths != null">and #{highRent.rentBaths} >= rentBaths</if>
+    		<if test="lowRent.rentArchitecture != null"> and rentArchitecture=#{lowRent.rentArchitecture}</if>
+    		and (rentPetsAllowed=#{lowRent.rentPetsAllowed} or rentPetsAllowed=#{highRent.rentPetsAllowed})
+    		and (rentParkingPlace=#{lowRent.rentParkingPlace} or rentParkingPlace=#{highRent.rentParkingPlace})
+    		and (rentSmokersAllowed=#{lowRent.rentSmokersAllowed} or rentSmokersAllowed=#{highRent.rentSmokersAllowed})
+    		and rentStatus=#{lowRent.rentStatus} and rentForm=#{lowRent.rentForm}
     	</where>
     	group by rent.rentId
+    	order by rent.rentAddDate desc, rent.rentId desc limit #{pageSize}
     </select>
 
+	<select id="searchNextPage" parameterType="ro.fizbo.rents.model.RentSearch" resultMap="LightRentMap">
+    	select rent.rentId as rentId, rentPrice, rentCurrency, rentSurface, rentRooms, 
+    	rentBaths, rentType, rentArchitecture, rentAddDate, address.addressId as addressId,
+    	addressStreetName, addressNeighbourhood, addressLatitude,
+    	addressLongitude, min(rentImageId) as rentImageId, 
+    	concat(#{appUrl}, rentImageURI) as rentImageURI
+    	from rent inner join address on rent.addressId=address.addressId
+    	left join rent_image on rent_image.rentId = rent.rentId
+    	inner join currency on rent.rentCurrency=currency.currencyName
+    	<where>
+    		address.addressLatitude between #{lowRent.address.addressLatitude} and #{highRent.address.addressLatitude}
+			and address.addressLongitude between #{lowRent.address.addressLongitude} and #{highRent.address.addressLongitude}
+			<if test="lowRent.rentPrice != null">and rentPrice*currency.currencyConversionRate >= #{lowRent.rentPrice}</if>
+    		<if test="highRent.rentPrice != null">and #{highRent.rentPrice} >= rentPrice*currency.currencyConversionRate</if>
+    		<if test="lowRent.rentType != null">and rentType=#{lowRent.rentType}</if>
+    		<if test="lowRent.rentSurface != null">and rentSurface >= #{lowRent.rentSurface}</if>
+    		<if test="highRent.rentSurface != null">and #{highRent.rentSurface} >= rentSurface</if>
+    		<if test="lowRent.rentRooms != null">and rentRooms >= #{lowRent.rentRooms}</if>
+    		<if test="highRent.rentRooms != null">and #{highRent.rentRooms} >= rentRooms</if>
+    		<if test="lowRent.rentGuests != null">and rentGuests >= #{lowRent.rentGuests}</if>
+    		<if test="highRent.rentGuests != null">and #{highRent.rentGuests} >= rentGuests</if>
+    		<if test="lowRent.rentSingleBeds != null">and rentSingleBeds >= #{lowRent.rentSingleBeds}</if>
+    		<if test="highRent.rentSingleBeds != null">and #{highRent.rentSingleBeds} >= rentSingleBeds</if>
+    		<if test="lowRent.rentDoubleBeds != null">and rentDoubleBeds >= #{lowRent.rentDoubleBeds}</if>
+    		<if test="highRent.rentDoubleBeds != null">and #{highRent.rentDoubleBeds} >= rentDoubleBeds</if>
+    		<if test="lowRent.rentBaths != null">and rentBaths >=#{lowRent.rentBaths}</if>
+    		<if test="highRent.rentBaths != null">and #{highRent.rentBaths} >= rentBaths</if>
+    		<if test="lowRent.rentArchitecture != null"> and rentArchitecture=#{lowRent.rentArchitecture}</if>
+    		and (rentPetsAllowed=#{lowRent.rentPetsAllowed} or rentPetsAllowed=#{highRent.rentPetsAllowed})
+    		and (rentParkingPlace=#{lowRent.rentParkingPlace} or rentParkingPlace=#{highRent.rentParkingPlace})
+    		and (rentSmokersAllowed=#{lowRent.rentSmokersAllowed} or rentSmokersAllowed=#{highRent.rentSmokersAllowed})
+    		and rentStatus=#{lowRent.rentStatus} and rentForm=#{lowRent.rentForm}
+    		and #{highRent.rentAddDate} >= rent.rentAddDate
+    		and (#{highRent.rentId} > rent.rentId or #{highRent.rentAddDate} > rent.rentAddDate)
+    	</where>
+    	group by rent.rentId
+    	order by rent.rentAddDate desc, rent.rentId desc limit #{pageSize}
+    </select>
 </mapper>

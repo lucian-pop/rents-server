@@ -41,7 +41,7 @@ public class GetRentsWebservice {
 			@Context HttpServletRequest request) {
 		RentsCounter rentsCounter = RentManager.getRentsByMapBoundaries(minLatitude, maxLatitude,
 				minLongitude, maxLongitude, RentStatus.AVAILABLE.getStatus(), 
-				RentForm.NORMAL.getForm(), pageSize);
+				RentForm.RENT.getForm(), pageSize);
 		
 		CurrencyManager.convertRentsListPrices(ContextUtil.getCurrency(request), rentsCounter.rents);
 		
@@ -88,7 +88,7 @@ public class GetRentsWebservice {
 
 		List<Rent> rents = RentManager.getRentsNextPageByMapBoundaries(minLatitude, maxLatitude,
 				minLongitude, maxLongitude, date, lastRentId, RentStatus.AVAILABLE.getStatus(),
-				RentForm.NORMAL.getForm(), pageSize);
+				RentForm.RENT.getForm(), pageSize);
 		
 		CurrencyManager.convertRentsListPrices(ContextUtil.getCurrency(request), rents);
 		
