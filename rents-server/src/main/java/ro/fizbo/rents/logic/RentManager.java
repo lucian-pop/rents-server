@@ -15,8 +15,11 @@ import ro.fizbo.rents.dto.RentsCounter;
 import ro.fizbo.rents.listener.ApplicationManager;
 import ro.fizbo.rents.model.Rent;
 import ro.fizbo.rents.model.Currency;
+import ro.fizbo.rents.model.RentArchitecture;
 import ro.fizbo.rents.model.RentForm;
+import ro.fizbo.rents.model.RentParty;
 import ro.fizbo.rents.model.RentSearch;
+import ro.fizbo.rents.model.RentType;
 import ro.fizbo.rents.model.view.RentFavoriteView;
 import ro.fizbo.rents.webservice.exception.OperationFailedException;
 
@@ -26,6 +29,7 @@ public class RentManager {
 
 	public static Rent addRent(Rent rent) {
 		addSupportForOldClients(rent);
+		addSupportForOldClientsAddSpecific(rent);
 		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
 		try {
 			AddressDAO addressDAO = session.getMapper(AddressDAO.class);
@@ -88,6 +92,52 @@ public class RentManager {
 		}
 	}
 	
+	/** Support clients after adding accommodations.*/
+	private static void addSupportForOldClientsAddSpecific(Rent rent) {
+		if(rent.isRentParkingPlace() == null) {
+			rent.setRentParkingPlace(false);
+		}
+		if(rent.isRentSmokersAllowed() == null) {
+			rent.setRentSmokersAllowed(false);
+		}
+	}
+
+	/** Support clients after adding accommodations.*/
+	private static void addSupportForOldClients(RentSearch rentSearch) {
+		Rent lowRent = rentSearch.getLowRent();
+		Rent highRent = rentSearch.getHighRent();
+		if(lowRent.isRentParkingPlace() == null && highRent.isRentParkingPlace() == null) {
+			lowRent.setRentParkingPlace(false);
+			highRent.setRentParkingPlace(true);
+		}
+		if(lowRent.isRentSmokersAllowed() == null && highRent.isRentSmokersAllowed() == null) {
+			lowRent.setRentSmokersAllowed(false);
+			highRent.setRentSmokersAllowed(true);
+		}
+		if(lowRent.getRentBaths() != null && highRent.getRentBaths() != null 
+				&& lowRent.getRentBaths() == 1 
+				&& highRent.getRentBaths().shortValue() == Short.MAX_VALUE) {
+			lowRent.setRentBaths(null);
+			highRent.setRentBaths(null);
+		}
+		if(lowRent.getRentSurface() != null && highRent.getRentSurface() != null 
+				&& lowRent.getRentSurface() == 0
+				&& highRent.getRentSurface().intValue() == Integer.MAX_VALUE) {
+			lowRent.setRentSurface(null);
+			highRent.setRentSurface(null);
+		}
+		if(lowRent.getRentArchitecture() != null && highRent.getRentArchitecture() != null
+				&& lowRent.getRentArchitecture() == RentArchitecture.DETACHED.getArchitecture()
+				&& highRent.getRentArchitecture() == RentArchitecture.UNDETACHED.getArchitecture()) {
+			lowRent.setRentArchitecture(null);
+		}
+		if(lowRent.getRentParty() != null && highRent.getRentParty() != null 
+				&& lowRent.getRentParty() == RentParty.INDIVIDUAL.getParty()
+				&& highRent.getRentParty() == RentParty.REALTOR.getParty()){
+			lowRent.setRentParty(null);
+		}
+	}
+	
 	public static Rent getDetailedRent(int rentId) {
 		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
 		Rent rent = null;
@@ -111,9 +161,9 @@ public class RentManager {
 		try {
 			RentDAO rentDAO = session.getMapper(RentDAO.class);
 			rentsCounter.counter = rentDAO.getNoOfRentsByMapBoundaries(minLatitude, maxLatitude,
-					minLongitude, maxLongitude, rentStatus, rentForm);
+					minLongitude, maxLongitude, rentStatus, rentForm, Byte.MAX_VALUE);
 			rentsCounter.rents = rentDAO.getRentsByMapBoundaries(minLatitude, maxLatitude,
-					minLongitude, maxLongitude, rentStatus, rentForm, pageSize, 
+					minLongitude, maxLongitude, rentStatus, rentForm,  Byte.MAX_VALUE, pageSize, 
 					ApplicationManager.getAppURL());
 		} finally {
 			session.close();
@@ -130,8 +180,8 @@ public class RentManager {
 		try {
 			RentDAO rentDAO = session.getMapper(RentDAO.class);
 			result = rentDAO.getRentsNextPageByMapBoundaries(minLatitude, maxLatitude, minLongitude,
-					maxLongitude, lastRentDate, lastRentId, rentStatus, rentForm, pageSize,
-					ApplicationManager.getAppURL());
+					maxLongitude, lastRentDate, lastRentId, rentStatus, rentForm, Byte.MAX_VALUE,
+					pageSize, ApplicationManager.getAppURL());
 		} finally {
 			session.close();
 		}
@@ -143,6 +193,7 @@ public class RentManager {
 		RentsCounter rentsCounter = new RentsCounter();
 		Rent lowRent = rentSearch.getLowRent();		
 		addSupportForOldClients(lowRent);
+		addSupportForOldClients(rentSearch);
 
 		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
 		try {
@@ -158,6 +209,7 @@ public class RentManager {
 	public static List<Rent> searchNextPage(RentSearch rentSearch) {
 		Rent lowRent = rentSearch.getLowRent();
 		addSupportForOldClients(lowRent);
+		addSupportForOldClients(rentSearch);
 
 		List<Rent> result = null;
 		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
@@ -251,6 +303,43 @@ public class RentManager {
 			session.close();
 		}
 
+		return result;
+	}
+	
+	/** Compatibility method for older version that do not support accommodation types.*/
+	public static RentsCounter getOldRentsByMapBoundaries(double minLatitude, double maxLatitude,
+			double minLongitude, double maxLongitude, byte rentStatus, byte rentForm, int pageSize) {
+		RentsCounter rentsCounter = new RentsCounter();
+		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
+		try {
+			RentDAO rentDAO = session.getMapper(RentDAO.class);
+			rentsCounter.counter = rentDAO.getNoOfRentsByMapBoundaries(minLatitude, maxLatitude,
+					minLongitude, maxLongitude, rentStatus, rentForm, RentType.OFFICE.getType());
+			rentsCounter.rents = rentDAO.getRentsByMapBoundaries(minLatitude, maxLatitude,
+					minLongitude, maxLongitude, rentStatus, rentForm,  RentType.OFFICE.getType(),
+					pageSize, ApplicationManager.getAppURL());
+		} finally {
+			session.close();
+		}
+		
+		return rentsCounter;
+	}
+
+	/** Compatibility method for older version that do not support accommodation types.*/
+	public static List<Rent> getOldRentsNextPageByMapBoundaries(double minLatitude, double maxLatitude,
+			double minLongitude, double maxLongitude, Date lastRentDate, int lastRentId,
+			byte rentStatus, byte rentForm, int pageSize) {
+		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
+		List<Rent> result = null;
+		try {
+			RentDAO rentDAO = session.getMapper(RentDAO.class);
+			result = rentDAO.getRentsNextPageByMapBoundaries(minLatitude, maxLatitude, minLongitude,
+					maxLongitude, lastRentDate, lastRentId, rentStatus, rentForm, 
+					RentType.OFFICE.getType(), pageSize, ApplicationManager.getAppURL());
+		} finally {
+			session.close();
+		}
+		
 		return result;
 	}
 }

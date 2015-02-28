@@ -53,18 +53,21 @@ public interface RentDAO {
 			+ " inner join address on rent.addressId=address.addressId"
 			+ " where address.addressLatitude between #{minLatitude} and #{maxLatitude}"
 			+ " and address.addressLongitude between #{minLongitude} and #{maxLongitude}"
-			+ " and rentStatus=#{rentStatus} and rentForm=#{rentForm}";
+			+ " and rentStatus=#{rentStatus} and rentForm=#{rentForm}"
+			+ " and rentType <= #{maxRentType}";
 	
 	public static final String SELECT_BY_MAP_BOUNDARIES = LIGHT_RENT_PROJECTION
 			+ " where address.addressLatitude between #{minLatitude} and #{maxLatitude}"
 			+ " and address.addressLongitude between #{minLongitude} and #{maxLongitude}"
-			+ " and rentStatus=#{rentStatus} and rentForm=#{rentForm}"
+			+ " and rentStatus=#{rentStatus} and rentForm=#{rentForm} "
+			+ " and rentType <= #{maxRentType}"
 			+ DATE_RESTRICTION;
 	
 	public static final String SELECT_NEXT_PAGE_BY_MAP_BOUNDARIES = LIGHT_RENT_PROJECTION
 			+ " where address.addressLatitude between #{minLatitude} and #{maxLatitude}"
 			+ " and address.addressLongitude between #{minLongitude} and #{maxLongitude}"
 			+ " and rentStatus=#{rentStatus} and rentForm=#{rentForm}"
+			+ " and rentType <= #{maxRentType}"
 			+ " and " + DATE_PAGINATION_CONDITION + DATE_RESTRICTION;
 	
 	public static final String SELECT_COUNT_USER_ADDED_RENTS = "select count(*) from rent"
@@ -115,15 +118,15 @@ public interface RentDAO {
 	public int getNoOfRentsByMapBoundaries(@Param("minLatitude") double minLatitude,
 			@Param("maxLatitude") double maxLatitude, @Param("minLongitude") double minLongitude,
 			@Param("maxLongitude") double maxLongitude, @Param("rentStatus") byte rentStatus,
-			@Param("rentForm") byte rentForm);
+			@Param("rentForm") byte rentForm, @Param("maxRentType") byte rentType);
 	
 	@Select(SELECT_BY_MAP_BOUNDARIES)
 	@ResultMap("RentMapper.LightRentMap")
 	public List<Rent> getRentsByMapBoundaries(@Param("minLatitude") double minLatitude,
 			@Param("maxLatitude") double maxLatitude, @Param("minLongitude") double minLongitude,
 			@Param("maxLongitude") double maxLongitude, @Param("rentStatus") byte rentStatus,
-			@Param("rentForm") byte rentForm, @Param("pageSize") int pageSize,
-			@Param("appURL") String appURL);
+			@Param("rentForm") byte rentForm, @Param("maxRentType") byte rentType, 
+			@Param("pageSize") int pageSize, @Param("appURL") String appURL);
 	
 	@Select(SELECT_NEXT_PAGE_BY_MAP_BOUNDARIES)
 	@ResultMap("RentMapper.LightRentMap")
@@ -131,8 +134,8 @@ public interface RentDAO {
 			@Param("maxLatitude") double maxLatitude, @Param("minLongitude") double minLongitude,
 			@Param("maxLongitude") double maxLongitude, @Param("lastRentDate") Date lastRentDate, 
 			@Param("lastRentId") int lastRentId, @Param("rentStatus") byte rentStatus, 
-			@Param("rentForm") byte rentForm, @Param("pageSize") int pageSize, 
-			@Param("appURL") String appURL);
+			@Param("rentForm") byte rentForm, @Param("maxRentType") byte rentType,
+			@Param("pageSize") int pageSize, @Param("appURL") String appURL);
 	
 	@Select(SELECT_COUNT_USER_ADDED_RENTS)
 	public int getNoOfUserAddedRents(@Param("accountId") int accountId, 

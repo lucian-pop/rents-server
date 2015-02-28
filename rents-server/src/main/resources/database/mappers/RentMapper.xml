@@ -130,7 +130,8 @@
 			and address.addressLongitude between #{lowRent.address.addressLongitude} and #{highRent.address.addressLongitude}
 			<if test="lowRent.rentPrice != null">and rentPrice*currency.currencyConversionRate >= #{lowRent.rentPrice}</if>
     		<if test="highRent.rentPrice != null">and #{highRent.rentPrice} >= rentPrice*currency.currencyConversionRate</if>
-    		<if test="lowRent.rentType != null">and rentType=#{lowRent.rentType}</if>
+    		<if test="lowRent.rentType != null">and rentType >= #{lowRent.rentType}</if>
+    		<if test="highRent.rentType != null">and #{highRent.rentType} >= rentType</if>
     		<if test="lowRent.rentSurface != null">and rentSurface >= #{lowRent.rentSurface}</if>
     		<if test="highRent.rentSurface != null">and #{highRent.rentSurface} >= rentSurface</if>
     		<if test="lowRent.rentRooms != null">and rentRooms >= #{lowRent.rentRooms}</if>
@@ -144,6 +145,7 @@
     		<if test="lowRent.rentBaths != null">and rentBaths >=#{lowRent.rentBaths}</if>
     		<if test="highRent.rentBaths != null">and #{highRent.rentBaths} >= rentBaths</if>
     		<if test="lowRent.rentArchitecture != null"> and rentArchitecture=#{lowRent.rentArchitecture}</if>
+    		<if test="lowRent.rentParty != null"> and rentParty = #{lowRent.rentParty}</if>
     		and (rentPetsAllowed=#{lowRent.rentPetsAllowed} or rentPetsAllowed=#{highRent.rentPetsAllowed})
     		and (rentParkingPlace=#{lowRent.rentParkingPlace} or rentParkingPlace=#{highRent.rentParkingPlace})
     		and (rentSmokersAllowed=#{lowRent.rentSmokersAllowed} or rentSmokersAllowed=#{highRent.rentSmokersAllowed})
@@ -165,7 +167,8 @@
 			and address.addressLongitude between #{lowRent.address.addressLongitude} and #{highRent.address.addressLongitude}
 			<if test="lowRent.rentPrice != null">and rentPrice*currency.currencyConversionRate >= #{lowRent.rentPrice}</if>
     		<if test="highRent.rentPrice != null">and #{highRent.rentPrice} >= rentPrice*currency.currencyConversionRate</if>
-    		<if test="lowRent.rentType != null">and rentType=#{lowRent.rentType}</if>
+    		<if test="lowRent.rentType != null">and rentType >= #{lowRent.rentType}</if>
+    		<if test="highRent.rentType != null">and #{highRent.rentType} >= rentType</if>
     		<if test="lowRent.rentSurface != null">and rentSurface >= #{lowRent.rentSurface}</if>
     		<if test="highRent.rentSurface != null">and #{highRent.rentSurface} >= rentSurface</if>
     		<if test="lowRent.rentRooms != null">and rentRooms >= #{lowRent.rentRooms}</if>
@@ -179,6 +182,7 @@
     		<if test="lowRent.rentBaths != null">and rentBaths >=#{lowRent.rentBaths}</if>
     		<if test="highRent.rentBaths != null">and #{highRent.rentBaths} >= rentBaths</if>
     		<if test="lowRent.rentArchitecture != null"> and rentArchitecture=#{lowRent.rentArchitecture}</if>
+    		<if test="lowRent.rentParty != null"> and rentParty = #{lowRent.rentParty}</if>
     		and (rentPetsAllowed=#{lowRent.rentPetsAllowed} or rentPetsAllowed=#{highRent.rentPetsAllowed})
     		and (rentParkingPlace=#{lowRent.rentParkingPlace} or rentParkingPlace=#{highRent.rentParkingPlace})
     		and (rentSmokersAllowed=#{lowRent.rentSmokersAllowed} or rentSmokersAllowed=#{highRent.rentSmokersAllowed})
@@ -202,7 +206,8 @@
 			and address.addressLongitude between #{lowRent.address.addressLongitude} and #{highRent.address.addressLongitude}
 			<if test="lowRent.rentPrice != null">and rentPrice*currency.currencyConversionRate >= #{lowRent.rentPrice}</if>
     		<if test="highRent.rentPrice != null">and #{highRent.rentPrice} >= rentPrice*currency.currencyConversionRate</if>
-    		<if test="lowRent.rentType != null">and rentType=#{lowRent.rentType}</if>
+    		<if test="lowRent.rentType != null">and rentType >= #{lowRent.rentType}</if>
+    		<if test="highRent.rentType != null">and #{highRent.rentType} >= rentType</if>
     		<if test="lowRent.rentSurface != null">and rentSurface >= #{lowRent.rentSurface}</if>
     		<if test="highRent.rentSurface != null">and #{highRent.rentSurface} >= rentSurface</if>
     		<if test="lowRent.rentRooms != null">and rentRooms >= #{lowRent.rentRooms}</if>
@@ -216,6 +221,7 @@
     		<if test="lowRent.rentBaths != null">and rentBaths >=#{lowRent.rentBaths}</if>
     		<if test="highRent.rentBaths != null">and #{highRent.rentBaths} >= rentBaths</if>
     		<if test="lowRent.rentArchitecture != null"> and rentArchitecture=#{lowRent.rentArchitecture}</if>
+    		<if test="lowRent.rentParty != null"> and rentParty = #{lowRent.rentParty}</if>
     		and (rentPetsAllowed=#{lowRent.rentPetsAllowed} or rentPetsAllowed=#{highRent.rentPetsAllowed})
     		and (rentParkingPlace=#{lowRent.rentParkingPlace} or rentParkingPlace=#{highRent.rentParkingPlace})
     		and (rentSmokersAllowed=#{lowRent.rentSmokersAllowed} or rentSmokersAllowed=#{highRent.rentSmokersAllowed})

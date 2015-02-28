@@ -2,7 +2,8 @@ package ro.fizbo.rents.model;
 
 public enum RentArchitecture {
 	DETACHED((byte) 0),
-	UNDETACHED((byte) 1);
+	SEMIDETACHED((byte) 1),
+	UNDETACHED((byte) 2);
 	
 	private byte architecture;
 	

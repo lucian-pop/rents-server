@@ -63,7 +63,7 @@ public class GetRentsWebserviceTest extends TestCase {
 	}
 
 	public void testGetRentsByMapBoundariesWithoutCurrency() {
-		Response response = target.path("rents/map")
+		Response response = target.path("rents/map/0")
 				.queryParam("minLatitude", TestUtil.MIN_LATITUDE)
 				.queryParam("maxLatitude", TestUtil.MAX_LATITUDE)
 				.queryParam("minLongitude", TestUtil.MIN_LONGITUDE)
@@ -81,7 +81,7 @@ public class GetRentsWebserviceTest extends TestCase {
 	}
 	
 	public void testGetRentsByMapBoundariesWithCurrency() {
-		Response response = target.path("rents/map")
+		Response response = target.path("rents/map/0")
 				.queryParam("minLatitude", TestUtil.MIN_LATITUDE)
 				.queryParam("maxLatitude", TestUtil.MAX_LATITUDE)
 				.queryParam("minLongitude", TestUtil.MIN_LONGITUDE)
@@ -144,7 +144,7 @@ public class GetRentsWebserviceTest extends TestCase {
 	
 	public void testGetRentsNextPageByMapBoundariesWithoutCurrency() {
 		String date = (new SimpleDateFormat(Constants.DATE_FORMAT)).format(new Date());
-		Response response = target.path("rents/map/page")
+		Response response = target.path("rents/map/page/0")
 				.queryParam("minLatitude", TestUtil.MIN_LATITUDE)
 				.queryParam("maxLatitude", TestUtil.MAX_LATITUDE)
 				.queryParam("minLongitude", TestUtil.MIN_LONGITUDE)
@@ -161,7 +161,7 @@ public class GetRentsWebserviceTest extends TestCase {
 	
 	public void testGetRentsNextPageByMapBoundariesWithCurrency() {
 		String date = (new SimpleDateFormat(Constants.DATE_FORMAT)).format(new Date());
-		Response response = target.path("rents/map/page")
+		Response response = target.path("rents/map/page/0")
 				.queryParam("minLatitude", TestUtil.MIN_LATITUDE)
 				.queryParam("maxLatitude", TestUtil.MAX_LATITUDE)
 				.queryParam("minLongitude", TestUtil.MIN_LONGITUDE)

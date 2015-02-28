@@ -20,10 +20,10 @@ import ro.fizbo.rents.dto.RentsCounter;
 import ro.fizbo.rents.logic.CurrencyManager;
 import ro.fizbo.rents.logic.RentManager;
 import ro.fizbo.rents.model.Rent;
-import ro.fizbo.rents.model.RentForm;
 import ro.fizbo.rents.model.RentStatus;
 import ro.fizbo.rents.util.Constants;
 import ro.fizbo.rents.webservice.exception.InvalidDataException;
+import ro.fizbo.rents.webservice.exception.VersionOutdatedException;
 import ro.fizbo.rents.webservice.util.ContextUtil;
 
 @Path("rents")
@@ -39,13 +39,7 @@ public class GetRentsWebservice {
 			@QueryParam("maxLongitude") double maxLongitude, 
 			@QueryParam("pageSize") int pageSize,
 			@Context HttpServletRequest request) {
-		RentsCounter rentsCounter = RentManager.getRentsByMapBoundaries(minLatitude, maxLatitude,
-				minLongitude, maxLongitude, RentStatus.AVAILABLE.getStatus(), 
-				RentForm.RENT.getForm(), pageSize);
-		
-		CurrencyManager.convertRentsListPrices(ContextUtil.getCurrency(request), rentsCounter.rents);
-		
-		return rentsCounter;
+		throw new VersionOutdatedException();
 	}
 	
 	@Path("map/{rentForm}")
@@ -59,8 +53,14 @@ public class GetRentsWebservice {
 			@QueryParam("maxLongitude") double maxLongitude, 
 			@PathParam("rentForm") byte rentForm, @QueryParam("pageSize") int pageSize,
 			@Context HttpServletRequest request) {
-		RentsCounter rentsCounter = RentManager.getRentsByMapBoundaries(minLatitude, maxLatitude,
-				minLongitude, maxLongitude, RentStatus.AVAILABLE.getStatus(), rentForm, pageSize);
+		RentsCounter rentsCounter = null;
+		if(ContextUtil.getVersion(request) == 0) {
+			rentsCounter = RentManager.getOldRentsByMapBoundaries(minLatitude, maxLatitude,
+						minLongitude, maxLongitude, RentStatus.AVAILABLE.getStatus(), rentForm, pageSize);
+		} else {
+			rentsCounter = RentManager.getRentsByMapBoundaries(minLatitude, maxLatitude,
+					minLongitude, maxLongitude, RentStatus.AVAILABLE.getStatus(), rentForm, pageSize);
+		}
 		
 		CurrencyManager.convertRentsListPrices(ContextUtil.getCurrency(request), rentsCounter.rents);
 
@@ -78,21 +78,7 @@ public class GetRentsWebservice {
 			@QueryParam("lastRentDate") String lastRentDate,
 			@QueryParam("lastRentId") int lastRentId, @QueryParam("pageSize") int pageSize,
 			@Context HttpServletRequest request) {
-		DateFormat dateFormat = new SimpleDateFormat(Constants.DATE_FORMAT);
-		Date date = null;
-		try {
-			date = dateFormat.parse(lastRentDate);
-		} catch (ParseException e) {
-			throw new InvalidDataException();
-		}
-
-		List<Rent> rents = RentManager.getRentsNextPageByMapBoundaries(minLatitude, maxLatitude,
-				minLongitude, maxLongitude, date, lastRentId, RentStatus.AVAILABLE.getStatus(),
-				RentForm.RENT.getForm(), pageSize);
-		
-		CurrencyManager.convertRentsListPrices(ContextUtil.getCurrency(request), rents);
-		
-		return rents;
+		throw new VersionOutdatedException();
 	}
 	
 	@Path("map/page/{rentForm}")
@@ -114,9 +100,16 @@ public class GetRentsWebservice {
 			throw new InvalidDataException();
 		}
 
-		List<Rent> rents = RentManager.getRentsNextPageByMapBoundaries(minLatitude, maxLatitude,
-				minLongitude, maxLongitude, date, lastRentId, RentStatus.AVAILABLE.getStatus(),
-				rentForm, pageSize);
+		List<Rent> rents = null;
+		if(ContextUtil.getVersion(request) == 0) {
+			rents = RentManager.getOldRentsNextPageByMapBoundaries(minLatitude, maxLatitude,
+					minLongitude, maxLongitude, date, lastRentId, RentStatus.AVAILABLE.getStatus(),
+					rentForm, pageSize);
+		} else {
+			rents = RentManager.getRentsNextPageByMapBoundaries(minLatitude, maxLatitude,
+					minLongitude, maxLongitude, date, lastRentId, RentStatus.AVAILABLE.getStatus(),
+					rentForm, pageSize);
+		}
 		
 		CurrencyManager.convertRentsListPrices(ContextUtil.getCurrency(request), rents);
 		

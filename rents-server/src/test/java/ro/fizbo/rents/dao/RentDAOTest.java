@@ -63,7 +63,8 @@ public class RentDAOTest extends TestCase {
 			RentDAO rentDAO = session.getMapper(RentDAO.class);
 			result = rentDAO.getRentsByMapBoundaries(TestUtil.MIN_LATITUDE, TestUtil.MAX_LATITUDE,
 					TestUtil.MIN_LONGITUDE, TestUtil.MAX_LONGITUDE,
-					RentStatus.AVAILABLE.getStatus(), RentForm.RENT.getForm(), TestUtil.PAGE_SIZE, "");
+					RentStatus.AVAILABLE.getStatus(), RentForm.RENT.getForm(),  Byte.MAX_VALUE, 
+					TestUtil.PAGE_SIZE, "");
 		} finally {
 			session.close();
 		}
@@ -89,7 +90,7 @@ public class RentDAOTest extends TestCase {
 			RentDAO rentDAO = session.getMapper(RentDAO.class);
 			result = rentDAO.getRentsByMapBoundaries(TestUtil.MIN_LATITUDE, TestUtil.MAX_LATITUDE,
 					TestUtil.MIN_LONGITUDE, TestUtil.MAX_LONGITUDE, 
-					RentStatus.AVAILABLE.getStatus(), RentForm.RENT.getForm(), 
+					RentStatus.AVAILABLE.getStatus(), RentForm.RENT.getForm(), Byte.MAX_VALUE,
 					TestUtil.PAGE_SIZE, "");
 		} finally {
 			session.close();
@@ -105,7 +106,7 @@ public class RentDAOTest extends TestCase {
 			result = rentDAO.getRentsNextPageByMapBoundaries(TestUtil.MIN_LATITUDE, 
 					TestUtil.MAX_LATITUDE, TestUtil.MIN_LONGITUDE, TestUtil.MAX_LONGITUDE,
 					lastRent.getRentAddDate(), lastRent.getRentId(),
-					RentStatus.AVAILABLE.getStatus(), RentForm.RENT.getForm(),
+					RentStatus.AVAILABLE.getStatus(), RentForm.RENT.getForm(), Byte.MAX_VALUE,
 					TestUtil.PAGE_SIZE, "");
 		} finally {
 			session.close();
@@ -137,7 +138,7 @@ public class RentDAOTest extends TestCase {
 			RentDAO rentDAO = (RentDAO) session.getMapper(RentDAO.class);
 			result = rentDAO.getNoOfRentsByMapBoundaries(TestUtil.MIN_LATITUDE, 
 					TestUtil.MAX_LATITUDE, TestUtil.MIN_LONGITUDE, TestUtil.MAX_LONGITUDE,
-					RentStatus.AVAILABLE.getStatus(), RentForm.RENT.getForm());
+					RentStatus.AVAILABLE.getStatus(), RentForm.RENT.getForm(), Byte.MAX_VALUE);
 		} finally {
 			session.close();
 		}

@@ -21,4 +21,6 @@ public final class ContextConstants {
 	public static final String USER_AGENT = "user-agent";
 	
 	public static final String CURRENCY = "currency";
+	
+	public static final String VERSION = "version";
 }

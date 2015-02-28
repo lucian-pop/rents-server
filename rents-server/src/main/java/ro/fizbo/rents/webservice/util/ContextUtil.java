@@ -23,5 +23,13 @@ public final class ContextUtil {
 		}
 		return currency;
 	}
+	
+	public static int getVersion(HttpServletRequest request) {
+		String version = request.getHeader(ContextConstants.VERSION);
+		if(version == null || version == "") {
+			version = "1";
+		}
+		return Integer.parseInt(version);
+	}
 
 }
