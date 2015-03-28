@@ -9,8 +9,6 @@ public class Rent {
 	
 	private Integer accountId;
 	
-	private Address address;
-	
 	private Integer rentPrice;
 	
 	private String rentCurrency;
@@ -52,6 +50,10 @@ public class Rent {
 	private Byte rentForm;
 	
 	private List<RentImage> rentImages;
+	
+	private Integer rentViewsNo;
+
+	private Address address;
 	
 	public Rent() {
 	}
@@ -255,5 +257,12 @@ public class Rent {
 	public void setRentImages(List<RentImage> rentImages) {
 		this.rentImages = rentImages;
 	}
-	
+
+	public Integer getRentViewsNo() {
+		return rentViewsNo;
+	}
+
+	public void setRentViewsNo(Integer rentViewsNo) {
+		this.rentViewsNo = rentViewsNo;
+	}
 }

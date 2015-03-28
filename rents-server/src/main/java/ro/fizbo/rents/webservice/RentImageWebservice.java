@@ -15,7 +15,7 @@ import ro.fizbo.rents.logic.RentImageManager;
 import ro.fizbo.rents.model.RentImage;
 import ro.fizbo.rents.webservice.exception.UnauthorizedException;
 import ro.fizbo.rents.webservice.util.AuthorizationUtil;
-import ro.fizbo.rents.webservice.util.ContextConstants;
+import ro.fizbo.rents.webservice.util.HeadersConstants;
 
 @Path("account/rentimage")
 public class RentImageWebservice {
@@ -29,7 +29,7 @@ public class RentImageWebservice {
 			throw new UnauthorizedException();
 		}
 
-		int rentId = request.getIntHeader(ContextConstants.RENT_ID);
+		int rentId = request.getIntHeader(HeadersConstants.RENT_ID);
 
 		return RentImageManager.uploadRentImage(imageBytes, rentId);
 	}
@@ -43,9 +43,9 @@ public class RentImageWebservice {
 			throw new UnauthorizedException();
 		}
 		
-		int rentImageId = request.getIntHeader(ContextConstants.RENT_IMAGE_ID);
-		String rentImageURI = request.getHeader(ContextConstants.RENT_IMAGE_URI);
-		int rentId = request.getIntHeader(ContextConstants.RENT_ID);
+		int rentImageId = request.getIntHeader(HeadersConstants.RENT_IMAGE_ID);
+		String rentImageURI = request.getHeader(HeadersConstants.RENT_IMAGE_URI);
+		int rentId = request.getIntHeader(HeadersConstants.RENT_ID);
 
 		return RentImageManager.replaceRentImage(imageBytes, rentImageId, rentImageURI, rentId);
 	}

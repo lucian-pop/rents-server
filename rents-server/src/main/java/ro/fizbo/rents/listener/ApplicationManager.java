@@ -27,7 +27,9 @@ import ro.fizbo.rents.dao.CurrencyDAO;
 import ro.fizbo.rents.dao.RentDAO;
 import ro.fizbo.rents.dao.RentFavoriteDAO;
 import ro.fizbo.rents.dao.RentImageDAO;
+import ro.fizbo.rents.dao.RentStatisticsDAO;
 import ro.fizbo.rents.dao.TokenDAO;
+import ro.fizbo.rents.logic.AsyncTaskManager;
 import ro.fizbo.rents.logic.CurrencyManager;
 import ro.fizbo.rents.logic.SchedulerManager;
 
@@ -47,13 +49,11 @@ public class ApplicationManager implements ServletContextListener {
 	private static SqlSessionFactory sqlSessionFactory;
 	
 	/** Paths. */
-	private static final String DOMAIN_NAME="test.fizbo.ro";
+	private static final String DOMAIN_NAME="192.168.1.4:8080";
 	
 	private static String appRealPath;
 	
 	private static String appURL;
-	
-	private static String appFacebookAccessToken;
 	
 	/** Conversion rates map.*/
 	private static Map<String, BigDecimal> conversionRatesMap = new HashMap<String, BigDecimal>();
@@ -80,6 +80,7 @@ public class ApplicationManager implements ServletContextListener {
 			sqlSessionFactory.getConfiguration().addMapper(RentFavoriteDAO.class);
 			sqlSessionFactory.getConfiguration().addMapper(TokenDAO.class);
 			sqlSessionFactory.getConfiguration().addMapper(CurrencyDAO.class);
+			sqlSessionFactory.getConfiguration().addMapper(RentStatisticsDAO.class);
 			
 			logger.info("Database session factory created succesfully");
 		} catch (IOException e) {
@@ -102,9 +103,11 @@ public class ApplicationManager implements ServletContextListener {
 	 */
 	@Override
 	public void contextDestroyed(ServletContextEvent event) {
+		logger.info("Stop async task executor service.");
+		AsyncTaskManager.stop();
 		logger.info("Stop scheduler for conversions rates update.");
 		SchedulerManager.stop();
-
+		
 		logger.info("Unregister database drivers.");
 		sqlSessionFactory = null;
 		Enumeration<Driver> drivers = DriverManager.getDrivers();     
@@ -141,14 +144,6 @@ public class ApplicationManager implements ServletContextListener {
 	
 	public static String getAppURL() {
 		return appURL;
-	}
-	
-	public String getAppFacebookAccessToken() {
-		if(appFacebookAccessToken != null) {
-			// get app facebook acces token
-		}
-		
-		return null;
 	}
 	
 	public static Map<String, BigDecimal> getConversionRatesMap() {

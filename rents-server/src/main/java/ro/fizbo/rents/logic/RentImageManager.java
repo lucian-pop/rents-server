@@ -9,9 +9,9 @@ import org.apache.log4j.Logger;
 import ro.fizbo.rents.dao.RentImageDAO;
 import ro.fizbo.rents.listener.ApplicationManager;
 import ro.fizbo.rents.model.RentImage;
+import ro.fizbo.rents.util.Constants;
 import ro.fizbo.rents.util.FileUtil;
 import ro.fizbo.rents.webservice.exception.OperationFailedException;
-import ro.fizbo.rents.webservice.util.ContextConstants;
 
 public class RentImageManager {
 	
@@ -161,15 +161,14 @@ public class RentImageManager {
 	}
 	
 	private static String buildImagePath(int rentId) {
-		return ContextConstants.RENTS_IMAGES_PATH  + ContextConstants.FILE_SEPARATOR + rentId;
+		return Constants.RENTS_IMAGES_PATH  + Constants.FILE_SEPARATOR + rentId;
 	}
 	
 	private static final String buildImageFilename() {
-		return new Date().getTime() + ContextConstants.IMAGE_FILE_EXT;
+		return new Date().getTime() + Constants.IMAGE_FILE_EXT;
 	}
 	
 	private static String buildImageURI(String imagePath, String imageFilename) {
-		return ContextConstants.FILE_SEPARATOR + imagePath + ContextConstants.FILE_SEPARATOR 
-				+ imageFilename;
+		return Constants.FILE_SEPARATOR + imagePath + Constants.FILE_SEPARATOR + imageFilename;
 	}
 }

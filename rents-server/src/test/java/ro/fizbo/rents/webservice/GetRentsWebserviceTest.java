@@ -18,7 +18,7 @@ import ro.fizbo.rents.model.RentForm;
 import ro.fizbo.rents.util.Constants;
 import ro.fizbo.rents.util.TestUtil;
 import ro.fizbo.rents.webservice.response.WebserviceResponseStatus;
-import ro.fizbo.rents.webservice.util.ContextConstants;
+import ro.fizbo.rents.webservice.util.HeadersConstants;
 import junit.framework.TestCase;
 
 public class GetRentsWebserviceTest extends TestCase {
@@ -88,7 +88,7 @@ public class GetRentsWebserviceTest extends TestCase {
 				.queryParam("maxLongitude", TestUtil.MAX_LONGITUDE)
 				.queryParam("pageSize", TestUtil.PAGE_SIZE)
 				.request(MediaType.APPLICATION_JSON)
-				.header(ContextConstants.CURRENCY, Currency.RON.toString()).get();
+				.header(HeadersConstants.CURRENCY, Currency.RON.toString()).get();
 		
 		assertTrue(response.getStatus()==WebserviceResponseStatus.OK.getCode());
 		
@@ -127,7 +127,7 @@ public class GetRentsWebserviceTest extends TestCase {
 				.queryParam("minLongitude", TestUtil.MIN_LONGITUDE)
 				.queryParam("maxLongitude", TestUtil.MAX_LONGITUDE)
 				.queryParam("pageSize", TestUtil.PAGE_SIZE)
-				.request(MediaType.APPLICATION_JSON).header(ContextConstants.CURRENCY,
+				.request(MediaType.APPLICATION_JSON).header(HeadersConstants.CURRENCY,
 						Currency.RON.toString()).get();
 		
 		assertTrue(response.getStatus()==WebserviceResponseStatus.OK.getCode());
@@ -169,7 +169,7 @@ public class GetRentsWebserviceTest extends TestCase {
 				.queryParam("lastRentId", Integer.MAX_VALUE)
 				.queryParam("pageSize", TestUtil.PAGE_SIZE)
 				.request(MediaType.APPLICATION_JSON)
-				.header(ContextConstants.CURRENCY, Currency.RON.toString()).get();
+				.header(HeadersConstants.CURRENCY, Currency.RON.toString()).get();
 		
 		assertTrue(response.getStatus()==WebserviceResponseStatus.OK.getCode());
 		List<Rent> rents = response.readEntity(new GenericType<List<Rent>>(){});
@@ -204,7 +204,7 @@ public class GetRentsWebserviceTest extends TestCase {
 				.queryParam("lastRentId", Integer.MAX_VALUE)
 				.queryParam("pageSize", TestUtil.PAGE_SIZE)
 				.request(MediaType.APPLICATION_JSON).
-				header(ContextConstants.CURRENCY, Currency.RON.toString()).get();
+				header(HeadersConstants.CURRENCY, Currency.RON.toString()).get();
 		
 		assertTrue(response.getStatus()==WebserviceResponseStatus.OK.getCode());
 		assertTrue(response.getStatus()==WebserviceResponseStatus.OK.getCode());

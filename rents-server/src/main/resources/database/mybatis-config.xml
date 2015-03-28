@@ -42,6 +42,7 @@
   		<mapper resource="database/mappers/RentMapper.xml"/>
   		<mapper resource="database/mappers/RentFavoriteMapper.xml"/>
   		<mapper resource="database/mappers/AccountMapper.xml"/>
+  		<mapper resource="database/mappers/RentAbuseMapper.xml"/>
 	</mappers>
 
 </configuration>

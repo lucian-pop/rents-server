@@ -21,7 +21,7 @@ import ro.fizbo.rents.model.view.RentFavoriteView;
 import ro.fizbo.rents.util.Constants;
 import ro.fizbo.rents.util.TestUtil;
 import ro.fizbo.rents.webservice.response.WebserviceResponseStatus;
-import ro.fizbo.rents.webservice.util.ContextConstants;
+import ro.fizbo.rents.webservice.util.HeadersConstants;
 import junit.framework.TestCase;
 
 public class UserFavoritesWebserviceTest extends TestCase {
@@ -66,7 +66,7 @@ public class UserFavoritesWebserviceTest extends TestCase {
 		rents.add(rent);
 		Response response = target.path("account/rents/favorites/add")
 				.request(MediaType.APPLICATION_JSON)
-				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
+				.header(HeadersConstants.TOKEN_KEY, account.getTokenKey())
 				.post(Entity.json(rent.getRentId()));
 		
 		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
@@ -80,7 +80,7 @@ public class UserFavoritesWebserviceTest extends TestCase {
 	public void testAddExistingRentToFavorites() {		
 		Response response = target.path("account/rents/favorites/add")
 				.request(MediaType.APPLICATION_JSON)
-				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
+				.header(HeadersConstants.TOKEN_KEY, account.getTokenKey())
 				.post(Entity.json(rents.get(0).getRentId()));
 		
 		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
@@ -94,7 +94,7 @@ public class UserFavoritesWebserviceTest extends TestCase {
 	public void testAddRentToFavoritesWithoutPrivileges() {
 		Response response = target.path("account/rents/favorites/add")
 				.request(MediaType.APPLICATION_JSON)
-				.header(ContextConstants.TOKEN_KEY, TokenGenerator.generateToken())
+				.header(HeadersConstants.TOKEN_KEY, TokenGenerator.generateToken())
 				.post(Entity.json(rents.get(0).getRentId()));
 		
 		assertTrue(response.getStatus() == WebserviceResponseStatus.UNAUTHORIZED.getCode());
@@ -114,7 +114,7 @@ public class UserFavoritesWebserviceTest extends TestCase {
 		response = target.path("account/rents/favorites")
 				.queryParam("pageSize", TestUtil.PAGE_SIZE)
 				.request(MediaType.APPLICATION_JSON)
-				.header(ContextConstants.TOKEN_KEY, loginResult.getTokenKey()).get();
+				.header(HeadersConstants.TOKEN_KEY, loginResult.getTokenKey()).get();
 		
 		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
 
@@ -138,8 +138,8 @@ public class UserFavoritesWebserviceTest extends TestCase {
 		response = target.path("account/rents/favorites")
 				.queryParam("pageSize", TestUtil.PAGE_SIZE)
 				.request(MediaType.APPLICATION_JSON)
-				.header(ContextConstants.CURRENCY, Currency.RON.toString())
-				.header(ContextConstants.TOKEN_KEY, loginResult.getTokenKey()).get();
+				.header(HeadersConstants.CURRENCY, Currency.RON.toString())
+				.header(HeadersConstants.TOKEN_KEY, loginResult.getTokenKey()).get();
 		
 		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
 
@@ -165,7 +165,7 @@ public class UserFavoritesWebserviceTest extends TestCase {
 				.queryParam("lastDate", date)
 				.queryParam("pageSize", TestUtil.PAGE_SIZE)
 				.request(MediaType.APPLICATION_JSON)
-				.header(ContextConstants.TOKEN_KEY, testAccount.getTokenKey()).get();
+				.header(HeadersConstants.TOKEN_KEY, testAccount.getTokenKey()).get();
 		
 		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
 
@@ -188,8 +188,8 @@ public class UserFavoritesWebserviceTest extends TestCase {
 				.queryParam("lastDate", date)
 				.queryParam("pageSize", TestUtil.PAGE_SIZE)
 				.request(MediaType.APPLICATION_JSON)
-				.header(ContextConstants.CURRENCY, Currency.RON.toString())
-				.header(ContextConstants.TOKEN_KEY, testAccount.getTokenKey()).get();
+				.header(HeadersConstants.CURRENCY, Currency.RON.toString())
+				.header(HeadersConstants.TOKEN_KEY, testAccount.getTokenKey()).get();
 		
 		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
 

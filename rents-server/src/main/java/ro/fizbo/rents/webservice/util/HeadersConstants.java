@@ -1,16 +1,9 @@
 package ro.fizbo.rents.webservice.util;
 
-public final class ContextConstants {
+public final class HeadersConstants {
 	
-	public static final String FILE_SEPARATOR = "/";
-	
+	/* Headers types. */
 	public static final String TOKEN_KEY = "tokenKey";
-
-	public static final String IMAGES_PATH = "images";
-	
-	public static final String RENTS_IMAGES_PATH = IMAGES_PATH + FILE_SEPARATOR + "rents";
-	
-	public static final String IMAGE_FILE_EXT = ".jpg";
 	
 	public static final String RENT_ID = "rentId";
 	
@@ -23,4 +16,11 @@ public final class ContextConstants {
 	public static final String CURRENCY = "currency";
 	
 	public static final String VERSION = "version";
+	
+	public static final String CONTENT_TYPE = "Content-type";
+	
+	/* Header values. */
+	public static final String IOS = "ios";
+	
+	public static final String ANDROID = "android";
 }

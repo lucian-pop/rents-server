@@ -2,12 +2,12 @@ package ro.fizbo.rents.util;
 
 import ro.fizbo.rents.listener.ApplicationManager;
 import ro.fizbo.rents.model.Address;
+import ro.fizbo.rents.model.PropertyType;
 import ro.fizbo.rents.model.Rent;
 import ro.fizbo.rents.model.RentArchitecture;
 import ro.fizbo.rents.model.RentForm;
 import ro.fizbo.rents.model.RentSearch;
 import ro.fizbo.rents.model.RentStatus;
-import ro.fizbo.rents.model.RentType;
 
 public class RentSearchTestUtil {
 	
@@ -51,7 +51,7 @@ public class RentSearchTestUtil {
 		lowRent.setRentPetsAllowed(false);
 		lowRent.setRentParkingPlace(false);
 		lowRent.setRentSmokersAllowed(false);
-		lowRent.setRentType(RentType.APARTMENT.getType());
+		lowRent.setRentType(PropertyType.APARTMENT.getType());
 		lowRent.setRentRooms(MIN_ROOMS);
 		lowRent.setRentBaths(MIN_BATHS);
 		lowRent.setRentArchitecture(RentArchitecture.DETACHED.getArchitecture());

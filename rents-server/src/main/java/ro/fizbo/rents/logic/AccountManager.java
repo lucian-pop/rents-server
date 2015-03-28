@@ -8,13 +8,13 @@ import java.util.List;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.log4j.Logger;
 
+import ro.fizbo.rents.client.rest.FacebookClient;
 import ro.fizbo.rents.dao.AccountDAO;
 import ro.fizbo.rents.dao.TokenDAO;
 import ro.fizbo.rents.dto.AccountUpdate;
 import ro.fizbo.rents.listener.ApplicationManager;
 import ro.fizbo.rents.model.Account;
 import ro.fizbo.rents.model.Token;
-import ro.fizbo.rents.rest.client.FacebookClient;
 import ro.fizbo.rents.util.PasswordHashing;
 import ro.fizbo.rents.webservice.exception.AccountConflictException;
 import ro.fizbo.rents.webservice.exception.AuthenticationException;

@@ -24,6 +24,7 @@ import ro.fizbo.rents.dao.CurrencyDAO;
 import ro.fizbo.rents.dao.RentDAO;
 import ro.fizbo.rents.dao.RentFavoriteDAO;
 import ro.fizbo.rents.dao.RentImageDAO;
+import ro.fizbo.rents.dao.RentStatisticsDAO;
 import ro.fizbo.rents.dao.TokenDAO;
 import ro.fizbo.rents.logic.TokenGenerator;
 import ro.fizbo.rents.model.Account;
@@ -58,7 +59,7 @@ public class TestUtil {
 	
 	public static final String ACCOUNT_PASSWORD = "account password";
 
-	public static final String BASE_URI = "http://192.168.1.7:8080/rents-server/ws/";
+	public static final String BASE_URI = "http://192.168.1.4:8080/rents-server/ws/";
 	
 	public static final double MIN_LATITUDE = 46.7379424563698;
 
@@ -103,6 +104,7 @@ public class TestUtil {
 				sqlSessionFactory.getConfiguration().addMapper(RentFavoriteDAO.class);
 				sqlSessionFactory.getConfiguration().addMapper(TokenDAO.class);
 				sqlSessionFactory.getConfiguration().addMapper(CurrencyDAO.class);
+				sqlSessionFactory.getConfiguration().addMapper(RentStatisticsDAO.class);
 
 				logger.info("Test database session factory created succesfully");
 			} catch (IOException e) {

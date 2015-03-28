@@ -25,10 +25,9 @@ public class RentsSearchWebservice {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public RentsCounter searchRents(RentSearch rentSearch, @Context HttpServletRequest request) {
-		RentsCounter rentsCounter = RentManager.search(rentSearch);
-		
-		CurrencyManager.convertRentsListPrices(ContextUtil.getCurrency(request),
-				rentsCounter.rents);
+		String currency = ContextUtil.getCurrency(request);
+		RentsCounter rentsCounter = RentManager.search(rentSearch, currency);
+		CurrencyManager.convertRentsListPrices(currency, rentsCounter.rents);
 		
 		return rentsCounter;
 	}
@@ -39,9 +38,9 @@ public class RentsSearchWebservice {
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Rent> searchRentsNextPage(RentSearch rentSearch,
 			@Context HttpServletRequest request) {
-		List<Rent> rents = RentManager.searchNextPage(rentSearch);
-		
-		CurrencyManager.convertRentsListPrices(ContextUtil.getCurrency(request), rents);
+		String currency = ContextUtil.getCurrency(request);
+		List<Rent> rents = RentManager.searchNextPage(rentSearch, currency);
+		CurrencyManager.convertRentsListPrices(currency, rents);
 		
 		return rents;
 	}

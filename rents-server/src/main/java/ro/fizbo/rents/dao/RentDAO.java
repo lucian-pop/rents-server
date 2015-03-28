@@ -17,19 +17,19 @@ public interface RentDAO {
 
 	public static final String INSERT = "insert into rent (accountId, addressId, rentForm,"
 			+ " rentPrice, rentCurrency, rentPhone, rentType, rentRooms, rentGuests, rentSingleBeds,"
-			+ " rentDoubleBeds, rentBaths, rentArchitecture, rentSurface, rentAge, rentParty, "
-			+ " rentDescription, rentPetsAllowed, rentParkingPlace, rentSmokersAllowed, rentAddDate,"
-			+ " rentStatus)"
+			+ " rentDoubleBeds, rentBaths, rentArchitecture, rentSurface,"
+			+ " rentDescription, rentPetsAllowed, rentParkingPlace, rentSmokersAllowed, rentAddDate)"
 			+ " values(#{accountId}, #{addressId}, #{rentForm}, #{rentPrice}, #{rentCurrency},"
 			+ " #{rentPhone}, #{rentType}, #{rentRooms}, #{rentGuests}, #{rentSingleBeds},"
-			+ " #{rentDoubleBeds}, #{rentBaths}, #{rentArchitecture}, #{rentSurface}, #{rentAge},"
-			+ " #{rentParty}, #{rentDescription}, #{rentPetsAllowed}, #{rentParkingPlace},"
-			+ " #{rentSmokersAllowed}, #{rentAddDate}, #{rentStatus})";
+			+ " #{rentDoubleBeds}, #{rentBaths}, #{rentArchitecture}, #{rentSurface},"
+			+ " #{rentDescription}, #{rentPetsAllowed}, #{rentParkingPlace},"
+			+ " #{rentSmokersAllowed}, #{rentAddDate})";
 	
-	public static final String EAGER_SELECT_BY_ID= "select rent.*, address.*,"
+	public static final String EAGER_SELECT_BY_ID= "select rent.*, rentViewsNo, address.*,"
 			+ " rentImageId, concat(#{appURL}, rentImageURI) as rentImageURI from rent"
 			+ " inner join address on rent.addressId=address.addressId"
 			+ "	left join rent_image on rent.rentId=rent_image.rentId"
+			+ " left join rent_statistics on rent.rentId = rent_statistics.rentId"
 			+ " where rent.rentId = #{rentId}";
 	
 	public static final String DELETE_BY_ID = "delete from rent where rent.rentId=#{rentId}";
@@ -82,7 +82,7 @@ public interface RentDAO {
 			+ " and " + DATE_PAGINATION_CONDITION + DATE_RESTRICTION;
 	
 	public static final String LIGHT_RENT_FAVORITE_VIEW_PROJECTION = "select rent.rentId,"
-			+ "rent.rentPrice, rentCurrency, rentSurface, rentRooms, rentBaths, rentType,"
+			+ "rent.rentPrice, rentCurrency, rentForm, rentSurface, rentRooms, rentBaths, rentType,"
 			+ "rentArchitecture,rentAddDate, rentStatus,"
 			+ "address.addressId, addressStreetNo, addressStreetName, addressLatitude,"
 			+ "addressLongitude,"

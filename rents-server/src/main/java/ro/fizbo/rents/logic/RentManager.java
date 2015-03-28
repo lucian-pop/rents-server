@@ -9,17 +9,18 @@ import org.apache.log4j.Logger;
 import ro.fizbo.rents.dao.AddressDAO;
 import ro.fizbo.rents.dao.RentDAO;
 import ro.fizbo.rents.dao.RentFavoriteDAO;
+import ro.fizbo.rents.dao.RentStatisticsDAO;
 import ro.fizbo.rents.dao.param.RentsStatus;
 import ro.fizbo.rents.dto.RentFavoriteViewsCounter;
 import ro.fizbo.rents.dto.RentsCounter;
 import ro.fizbo.rents.listener.ApplicationManager;
+import ro.fizbo.rents.model.PropertyType;
 import ro.fizbo.rents.model.Rent;
 import ro.fizbo.rents.model.Currency;
 import ro.fizbo.rents.model.RentArchitecture;
 import ro.fizbo.rents.model.RentForm;
 import ro.fizbo.rents.model.RentParty;
 import ro.fizbo.rents.model.RentSearch;
-import ro.fizbo.rents.model.RentType;
 import ro.fizbo.rents.model.view.RentFavoriteView;
 import ro.fizbo.rents.webservice.exception.OperationFailedException;
 
@@ -142,8 +143,10 @@ public class RentManager {
 		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
 		Rent rent = null;
 		try {
-			RentDAO rentDAO = session.getMapper(RentDAO.class);
-			rent = rentDAO.getDetailedRent(rentId, ApplicationManager.getAppURL());
+			session.getMapper(RentStatisticsDAO.class).updateInsert(rentId);
+			session.commit();
+			rent = session.getMapper(RentDAO.class).getDetailedRent(rentId,
+					ApplicationManager.getAppURL());
 		} finally {
 			session.close();
 		}
@@ -189,11 +192,12 @@ public class RentManager {
 		return result;
 	}
 	
-	public static RentsCounter search(RentSearch rentSearch) {
+	public static RentsCounter search(RentSearch rentSearch, String currency) {
 		RentsCounter rentsCounter = new RentsCounter();
 		Rent lowRent = rentSearch.getLowRent();		
 		addSupportForOldClients(lowRent);
 		addSupportForOldClients(rentSearch);
+		convertPricesToBaseCurrency(rentSearch, currency);
 
 		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
 		try {
@@ -206,10 +210,11 @@ public class RentManager {
 		return rentsCounter;
 	}
 	
-	public static List<Rent> searchNextPage(RentSearch rentSearch) {
+	public static List<Rent> searchNextPage(RentSearch rentSearch, String currency) {
 		Rent lowRent = rentSearch.getLowRent();
 		addSupportForOldClients(lowRent);
 		addSupportForOldClients(rentSearch);
+		convertPricesToBaseCurrency(rentSearch, currency);
 
 		List<Rent> result = null;
 		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
@@ -314,9 +319,9 @@ public class RentManager {
 		try {
 			RentDAO rentDAO = session.getMapper(RentDAO.class);
 			rentsCounter.counter = rentDAO.getNoOfRentsByMapBoundaries(minLatitude, maxLatitude,
-					minLongitude, maxLongitude, rentStatus, rentForm, RentType.OFFICE.getType());
+					minLongitude, maxLongitude, rentStatus, rentForm, PropertyType.OFFICE.getType());
 			rentsCounter.rents = rentDAO.getRentsByMapBoundaries(minLatitude, maxLatitude,
-					minLongitude, maxLongitude, rentStatus, rentForm,  RentType.OFFICE.getType(),
+					minLongitude, maxLongitude, rentStatus, rentForm,  PropertyType.OFFICE.getType(),
 					pageSize, ApplicationManager.getAppURL());
 		} finally {
 			session.close();
@@ -335,11 +340,22 @@ public class RentManager {
 			RentDAO rentDAO = session.getMapper(RentDAO.class);
 			result = rentDAO.getRentsNextPageByMapBoundaries(minLatitude, maxLatitude, minLongitude,
 					maxLongitude, lastRentDate, lastRentId, rentStatus, rentForm, 
-					RentType.OFFICE.getType(), pageSize, ApplicationManager.getAppURL());
+					PropertyType.OFFICE.getType(), pageSize, ApplicationManager.getAppURL());
 		} finally {
 			session.close();
 		}
 		
 		return result;
+	}
+	
+	private static void convertPricesToBaseCurrency(RentSearch rentSearch, String currency) {
+		if(rentSearch.getLowRent().getRentPrice() != null) {
+			rentSearch.getLowRent().setRentCurrency(currency);
+			CurrencyManager.convertRentPrice(Currency.EUR.toString(), rentSearch.getLowRent());
+		}
+		if(rentSearch.getHighRent().getRentPrice() != null) {
+			rentSearch.getHighRent().setRentCurrency(currency);
+			CurrencyManager.convertRentPrice(Currency.EUR.toString(), rentSearch.getHighRent());
+		}
 	}
 }

@@ -1,4 +1,4 @@
-package ro.fizbo.rents.rest.model;
+package ro.fizbo.rents.model.rest;
 
 import java.util.Date;
 import java.util.List;

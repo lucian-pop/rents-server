@@ -26,6 +26,21 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>javax.mail-api</artifactId>
+			<version>1.5.1</version>
+		</dependency>
+		<dependency>
+        	<groupId>com.sun.mail</groupId>
+        	<artifactId>mailapi</artifactId>
+        	<version>1.5.1</version>
+    	</dependency>
+    	<dependency>
+        	<groupId>com.sun.mail</groupId>
+        	<artifactId>smtp</artifactId>   
+        	<version>1.5.1</version>
+    	</dependency>
+		<dependency>
 			<groupId>org.glassfish.jersey.containers</groupId>
 			<artifactId>jersey-container-servlet</artifactId>
 			<version>${jersey-version}</version>
@@ -72,6 +87,11 @@
             <version>4.8.2</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+		<groupId>org.antlr</groupId>
+			<artifactId>ST4</artifactId>
+			<version>4.0.8</version>
+		</dependency>
     </dependencies>
 	
 	<build>

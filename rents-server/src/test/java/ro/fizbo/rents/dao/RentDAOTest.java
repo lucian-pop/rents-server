@@ -11,12 +11,12 @@ import ro.fizbo.rents.dao.param.RentsStatus;
 import ro.fizbo.rents.listener.ApplicationManager;
 import ro.fizbo.rents.model.Account;
 import ro.fizbo.rents.model.Address;
+import ro.fizbo.rents.model.PropertyType;
 import ro.fizbo.rents.model.Rent;
 import ro.fizbo.rents.model.RentArchitecture;
 import ro.fizbo.rents.model.RentForm;
 import ro.fizbo.rents.model.RentSearch;
 import ro.fizbo.rents.model.RentStatus;
-import ro.fizbo.rents.model.RentType;
 import ro.fizbo.rents.model.view.RentFavoriteView;
 import ro.fizbo.rents.util.RentSearchTestUtil;
 import ro.fizbo.rents.util.TestUtil;
@@ -563,7 +563,7 @@ public class RentDAOTest extends TestCase {
 			assertTrue(rent.getRentRooms() <= RentSearchTestUtil.MAX_ROOMS);
 			assertTrue(rent.getRentBaths() >= RentSearchTestUtil.MIN_BATHS);
 			assertTrue(rent.getRentBaths() <= RentSearchTestUtil.MAX_BATHS);
-			assertTrue(rent.getRentType() == RentType.APARTMENT.getType());
+			assertTrue(rent.getRentType() == PropertyType.APARTMENT.getType());
 			assertTrue(rent.getRentArchitecture() == RentArchitecture.DETACHED.getArchitecture());
 		}
 	}
@@ -612,7 +612,7 @@ public class RentDAOTest extends TestCase {
 			assertTrue(rent.getRentRooms() <= RentSearchTestUtil.MAX_ROOMS);
 			assertTrue(rent.getRentBaths() >= RentSearchTestUtil.MIN_BATHS);
 			assertTrue(rent.getRentBaths() <= RentSearchTestUtil.MAX_BATHS);
-			assertTrue(rent.getRentType() == RentType.APARTMENT.getType());
+			assertTrue(rent.getRentType() == PropertyType.APARTMENT.getType());
 			assertTrue(rent.getRentArchitecture() == RentArchitecture.DETACHED.getArchitecture());
 		}
 	}

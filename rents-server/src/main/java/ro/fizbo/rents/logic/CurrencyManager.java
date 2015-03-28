@@ -6,15 +6,15 @@ import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 
+import ro.fizbo.rents.client.rest.CurrenciesClient;
 import ro.fizbo.rents.dao.CurrencyDAO;
 import ro.fizbo.rents.listener.ApplicationManager;
 import ro.fizbo.rents.model.Currency;
 import ro.fizbo.rents.model.CurrencyPair;
 import ro.fizbo.rents.model.Rent;
+import ro.fizbo.rents.model.rest.ConversionRates;
+import ro.fizbo.rents.model.rest.ConversionRates.ConversionRate;
 import ro.fizbo.rents.model.view.RentFavoriteView;
-import ro.fizbo.rents.rest.client.CurrenciesClient;
-import ro.fizbo.rents.rest.model.ConversionRates;
-import ro.fizbo.rents.rest.model.ConversionRates.ConversionRate;
 import ro.fizbo.rents.task.GetConversionRatesTask;
 
 public class CurrencyManager {

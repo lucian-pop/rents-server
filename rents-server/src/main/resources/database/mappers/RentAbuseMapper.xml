@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="RentAbuseMapper">
+	<insert id="insertRentAbuse" parameterType="ro.fizbo.rents.model.RentAbuse"
+		useGeneratedKeys="true" keyProperty="rentAbuseId">
+		insert into rent_abuse values(#{rentAbuseId}, #{rent.rentId}, #{rentAbuseEmail},
+		#{rentAbusePhone}, #{rentAbuseDate}, #{rentAbuseResolutionDate}, #{rentAbuseStatus},
+		#{rentAbuseDescription}, #{rentAbuseTokenKey}, #{rentAbuseResolutionComment})
+	</insert>
+	
+	<update id="updateRentAbuse" parameterType="ro.fizbo.rents.model.RentAbuse">
+		update rent_abuse set rentAbuseResolutionDate=#{rentAbuseResolutionDate},
+		rentAbuseResolutionComment=#{rentAbuseResolutionComment}, rentAbuseStatus=#{rentAbuseStatus}
+		where rentAbuseTokenKey=#{rentAbuseTokenKey}
+	</update>
+</mapper>

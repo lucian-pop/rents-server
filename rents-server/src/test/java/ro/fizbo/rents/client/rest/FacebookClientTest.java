@@ -1,5 +1,6 @@
-package ro.fizbo.rents.rest.client;
+package ro.fizbo.rents.client.rest;
 
+import ro.fizbo.rents.client.rest.FacebookClient;
 import ro.fizbo.rents.util.TestUtil;
 import junit.framework.TestCase;
 

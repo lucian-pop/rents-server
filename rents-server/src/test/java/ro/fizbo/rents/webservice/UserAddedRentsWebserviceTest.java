@@ -19,7 +19,7 @@ import ro.fizbo.rents.model.Rent;
 import ro.fizbo.rents.util.Constants;
 import ro.fizbo.rents.util.TestUtil;
 import ro.fizbo.rents.webservice.response.WebserviceResponseStatus;
-import ro.fizbo.rents.webservice.util.ContextConstants;
+import ro.fizbo.rents.webservice.util.HeadersConstants;
 import junit.framework.TestCase;
 
 public class UserAddedRentsWebserviceTest extends TestCase {
@@ -59,7 +59,7 @@ public class UserAddedRentsWebserviceTest extends TestCase {
 		Response response = target.path("account/rents/added")
 				.queryParam("pageSize", TestUtil.PAGE_SIZE)
 				.request(MediaType.APPLICATION_JSON)
-				.header(ContextConstants.TOKEN_KEY, account.getTokenKey()).get();
+				.header(HeadersConstants.TOKEN_KEY, account.getTokenKey()).get();
 		
 		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
 		
@@ -74,8 +74,8 @@ public class UserAddedRentsWebserviceTest extends TestCase {
 		Response response = target.path("account/rents/added")
 				.queryParam("pageSize", TestUtil.PAGE_SIZE)
 				.request(MediaType.APPLICATION_JSON)
-				.header(ContextConstants.CURRENCY, Currency.RON.toString())
-				.header(ContextConstants.TOKEN_KEY, account.getTokenKey()).get();
+				.header(HeadersConstants.CURRENCY, Currency.RON.toString())
+				.header(HeadersConstants.TOKEN_KEY, account.getTokenKey()).get();
 		
 		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
 		
@@ -93,7 +93,7 @@ public class UserAddedRentsWebserviceTest extends TestCase {
 		Response response = target.path("account/rents/added")
 				.queryParam("pageSize", TestUtil.PAGE_SIZE)
 				.request(MediaType.APPLICATION_JSON)
-				.header(ContextConstants.TOKEN_KEY, TokenGenerator.generateToken()).get();
+				.header(HeadersConstants.TOKEN_KEY, TokenGenerator.generateToken()).get();
 		
 		assertTrue(response.getStatus() == WebserviceResponseStatus.UNAUTHORIZED.getCode());
 	}
@@ -105,7 +105,7 @@ public class UserAddedRentsWebserviceTest extends TestCase {
 				.queryParam("lastRentId", Integer.MAX_VALUE)
 				.queryParam("pageSize", TestUtil.PAGE_SIZE)
 				.request(MediaType.APPLICATION_JSON)
-				.header(ContextConstants.TOKEN_KEY, account.getTokenKey()).get();
+				.header(HeadersConstants.TOKEN_KEY, account.getTokenKey()).get();
 		
 		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
 	}
@@ -117,8 +117,8 @@ public class UserAddedRentsWebserviceTest extends TestCase {
 				.queryParam("lastRentId", Integer.MAX_VALUE)
 				.queryParam("pageSize", TestUtil.PAGE_SIZE)
 				.request(MediaType.APPLICATION_JSON)
-				.header(ContextConstants.CURRENCY, Currency.RON.toString())
-				.header(ContextConstants.TOKEN_KEY, account.getTokenKey()).get();
+				.header(HeadersConstants.CURRENCY, Currency.RON.toString())
+				.header(HeadersConstants.TOKEN_KEY, account.getTokenKey()).get();
 		
 		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
 		
@@ -137,7 +137,7 @@ public class UserAddedRentsWebserviceTest extends TestCase {
 				.queryParam("lastRentId", Integer.MAX_VALUE)
 				.queryParam("pageSize", TestUtil.PAGE_SIZE)
 				.request(MediaType.APPLICATION_JSON)
-				.header(ContextConstants.TOKEN_KEY, TokenGenerator.generateToken()).get();
+				.header(HeadersConstants.TOKEN_KEY, TokenGenerator.generateToken()).get();
 		
 		assertTrue(response.getStatus() == WebserviceResponseStatus.UNAUTHORIZED.getCode());
 	}

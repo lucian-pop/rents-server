@@ -19,7 +19,7 @@ import ro.fizbo.rents.model.RentSearch;
 import ro.fizbo.rents.util.RentSearchTestUtil;
 import ro.fizbo.rents.util.TestUtil;
 import ro.fizbo.rents.webservice.response.WebserviceResponseStatus;
-import ro.fizbo.rents.webservice.util.ContextConstants;
+import ro.fizbo.rents.webservice.util.HeadersConstants;
 import junit.framework.TestCase;
 
 public class RentsSearchWebServiceTest extends TestCase {
@@ -75,7 +75,7 @@ public class RentsSearchWebServiceTest extends TestCase {
 	public void testSearchWithCurrency() {
 		RentSearch rentSearch = RentSearchTestUtil.getRentSearch();
 		Response response = target.path("rents/search").request(MediaType.APPLICATION_JSON)
-				.header(ContextConstants.CURRENCY, Currency.RON.toString())
+				.header(HeadersConstants.CURRENCY, Currency.RON.toString())
 				.post(Entity.json(rentSearch));
 		assertTrue(response.getStatus()==WebserviceResponseStatus.OK.getCode());
 		
@@ -121,7 +121,7 @@ public class RentsSearchWebServiceTest extends TestCase {
 	public void testSearchNextPageWithCurrency() {		
 		RentSearch rentSearch = RentSearchTestUtil.getRentSearch();
 		Response response = target.path("rents/search").request(MediaType.APPLICATION_JSON)
-				.header(ContextConstants.CURRENCY, Currency.RON.toString())
+				.header(HeadersConstants.CURRENCY, Currency.RON.toString())
 				.post(Entity.json(rentSearch));
 		assertTrue(response.getStatus()==WebserviceResponseStatus.OK.getCode());
 		RentsCounter rentsCounter = response.readEntity(RentsCounter.class);
@@ -132,7 +132,7 @@ public class RentsSearchWebServiceTest extends TestCase {
 		rentSearch.getHighRent().setRentAddDate(lastRent.getRentAddDate());
 		rentSearch.getHighRent().setRentId(lastRent.getRentId());
 		response = target.path("rents/search/page").request(MediaType.APPLICATION_JSON)
-				.header(ContextConstants.CURRENCY, Currency.RON.toString())
+				.header(HeadersConstants.CURRENCY, Currency.RON.toString())
 				.post(Entity.json(rentSearch));
 
 		assertTrue(response.getStatus()==WebserviceResponseStatus.OK.getCode());

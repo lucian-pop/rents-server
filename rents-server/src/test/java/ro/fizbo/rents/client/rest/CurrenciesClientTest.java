@@ -1,7 +1,8 @@
-package ro.fizbo.rents.rest.client;
+package ro.fizbo.rents.client.rest;
 
-import ro.fizbo.rents.rest.model.ConversionRates;
-import ro.fizbo.rents.rest.model.ConversionRates.ConversionRate;
+import ro.fizbo.rents.client.rest.CurrenciesClient;
+import ro.fizbo.rents.model.rest.ConversionRates;
+import ro.fizbo.rents.model.rest.ConversionRates.ConversionRate;
 import junit.framework.TestCase;
 
 public class CurrenciesClientTest extends TestCase {

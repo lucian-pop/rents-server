@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Rent abuse resolution</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<meta name="robots" content="noindex, nofollow"/>
+		<meta http-equiv="cache-control" content="no-cache"/>
+   		<meta http-equiv="pragma" content="no-cache"/>
+	</head>
+
+	<body>
+		 <form action="http://192.168.1.4:8080/rents-server/ws/report/rent-abuse/solved" method="POST">
+			<input type="hidden" id="rentAbuseTokenKey" name="rentAbuseTokenKey"/>
+		 
+			<div style="width:100%; overflow:hidden;">
+				<div style="float:left; width:100px;">
+					Status:
+				</div>
+				<div style="float:left; width:100px;">
+					<select name="rentAbuseStatus">
+						<option value="1">OK</option>
+						<option value="2">NOT OK</option>
+						<option value="3">AGENCY</option>
+					</select> 
+				</div>
+			</div>
+			
+			<div style="width:100%; overflow:hidden; margin-top:20px;">
+				<div style="float:left; width:100px;">
+					Comment:
+				</div>
+				<div style="float:left; width:100px;">
+					<textarea name="rentAbuseResolutionComment" rows="4" cols="50">
+					</textarea> 
+				</div>
+			</div>
+			
+			<div style="margin-top:20px;">
+				<input style="margin-left:100px;" type="submit" value="OK">
+			</div>
+		</form>
+		
+		<script>
+			var getParam = function (name) {
+				if (name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search)) {
+					return decodeURIComponent(name[1]);
+				}
+			}
+			
+			var uuidValue = getParam("rentAbuseTokenKey");
+			
+			if (uuidValue) {
+				document.getElementById("rentAbuseTokenKey").value = uuidValue;
+			}
+		</script>
+	</body>
+
+</html> 

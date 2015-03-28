@@ -5,6 +5,7 @@ package ro.fizbo.rents.webservice.response;
  */
 public enum WebserviceResponseStatus {
 	OK(200),
+	OK_NO_CONTENT(204),
 	UNAUTHORIZED(401),
 	INVALID_DATA(420),
 	ACCOUNT_CONFLICT(421),

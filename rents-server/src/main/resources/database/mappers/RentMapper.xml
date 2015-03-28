@@ -60,6 +60,7 @@
         <result property="rentAddDate" column="rentAddDate"/>
         <result property="rentStatus" column="rentStatus"/>
         <result property="rentForm" column="rentForm"/>
+        <result property="rentViewsNo" column="rentViewsNo"/>
         <association property="address" javaType="ro.fizbo.rents.model.Address">
             <id property="addressId" column="addressId"/>
             <result property="addressStreetNo" column="addressStreetNo"/>
@@ -154,7 +155,7 @@
     </select>
     
     <select id="search" parameterType="ro.fizbo.rents.model.RentSearch" resultMap="LightRentMap">
-    	select rent.rentId as rentId, rentPrice, rentCurrency, rentSurface, rentRooms, 
+    	select rent.rentId as rentId, rentPrice, rentCurrency, rentForm, rentSurface, rentRooms, 
     	rentBaths, rentType, rentArchitecture, rentAddDate, address.addressId as addressId,
     	addressStreetName, addressNeighbourhood, addressLatitude,
     	addressLongitude, min(rentImageId) as rentImageId, 
@@ -193,7 +194,7 @@
     </select>
 
 	<select id="searchNextPage" parameterType="ro.fizbo.rents.model.RentSearch" resultMap="LightRentMap">
-    	select rent.rentId as rentId, rentPrice, rentCurrency, rentSurface, rentRooms, 
+    	select rent.rentId as rentId, rentPrice, rentCurrency, rentForm, rentSurface, rentRooms, 
     	rentBaths, rentType, rentArchitecture, rentAddDate, address.addressId as addressId,
     	addressStreetName, addressNeighbourhood, addressLatitude,
     	addressLongitude, min(rentImageId) as rentImageId, 
@@ -232,4 +233,9 @@
     	group by rent.rentId
     	order by rent.rentAddDate desc, rent.rentId desc limit #{pageSize}
     </select>
+
+	<update id="disableRentForAbuse" parameterType="java.lang.String" >
+		update rent join rent_abuse on rent.rentId=rent_abuse.rentId set rent.rentStatus=2
+		where rent_abuse.rentAbuseTokenKey like #{rentAbuseTokenKey};
+	</update>
 </mapper>

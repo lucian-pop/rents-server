@@ -14,10 +14,9 @@ import org.junit.After;
 
 import ro.fizbo.rents.dto.AccountUpdate;
 import ro.fizbo.rents.model.Account;
-import ro.fizbo.rents.util.Constants;
 import ro.fizbo.rents.util.TestUtil;
 import ro.fizbo.rents.webservice.response.WebserviceResponseStatus;
-import ro.fizbo.rents.webservice.util.ContextConstants;
+import ro.fizbo.rents.webservice.util.HeadersConstants;
 
 public class AccountWebserviceTest extends TestCase {
 	
@@ -133,7 +132,7 @@ public class AccountWebserviceTest extends TestCase {
 		externalAccount.setTokenKey(TestUtil.FACEBOOK_IOS_ACCESS_TOKEN);
 		
 		Response response = target.path("account/externallogin").request(MediaType.APPLICATION_JSON)
-				.header(ContextConstants.USER_AGENT, Constants.IOS)
+				.header(HeadersConstants.USER_AGENT, HeadersConstants.IOS)
 				.post(Entity.json(externalAccount));
 		
 		assertTrue("Status should be OK" , response.getStatus() == 
@@ -182,7 +181,7 @@ public class AccountWebserviceTest extends TestCase {
 		externalAccount.setTokenKey(TestUtil.FACEBOOK_IOS_ACCESS_TOKEN);
 		
 		Response response = target.path("account/externallogin").request(MediaType.APPLICATION_JSON)
-				.header(ContextConstants.USER_AGENT, Constants.IOS)
+				.header(HeadersConstants.USER_AGENT, HeadersConstants.IOS)
 				.post(Entity.json(externalAccount));
 		
 		assertTrue("Status should be OK" , response.getStatus() == 
@@ -232,7 +231,7 @@ public class AccountWebserviceTest extends TestCase {
 		externalAccount.setAccountType((byte) 0);
 		externalAccount.setAccountSignupDate(new Date());
 		Response response = target.path("account/externallogin").request(MediaType.APPLICATION_JSON)
-				.header(ContextConstants.USER_AGENT, Constants.IOS)
+				.header(HeadersConstants.USER_AGENT, HeadersConstants.IOS)
 				.post(Entity.json(externalAccount));
 		
 		System.out.println("****Response status is " + response.getStatus());
@@ -390,7 +389,7 @@ public class AccountWebserviceTest extends TestCase {
 		account.setAccountPhone(updatedPhone);
 		
 		Response response = target.path("account/updateexternal").request(MediaType.APPLICATION_JSON)
-				.header(ContextConstants.USER_AGENT, Constants.IOS)
+				.header(HeadersConstants.USER_AGENT, HeadersConstants.IOS)
 				.post(Entity.json(account));
 		
 		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());

@@ -10,15 +10,14 @@ import javax.ws.rs.core.Response;
 import ro.fizbo.rents.logic.TokenGenerator;
 import ro.fizbo.rents.model.Account;
 import ro.fizbo.rents.model.Address;
+import ro.fizbo.rents.model.PropertyType;
 import ro.fizbo.rents.model.Rent;
 import ro.fizbo.rents.model.RentArchitecture;
 import ro.fizbo.rents.model.Currency;
 import ro.fizbo.rents.model.RentForm;
-import ro.fizbo.rents.model.RentParty;
-import ro.fizbo.rents.model.RentType;
 import ro.fizbo.rents.util.TestUtil;
 import ro.fizbo.rents.webservice.response.WebserviceResponseStatus;
-import ro.fizbo.rents.webservice.util.ContextConstants;
+import ro.fizbo.rents.webservice.util.HeadersConstants;
 import junit.framework.TestCase;
 
 public class AccountRentWebserviceTest extends TestCase {
@@ -82,7 +81,7 @@ public class AccountRentWebserviceTest extends TestCase {
 	public void testAddRentWithOldStructure() {
 		rent.setRentForm(RentForm.RENT.getForm());
 		Response response = target.path("account/rent/add").request(MediaType.APPLICATION_JSON)
-				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
+				.header(HeadersConstants.TOKEN_KEY, account.getTokenKey())
 				.post(Entity.json(rent));
 
 		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
@@ -94,7 +93,7 @@ public class AccountRentWebserviceTest extends TestCase {
 	public void testAddAccommodationWithOldStructure() {
 		rent.setRentForm(RentForm.ACCOMMODATION.getForm());
 		Response response = target.path("account/rent/add").request(MediaType.APPLICATION_JSON)
-				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
+				.header(HeadersConstants.TOKEN_KEY, account.getTokenKey())
 				.post(Entity.json(rent));
 
 		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
@@ -112,7 +111,7 @@ public class AccountRentWebserviceTest extends TestCase {
 		rent.setRentCurrency(Currency.EUR.toString());
 		
 		Response response = target.path("account/rent/add").request(MediaType.APPLICATION_JSON)
-				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
+				.header(HeadersConstants.TOKEN_KEY, account.getTokenKey())
 				.post(Entity.json(rent));
 
 		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
@@ -138,7 +137,7 @@ public class AccountRentWebserviceTest extends TestCase {
 		rent.setRentCurrency(Currency.EUR.toString());
 		
 		Response response = target.path("account/rent/add").request(MediaType.APPLICATION_JSON)
-				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
+				.header(HeadersConstants.TOKEN_KEY, account.getTokenKey())
 				.post(Entity.json(rent));
 
 		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
@@ -159,7 +158,7 @@ public class AccountRentWebserviceTest extends TestCase {
 		rent.setRentCurrency(Currency.EUR.toString());
 		
 		Response response = target.path("account/rent/add").request(MediaType.APPLICATION_JSON)
-				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
+				.header(HeadersConstants.TOKEN_KEY, account.getTokenKey())
 				.post(Entity.json(rent));
 
 		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
@@ -183,7 +182,7 @@ public class AccountRentWebserviceTest extends TestCase {
 		rent.setRentCurrency(Currency.EUR.toString());
 		
 		Response response = target.path("account/rent/add").request(MediaType.APPLICATION_JSON)
-				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
+				.header(HeadersConstants.TOKEN_KEY, account.getTokenKey())
 				.post(Entity.json(rent));
 
 		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
@@ -194,7 +193,7 @@ public class AccountRentWebserviceTest extends TestCase {
 	
 	public void testAddRentWithoutPrivileges() {
 		Response response = target.path("account/rent/add").request(MediaType.APPLICATION_JSON)
-				.header(ContextConstants.TOKEN_KEY, TokenGenerator.generateToken())
+				.header(HeadersConstants.TOKEN_KEY, TokenGenerator.generateToken())
 				.post(Entity.json(rent));
 
 		assertTrue(response.getStatus() == WebserviceResponseStatus.UNAUTHORIZED.getCode());
@@ -204,7 +203,7 @@ public class AccountRentWebserviceTest extends TestCase {
 		rent.setRentForm(RentForm.RENT.getForm());
 		rent.setRentCurrency(Currency.EUR.toString());
 		Response response = target.path("account/rent/add").request(MediaType.APPLICATION_JSON)
-				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
+				.header(HeadersConstants.TOKEN_KEY, account.getTokenKey())
 				.post(Entity.json(rent));
 
 		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
@@ -212,7 +211,7 @@ public class AccountRentWebserviceTest extends TestCase {
 		rent = response.readEntity(Rent.class);
 		
 		response = target.path("account/rent/update").request(MediaType.APPLICATION_JSON)
-				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
+				.header(HeadersConstants.TOKEN_KEY, account.getTokenKey())
 				.post(Entity.json(rent));
 		
 		Integer result = response.readEntity(Integer.class);
@@ -222,7 +221,7 @@ public class AccountRentWebserviceTest extends TestCase {
 	public void testUpdateRentWithOldStructureChangeRentForm() {
 		rent.setRentForm(RentForm.RENT.getForm());
 		Response response = target.path("account/rent/add").request(MediaType.APPLICATION_JSON)
-				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
+				.header(HeadersConstants.TOKEN_KEY, account.getTokenKey())
 				.post(Entity.json(rent));
 
 		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
@@ -231,7 +230,7 @@ public class AccountRentWebserviceTest extends TestCase {
 		rent.setRentForm(RentForm.ACCOMMODATION.getForm());
 
 		response = target.path("account/rent/update").request(MediaType.APPLICATION_JSON)
-				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
+				.header(HeadersConstants.TOKEN_KEY, account.getTokenKey())
 				.post(Entity.json(rent));
 		
 		Integer result = response.readEntity(Integer.class);
@@ -243,7 +242,7 @@ public class AccountRentWebserviceTest extends TestCase {
 		rent.setRentForm(RentForm.RENT.getForm());
 		rent.setRentCurrency(Currency.EUR.toString());
 		Response response = target.path("account/rent/add").request(MediaType.APPLICATION_JSON)
-				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
+				.header(HeadersConstants.TOKEN_KEY, account.getTokenKey())
 				.post(Entity.json(rent));
 
 		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
@@ -253,7 +252,7 @@ public class AccountRentWebserviceTest extends TestCase {
 		rent.setRentAge(null);
 
 		response = target.path("account/rent/update").request(MediaType.APPLICATION_JSON)
-				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
+				.header(HeadersConstants.TOKEN_KEY, account.getTokenKey())
 				.post(Entity.json(rent));
 		
 		Integer result = response.readEntity(Integer.class);
@@ -264,7 +263,7 @@ public class AccountRentWebserviceTest extends TestCase {
 		rent.setRentForm(RentForm.RENT.getForm());
 		rent.setRentCurrency(Currency.EUR.toString());
 		Response response = target.path("account/rent/add").request(MediaType.APPLICATION_JSON)
-				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
+				.header(HeadersConstants.TOKEN_KEY, account.getTokenKey())
 				.post(Entity.json(rent));
 
 		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
@@ -283,7 +282,7 @@ public class AccountRentWebserviceTest extends TestCase {
 		rent.setRentSmokersAllowed(null);
 
 		response = target.path("account/rent/update").request(MediaType.APPLICATION_JSON)
-				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
+				.header(HeadersConstants.TOKEN_KEY, account.getTokenKey())
 				.post(Entity.json(rent));
 		
 		Integer result = response.readEntity(Integer.class);
@@ -294,13 +293,13 @@ public class AccountRentWebserviceTest extends TestCase {
 		rent.setRentForm(RentForm.RENT.getForm());
 		rent.setRentCurrency(Currency.EUR.toString());
 		Response response = target.path("account/rent/add").request(MediaType.APPLICATION_JSON)
-				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
+				.header(HeadersConstants.TOKEN_KEY, account.getTokenKey())
 				.post(Entity.json(rent));
 
 		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
 
 		rent = response.readEntity(Rent.class);
-		rent.setRentType(RentType.APARTMENT.getType());
+		rent.setRentType(PropertyType.APARTMENT.getType());
 		rent.setRentRooms((short) 3);
 		rent.setRentBaths((short) 1);
 		rent.setRentArchitecture(RentArchitecture.DETACHED.getArchitecture());
@@ -311,7 +310,7 @@ public class AccountRentWebserviceTest extends TestCase {
 		rent.setRentSmokersAllowed(true);
 
 		response = target.path("account/rent/update").request(MediaType.APPLICATION_JSON)
-				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
+				.header(HeadersConstants.TOKEN_KEY, account.getTokenKey())
 				.post(Entity.json(rent));
 		
 		Integer result = response.readEntity(Integer.class);
@@ -322,13 +321,13 @@ public class AccountRentWebserviceTest extends TestCase {
 		rent.setRentForm(RentForm.RENT.getForm());
 		rent.setRentCurrency(Currency.EUR.toString());
 		Response response = target.path("account/rent/add").request(MediaType.APPLICATION_JSON)
-				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
+				.header(HeadersConstants.TOKEN_KEY, account.getTokenKey())
 				.post(Entity.json(rent));
 
 		assertTrue(response.getStatus() == WebserviceResponseStatus.OK.getCode());
 
 		rent = response.readEntity(Rent.class);
-		rent.setRentType(RentType.APARTMENT.getType());
+		rent.setRentType(PropertyType.APARTMENT.getType());
 		rent.setRentRooms((short) 3);
 		rent.setRentGuests((short) 5);
 		rent.setRentSingleBeds((short) 3);
@@ -342,7 +341,7 @@ public class AccountRentWebserviceTest extends TestCase {
 		rent.setRentSmokersAllowed(true);
 
 		response = target.path("account/rent/update").request(MediaType.APPLICATION_JSON)
-				.header(ContextConstants.TOKEN_KEY, account.getTokenKey())
+				.header(HeadersConstants.TOKEN_KEY, account.getTokenKey())
 				.post(Entity.json(rent));
 		
 		Integer result = response.readEntity(Integer.class);

@@ -1,4 +1,4 @@
-package ro.fizbo.rents.rest.client;
+package ro.fizbo.rents.client.rest;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -7,7 +7,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import ro.fizbo.rents.model.CurrencyPair;
-import ro.fizbo.rents.rest.model.ConversionRates;
+import ro.fizbo.rents.model.rest.ConversionRates;
 import ro.fizbo.rents.webservice.jsonprovider.GsonMessageBodyHandler;
 import ro.fizbo.rents.webservice.response.WebserviceResponseStatus;
 

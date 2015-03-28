@@ -17,7 +17,7 @@ public final class ContextUtil {
 	}
 	
 	public static String getCurrency(HttpServletRequest request) {
-		String currency = request.getHeader(ContextConstants.CURRENCY);
+		String currency = request.getHeader(HeadersConstants.CURRENCY);
 		if(currency == null || currency == "") {
 			currency = ro.fizbo.rents.model.Currency.EUR.toString();
 		}
@@ -25,7 +25,7 @@ public final class ContextUtil {
 	}
 	
 	public static int getVersion(HttpServletRequest request) {
-		String version = request.getHeader(ContextConstants.VERSION);
+		String version = request.getHeader(HeadersConstants.VERSION);
 		if(version == null || version == "") {
 			version = "1";
 		}
