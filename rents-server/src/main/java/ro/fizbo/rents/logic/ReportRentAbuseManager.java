@@ -43,6 +43,7 @@ public final class ReportRentAbuseManager {
 		rentAbuse.setRentAbuseResolutionDate(new Date());
 		rentAbuse.setRentAbuseResolutionComment(rentAbuseResolutionComment);
 		rentAbuse.setRentAbuseStatus(Byte.valueOf(rentAbuseStatus));
+		rentAbuse.setRentAbuseTokenKey(rentAbuseTokenKey);
 		SqlSession session = ApplicationManager.getSqlSessionFactory().openSession();
 		try {
 			session.update("RentAbuseMapper.updateRentAbuse", rentAbuse);
