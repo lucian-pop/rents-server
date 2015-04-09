@@ -9,7 +9,7 @@ public final class EmailConstants {
 	}
 	
 	/* Email addresses.*/
-	public static final String ADMIN_REPORT_EMAIL = "lucian@fizbo.ro";
+	public static final String ADMIN_REPORT_EMAIL = "sesizari@fizbo.ro";
 	
 	public static final List<String> ADMIN_REPORT_EMAILS;
 	
@@ -30,7 +30,8 @@ public final class EmailConstants {
 	
 	static {
 		ADMIN_REPORT_EMAILS = new ArrayList<String>(2);
-		ADMIN_REPORT_EMAILS.add(ADMIN_REPORT_EMAIL);
+		ADMIN_REPORT_EMAILS.add("razvan@fizbo.ro");
+		ADMIN_REPORT_EMAILS.add("lucian@fizbo.ro");
 	}
 
 }

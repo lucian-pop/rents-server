@@ -49,7 +49,7 @@ public class ApplicationManager implements ServletContextListener {
 	private static SqlSessionFactory sqlSessionFactory;
 	
 	/** Paths. */
-	private static final String DOMAIN_NAME="192.168.1.4:8080";
+	private static final String DOMAIN_NAME="fizbo.ro";
 	
 	private static String appRealPath;
 	

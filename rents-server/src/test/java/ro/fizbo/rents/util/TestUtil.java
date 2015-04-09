@@ -59,7 +59,7 @@ public class TestUtil {
 	
 	public static final String ACCOUNT_PASSWORD = "account password";
 
-	public static final String BASE_URI = "http://192.168.1.4:8080/rents-server/ws/";
+	public static final String BASE_URI = "http://192.168.1.3:8080/rents-server/ws/";
 	
 	public static final double MIN_LATITUDE = 46.7379424563698;
 

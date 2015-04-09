@@ -21,9 +21,9 @@ public class EmailClient {
 	
 	private static Logger logger = Logger.getLogger(EmailClient.class);
 
-	private static final String AUTH_EMAIL = "lucian@fizbo.ro";
+	private static final String AUTH_EMAIL = "sesizari@fizbo.ro";
 	
-	private static final String AUTH_PASSWORD = "Pllzxc980!";
+	private static final String AUTH_PASSWORD = "Sesizari@azwsx";
 	
 	private static final String SMTP_SERVER_NAME = "smtp.zoho.com";
 	
