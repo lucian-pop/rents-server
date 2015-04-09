@@ -4,7 +4,7 @@ import java.util.Calendar;
 
 public final class GetConversinRatesUtils {
 	
-	private static final int START_HOUR = 7;
+	private static final int START_HOUR = 5;
 	
 	private static final int START_MINUTE = 0;
 	

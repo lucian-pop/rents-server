@@ -6,12 +6,16 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.log4j.Logger;
+
 import ro.fizbo.rents.model.CurrencyPair;
 import ro.fizbo.rents.model.rest.ConversionRates;
 import ro.fizbo.rents.webservice.jsonprovider.GsonMessageBodyHandler;
 import ro.fizbo.rents.webservice.response.WebserviceResponseStatus;
 
 public class CurrenciesClient {
+	
+	private static Logger logger = Logger.getLogger(CurrenciesClient.class);
 	
 	private static final String SERVICE_URL = "http://query.yahooapis.com/v1/public";
 	
@@ -53,6 +57,7 @@ public class CurrenciesClient {
 				.queryParam(CALLBACK_PARAM, CALLBACK_VALUE)
 				.request(MediaType.APPLICATION_JSON).get();
 		if(response.getStatus() == WebserviceResponseStatus.OK.getCode()) {
+			logger.info("Successfully retrieved conversion rates!");
 			return response.readEntity(ConversionRates.class);
 		}
 		return null;
