@@ -1,0 +1,17 @@
+[{
+
+    "relation": ["delegate_permission/common.handle_all_urls"],
+
+    "target": {
+
+        "namespace": "android_app",
+
+        "package_name": "ro.fizbo.rents",
+
+        "sha256_cert_fingerprints":
+
+	    ["D1:12:74:41:42:F7:C2:CB:65:47:7D:C9:35:25:5E:13:A4:7A:0C:29:C1:BF:4E:A4:0C:0D:CB:BE:94:C8:DA:2E","6C:4D:6D:23:A8:54:D5:F0:A1:6A:1D:F0:26:BE:67:99:DC:5D:58:24:A0:8E:39:57:27:0F:04:C0:DA:B2:77:19"]
+
+     }
+
+}]

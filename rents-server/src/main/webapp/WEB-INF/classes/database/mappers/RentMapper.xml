@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="RentMapper">
+
+	<resultMap id="LightRentMap" type="ro.fizbo.rents.model.Rent">
+   		<constructor>
+   			<idArg column="rentId" javaType="int"/>
+   		</constructor>
+        <id property="rentId" column="rentId"/>
+        <result property="rentPrice" column="rentPrice"/>
+        <result property="rentCurrency" column="rentCurrency"/>
+        <result property="rentSurface" column="rentSurface"/>
+        <result property="rentRooms" column="rentRooms"/>
+        <result property="rentBaths" column="rentBaths"/>
+        <result property="rentType" column="rentType"/>
+        <result property="rentArchitecture" column="rentArchitecture"/>
+        <result property="rentAddDate" column="rentAddDate"/>
+		<result property="rentForm" column="rentForm"/>
+        <result property="rentStatus" column="rentStatus"/>
+        <association property="address" javaType="ro.fizbo.rents.model.Address">
+            <id property="addressId" column="addressId"/>
+            <result property="addressStreetName" column="addressStreetName"/>
+            <result property="addressNeighbourhood" column="addressNeighbourhood"/>
+            <result property="addressLatitude" column="addressLatitude"/>
+            <result property="addressLongitude" column="addressLongitude"/>
+        </association>
+        <collection property="rentImages" javaType="java.util.List"
+        	ofType="ro.fizbo.rents.model.RentImage">
+        	<result property="rentImageId" column="rentImageId"/>
+        	<result property="rentImageURI" column="rentImageURI"/>
+        </collection>
+    </resultMap>
+    
+    <resultMap id="FullRentMap" type="ro.fizbo.rents.model.Rent">
+   		<constructor>
+   			<idArg column="rentId" javaType="int"/>
+   		</constructor> 
+        <id property="rentId" column="rentId"/>
+        <result property="accountId" column="accountId"/>
+        <result property="rentPrice" column="rentPrice"/>
+        <result property="rentCurrency" column="rentCurrency"/>
+        <result property="rentSurface" column="rentSurface"/>
+        <result property="rentRooms" column="rentRooms"/>
+        <result property="rentGuests" column="rentGuests"/>
+        <result property="rentSingleBeds" column="rentSingleBeds"/>
+        <result property="rentDoubleBeds" column="rentDoubleBeds"/>
+        <result property="rentBaths" column="rentBaths"/>
+        <result property="rentParty" column="rentParty"/>
+        <result property="rentType" column="rentType"/>
+        <result property="rentArchitecture" column="rentArchitecture"/>
+        <result property="rentAge" column="rentAge"/>
+        <result property="rentDescription" column="rentDescription"/>
+        <result property="rentPetsAllowed" column="rentPetsAllowed"/>
+        <result property="rentParkingPlace" column="rentParkingPlace"/>
+        <result property="rentSmokersAllowed" column="rentSmokersAllowed"/>
+        <result property="rentPhone" column="rentPhone"/>
+        <result property="rentAddDate" column="rentAddDate"/>
+        <result property="rentStatus" column="rentStatus"/>
+        <result property="rentForm" column="rentForm"/>
+        <result property="rentViewsNo" column="rentViewsNo"/>
+        <association property="address" javaType="ro.fizbo.rents.model.Address">
+            <id property="addressId" column="addressId"/>
+            <result property="addressStreetNo" column="addressStreetNo"/>
+            <result property="addressStreetName" column="addressStreetName"/>
+            <result property="addressNeighbourhood" column="addressNeighbourhood"/>
+            <result property="addressSublocality" column="addressSublocality"/>
+            <result property="addressLocality" column="addressLocality"/>
+            <result property="addressAdmAreaL1" column="addressAdmAreaL1"/>
+            <result property="addressCountry" column="addressCountry"/>
+            <result property="addressLatitude" column="addressLatitude"/>
+            <result property="addressLongitude" column="addressLongitude"/>
+            <result property="addressBuilding" column="addressBuilding"/>
+            <result property="addressStaircase" column="addressStaircase"/>
+            <result property="addressFloor" column="addressFloor"/>
+            <result property="addressAp" column="addressAp"/>
+        </association>
+        <collection property="rentImages" javaType="java.util.List" 
+        	ofType="ro.fizbo.rents.model.RentImage">
+        	<result property="rentImageId" column="rentImageId"/>
+        	<result property="rentId" column="rentId"/>
+        	<result property="rentImageURI" column="rentImageURI"/>
+        </collection>
+    </resultMap>
+    
+    <resultMap id="LightRentFavoriteViewMap" type="ro.fizbo.rents.model.view.RentFavoriteView">
+        <result property="rentFavoriteAddDate" column="rentFavoriteAddDate" />
+        <association property="rent" resultMap="LightRentMap" />
+    </resultMap>
+    
+    <update id="updateRentsStatus" parameterType="ro.fizbo.rents.dao.param.RentsStatus" >
+    	update rent set rentStatus=#{status} where rentId in
+    	<foreach collection="rentIds" item="item" index="index" open="(" close=")" separator=",">
+    		#{item}
+    	</foreach>
+    </update>
+    
+    <update id="updateRent" parameterType="ro.fizbo.rents.model.Rent">
+    	update rent
+    	<set>
+    		<if test="rentForm != null">rentForm=#{rentForm},</if>
+    		<if test="rentPrice != null">rentPrice=#{rentPrice},</if>
+    		<if test="rentCurrency != null">rentCurrency=#{rentCurrency},</if>
+    		<if test="rentPhone != null">rentPhone=#{rentPhone},</if>
+    		<if test="rentType != null">rentType=#{rentType},</if>
+    		<if test="rentRooms != null">rentRooms=#{rentRooms},</if>
+    		<if test="rentGuests != null">rentGuests=#{rentGuests},</if>
+    		<if test="rentSingleBeds != null">rentSingleBeds=#{rentSingleBeds},</if>
+    		<if test="rentDoubleBeds != null">rentDoubleBeds=#{rentDoubleBeds},</if>
+    		<if test="rentBaths != null">rentBaths=#{rentBaths},</if>
+    		<if test="rentArchitecture != null">rentArchitecture=#{rentArchitecture},</if>
+    		<if test="rentSurface != null">rentSurface=#{rentSurface},</if>
+    		<if test="rentParty != null">rentParty=#{rentParty},</if>
+    		<if test="rentAge != null">rentAge=#{rentAge},</if>
+    		<if test="rentDescription != null">rentDescription=#{rentDescription},</if>
+    		<if test="rentPetsAllowed != null">rentPetsAllowed=#{rentPetsAllowed},</if>
+			<if test="rentParkingPlace != null">rentParkingPlace=#{rentParkingPlace},</if>
+			<if test="rentSmokersAllowed != null">rentSmokersAllowed=#{rentSmokersAllowed},</if>
+			<if test="rentAddDate != null">rentAddDate=#{rentAddDate}</if>
+    	</set>
+    	where rentId=#{rentId}
+    </update>
+    
+   	<select id="searchCount" parameterType="ro.fizbo.rents.model.RentSearch" resultType="Integer">
+    	select count(*) from rent inner join address on rent.addressId=address.addressId
+    	inner join currency on rent.rentCurrency=currency.currencyName
+    	<where>
+    		address.addressLatitude between #{lowRent.address.addressLatitude} and #{highRent.address.addressLatitude}
+			and address.addressLongitude between #{lowRent.address.addressLongitude} and #{highRent.address.addressLongitude}
+			<if test="lowRent.rentPrice != null">and rentPrice*currency.currencyConversionRate >= #{lowRent.rentPrice}</if>
+    		<if test="highRent.rentPrice != null">and #{highRent.rentPrice} >= rentPrice*currency.currencyConversionRate</if>
+    		<if test="lowRent.rentType != null">and rentType >= #{lowRent.rentType}</if>
+    		<if test="highRent.rentType != null">and #{highRent.rentType} >= rentType</if>
+    		<if test="lowRent.rentSurface != null">and rentSurface >= #{lowRent.rentSurface}</if>
+    		<if test="highRent.rentSurface != null">and #{highRent.rentSurface} >= rentSurface</if>
+    		<if test="lowRent.rentRooms != null">and rentRooms >= #{lowRent.rentRooms}</if>
+    		<if test="highRent.rentRooms != null">and #{highRent.rentRooms} >= rentRooms</if>
+    		<if test="lowRent.rentGuests != null">and rentGuests >= #{lowRent.rentGuests}</if>
+    		<if test="highRent.rentGuests != null">and #{highRent.rentGuests} >= rentGuests</if>
+    		<if test="lowRent.rentSingleBeds != null">and rentSingleBeds >= #{lowRent.rentSingleBeds}</if>
+    		<if test="highRent.rentSingleBeds != null">and #{highRent.rentSingleBeds} >= rentSingleBeds</if>
+    		<if test="lowRent.rentDoubleBeds != null">and rentDoubleBeds >= #{lowRent.rentDoubleBeds}</if>
+    		<if test="highRent.rentDoubleBeds != null">and #{highRent.rentDoubleBeds} >= rentDoubleBeds</if>
+    		<if test="lowRent.rentBaths != null">and rentBaths >=#{lowRent.rentBaths}</if>
+    		<if test="highRent.rentBaths != null">and #{highRent.rentBaths} >= rentBaths</if>
+    		<if test="lowRent.rentArchitecture != null"> and rentArchitecture=#{lowRent.rentArchitecture}</if>
+    		<if test="lowRent.rentParty != null"> and rentParty = #{lowRent.rentParty}</if>
+    		and (rentPetsAllowed=#{lowRent.rentPetsAllowed} or rentPetsAllowed=#{highRent.rentPetsAllowed})
+    		and (rentParkingPlace=#{lowRent.rentParkingPlace} or rentParkingPlace=#{highRent.rentParkingPlace})
+    		and (rentSmokersAllowed=#{lowRent.rentSmokersAllowed} or rentSmokersAllowed=#{highRent.rentSmokersAllowed})
+    		and rentStatus=#{lowRent.rentStatus} and rentForm=#{lowRent.rentForm}
+    	</where>
+    </select>
+    
+    <select id="search" parameterType="ro.fizbo.rents.model.RentSearch" resultMap="LightRentMap">
+    	select rent.rentId as rentId, rentPrice, rentCurrency, rentForm, rentSurface, rentRooms, 
+    	rentBaths, rentType, rentArchitecture, rentAddDate, address.addressId as addressId,
+    	addressStreetName, addressNeighbourhood, addressLatitude,
+    	addressLongitude, min(rentImageId) as rentImageId, 
+    	concat(#{appUrl}, rentImageURI) as rentImageURI
+    	from rent inner join address on rent.addressId=address.addressId
+    	left join rent_image on rent_image.rentId = rent.rentId
+    	inner join currency on rent.rentCurrency=currency.currencyName
+    	<where>
+    		address.addressLatitude between #{lowRent.address.addressLatitude} and #{highRent.address.addressLatitude}
+			and address.addressLongitude between #{lowRent.address.addressLongitude} and #{highRent.address.addressLongitude}
+			<if test="lowRent.rentPrice != null">and rentPrice*currency.currencyConversionRate >= #{lowRent.rentPrice}</if>
+    		<if test="highRent.rentPrice != null">and #{highRent.rentPrice} >= rentPrice*currency.currencyConversionRate</if>
+    		<if test="lowRent.rentType != null">and rentType >= #{lowRent.rentType}</if>
+    		<if test="highRent.rentType != null">and #{highRent.rentType} >= rentType</if>
+    		<if test="lowRent.rentSurface != null">and rentSurface >= #{lowRent.rentSurface}</if>
+    		<if test="highRent.rentSurface != null">and #{highRent.rentSurface} >= rentSurface</if>
+    		<if test="lowRent.rentRooms != null">and rentRooms >= #{lowRent.rentRooms}</if>
+    		<if test="highRent.rentRooms != null">and #{highRent.rentRooms} >= rentRooms</if>
+    		<if test="lowRent.rentGuests != null">and rentGuests >= #{lowRent.rentGuests}</if>
+    		<if test="highRent.rentGuests != null">and #{highRent.rentGuests} >= rentGuests</if>
+    		<if test="lowRent.rentSingleBeds != null">and rentSingleBeds >= #{lowRent.rentSingleBeds}</if>
+    		<if test="highRent.rentSingleBeds != null">and #{highRent.rentSingleBeds} >= rentSingleBeds</if>
+    		<if test="lowRent.rentDoubleBeds != null">and rentDoubleBeds >= #{lowRent.rentDoubleBeds}</if>
+    		<if test="highRent.rentDoubleBeds != null">and #{highRent.rentDoubleBeds} >= rentDoubleBeds</if>
+    		<if test="lowRent.rentBaths != null">and rentBaths >=#{lowRent.rentBaths}</if>
+    		<if test="highRent.rentBaths != null">and #{highRent.rentBaths} >= rentBaths</if>
+    		<if test="lowRent.rentArchitecture != null"> and rentArchitecture=#{lowRent.rentArchitecture}</if>
+    		<if test="lowRent.rentParty != null"> and rentParty = #{lowRent.rentParty}</if>
+    		and (rentPetsAllowed=#{lowRent.rentPetsAllowed} or rentPetsAllowed=#{highRent.rentPetsAllowed})
+    		and (rentParkingPlace=#{lowRent.rentParkingPlace} or rentParkingPlace=#{highRent.rentParkingPlace})
+    		and (rentSmokersAllowed=#{lowRent.rentSmokersAllowed} or rentSmokersAllowed=#{highRent.rentSmokersAllowed})
+    		and rentStatus=#{lowRent.rentStatus} and rentForm=#{lowRent.rentForm}
+    	</where>
+    	group by rent.rentId
+    	order by rent.rentAddDate desc, rent.rentId desc limit #{pageSize}
+    </select>
+
+	<select id="searchNextPage" parameterType="ro.fizbo.rents.model.RentSearch" resultMap="LightRentMap">
+    	select rent.rentId as rentId, rentPrice, rentCurrency, rentForm, rentSurface, rentRooms, 
+    	rentBaths, rentType, rentArchitecture, rentAddDate, address.addressId as addressId,
+    	addressStreetName, addressNeighbourhood, addressLatitude,
+    	addressLongitude, min(rentImageId) as rentImageId, 
+    	concat(#{appUrl}, rentImageURI) as rentImageURI
+    	from rent inner join address on rent.addressId=address.addressId
+    	left join rent_image on rent_image.rentId = rent.rentId
+    	inner join currency on rent.rentCurrency=currency.currencyName
+    	<where>
+    		address.addressLatitude between #{lowRent.address.addressLatitude} and #{highRent.address.addressLatitude}
+			and address.addressLongitude between #{lowRent.address.addressLongitude} and #{highRent.address.addressLongitude}
+			<if test="lowRent.rentPrice != null">and rentPrice*currency.currencyConversionRate >= #{lowRent.rentPrice}</if>
+    		<if test="highRent.rentPrice != null">and #{highRent.rentPrice} >= rentPrice*currency.currencyConversionRate</if>
+    		<if test="lowRent.rentType != null">and rentType >= #{lowRent.rentType}</if>
+    		<if test="highRent.rentType != null">and #{highRent.rentType} >= rentType</if>
+    		<if test="lowRent.rentSurface != null">and rentSurface >= #{lowRent.rentSurface}</if>
+    		<if test="highRent.rentSurface != null">and #{highRent.rentSurface} >= rentSurface</if>
+    		<if test="lowRent.rentRooms != null">and rentRooms >= #{lowRent.rentRooms}</if>
+    		<if test="highRent.rentRooms != null">and #{highRent.rentRooms} >= rentRooms</if>
+    		<if test="lowRent.rentGuests != null">and rentGuests >= #{lowRent.rentGuests}</if>
+    		<if test="highRent.rentGuests != null">and #{highRent.rentGuests} >= rentGuests</if>
+    		<if test="lowRent.rentSingleBeds != null">and rentSingleBeds >= #{lowRent.rentSingleBeds}</if>
+    		<if test="highRent.rentSingleBeds != null">and #{highRent.rentSingleBeds} >= rentSingleBeds</if>
+    		<if test="lowRent.rentDoubleBeds != null">and rentDoubleBeds >= #{lowRent.rentDoubleBeds}</if>
+    		<if test="highRent.rentDoubleBeds != null">and #{highRent.rentDoubleBeds} >= rentDoubleBeds</if>
+    		<if test="lowRent.rentBaths != null">and rentBaths >=#{lowRent.rentBaths}</if>
+    		<if test="highRent.rentBaths != null">and #{highRent.rentBaths} >= rentBaths</if>
+    		<if test="lowRent.rentArchitecture != null"> and rentArchitecture=#{lowRent.rentArchitecture}</if>
+    		<if test="lowRent.rentParty != null"> and rentParty = #{lowRent.rentParty}</if>
+    		and (rentPetsAllowed=#{lowRent.rentPetsAllowed} or rentPetsAllowed=#{highRent.rentPetsAllowed})
+    		and (rentParkingPlace=#{lowRent.rentParkingPlace} or rentParkingPlace=#{highRent.rentParkingPlace})
+    		and (rentSmokersAllowed=#{lowRent.rentSmokersAllowed} or rentSmokersAllowed=#{highRent.rentSmokersAllowed})
+    		and rentStatus=#{lowRent.rentStatus} and rentForm=#{lowRent.rentForm}
+    		and #{highRent.rentAddDate} >= rent.rentAddDate
+    		and (#{highRent.rentId} > rent.rentId or #{highRent.rentAddDate} > rent.rentAddDate)
+    	</where>
+    	group by rent.rentId
+    	order by rent.rentAddDate desc, rent.rentId desc limit #{pageSize}
+    </select>
+
+	<update id="disableRentForAbuse" parameterType="java.lang.String" >
+		update rent join rent_abuse on rent.rentId=rent_abuse.rentId set rent.rentStatus=2
+		where rent_abuse.rentAbuseTokenKey like #{rentAbuseTokenKey};
+	</update>
+</mapper>

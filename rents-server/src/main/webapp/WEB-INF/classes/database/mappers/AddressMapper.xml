@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="AddressMapper">
+	<update id="updateAddress" parameterType="ro.fizbo.rents.model.Address">
+		update address
+		<set>
+			<if test="addressStreetNo != null">addressStreetNo=#{addressStreetNo},</if>
+			<if test="addressStreetName != null">addressStreetName=#{addressStreetName},</if>
+			<if test="addressNeighbourhood != null">addressNeighbourhood=#{addressNeighbourhood},</if>
+			<if test="addressSublocality != null">addressSublocality=#{addressSublocality},</if>
+			<if test="addressLocality != null">addressLocality=#{addressLocality},</if>
+			<if test="addressAdmAreaL1 != null">addressAdmAreaL1=#{addressAdmAreaL1},</if>
+			<if test="addressLatitude != null">addressLatitude=#{addressLatitude},</if>
+			<if test="addressLongitude != null">addressLongitude=#{addressLongitude},</if>
+			<if test="addressBuilding != null">addressBuilding=#{addressBuilding},</if>
+			<if test="addressStaircase != null">addressStaircase=#{addressStaircase},</if>
+			<if test="addressFloor != null">addressFloor=#{addressFloor},</if>
+			<if test="addressAp != null">addressAp=#{addressAp}</if>
+		</set>
+		where addressId=#{addressId}
+	</update>
+</mapper>

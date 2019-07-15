@@ -1,0 +1,58 @@
+body {
+    font-family: 'Roboto Condensed', sans-serif;
+}
+#map-canvas {
+    height: 100%;
+    margin: 0px;
+    padding: 0px
+}
+.section1{
+    text-align: center;
+}
+.section1 h2{
+    font-family: 'Oswald', sans-serif;
+    color: #4b4b4b;
+    margin: 60px 0px;
+}
+header{
+    height: 85px;
+    background: #29ABE2;
+    border-bottom: 5px #ccc solid;
+    width: 100%;
+}
+header img{
+    margin-top: 15px;
+}
+.fz-mock{
+    text-align: center;
+}
+.fz-mock:hover h4{
+    background: #3fb3e6;
+    color: #fff;
+    transition: all .25s ease-in-out;
+}
+.download-content{
+    text-align: center;
+}
+.download-content h4{
+    margin: 30px 0px 10px 0px;
+    font-family: 'Roboto Condensed', sans-serif;
+}
+.download-content img {
+    width: 60%;
+}
+.fz-menu{
+    list-style: none;
+    margin-top: 45px;
+}
+.fz-menu li {
+    padding: 2px 5px;
+    display: inline-block;
+    color: #fff;
+    font-size: 18px;
+}
+.fz-menu li:hover{
+    background: rgba(0, 63, 84, 0.8);
+    border-radius: 3px;
+    cursor: pointer;
+}

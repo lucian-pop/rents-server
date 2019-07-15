@@ -1,0 +1,3 @@
+User-agent: *
+Disallow: /META-INF/
+Disallow: /WEB-INF/
