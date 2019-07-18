@@ -1,4 +1,4 @@
-package ro.fizbo.rents.leads;
+package ro.fizbo.rents.webservice;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -17,7 +17,7 @@ public class LeadCaptureWebservice {
 	
 	@Path("capture")
 	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.APPLICATION_JSON)
 	public boolean captureLead(@FormParam("leadEmail") String leadEmail, @FormParam("leadType") String leadType) {
 		logger.info("We have a new lead from a " + leadType);

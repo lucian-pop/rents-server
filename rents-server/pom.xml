@@ -14,11 +14,11 @@
     </properties>
 	
     <dependencies>
-		<dependency>
+		<!--  <dependency>
 			<groupId>com.personal.rents</groupId>
 			<artifactId>rents-common</artifactId>
 			<version>${project.version}</version>
-		</dependency>
+		</dependency>-->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>

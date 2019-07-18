@@ -1,4 +1,4 @@
-package ro.fizbo.rents.usersupport;
+package ro.fizbo.rents.webservice;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -16,7 +16,7 @@ public class ContactUsWebservice {
 	
 	@Path("contactus")
 	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	@Produces(MediaType.APPLICATION_JSON)
 	public boolean contactUs(@FormParam("userName") String userName, @FormParam("userEmail") String userEmail,
 			@FormParam("userRequest") String userRequest) {
