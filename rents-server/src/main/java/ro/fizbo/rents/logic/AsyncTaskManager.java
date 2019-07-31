@@ -12,7 +12,7 @@ public final class AsyncTaskManager {
 	
 	private static Logger logger = Logger.getLogger(AsyncTaskManager.class);
 	
-	private static final int NO_THREADS = 2;
+	private static final int NO_THREADS = 1;
 	
 	private static final int MAX_TASKS_NO = 100;
 	

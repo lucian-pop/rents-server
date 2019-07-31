@@ -21,13 +21,9 @@ public class EmailClient {
 	
 	private static Logger logger = Logger.getLogger(EmailClient.class);
 
-	private static final String AUTH_EMAIL = "sesizari@fizbo.ro";
+	private static final String AUTH_EMAIL = "hello@fizboapp.co.uk";
 	
-	private static final String AUTH_PASSWORD = "Sesizari@azwsx";
-	
-	private static final String SMTP_SERVER_NAME = "smtp.zoho.com";
-	
-	private static final int SMTP_SERVER_PORT = 465;
+	private static final String AUTH_PASSWORD = "Ju2ts@yhello";
 	
 	private static Session session;
 	
@@ -35,18 +31,20 @@ public class EmailClient {
 	}
 	
 	private synchronized static final Session createSession() {
-		Properties props = new Properties();
-        props.put("mail.smtp.host", SMTP_SERVER_NAME);
-        props.put("mail.smtp.socketFactory.port", SMTP_SERVER_PORT);
-        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.port", SMTP_SERVER_PORT);
+		Properties prop = new Properties();
+		
+		prop.put("mail.smtp.host", "smtp.zoho.eu");
+        prop.put("mail.smtp.port", "465");
+        prop.put("mail.smtp.auth", "true");
+        prop.put("mail.smtp.socketFactory.port", "465");
+        prop.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+		
         Authenticator authenticator = new Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(AUTH_EMAIL, AUTH_PASSWORD);
             }
         };
-        Session session = Session.getDefaultInstance(props, authenticator);
+        Session session = Session.getDefaultInstance(prop, authenticator);
         
 		return session;
 	}
@@ -60,8 +58,12 @@ public class EmailClient {
 	}
 	
 	public static MimeMessage buildEmailMessage(Email email) {
+		return buildEmailMessage(email, EmailClient.getSession());
+	}
+	
+	public static MimeMessage buildEmailMessage(Email email, Session session) {
 		try {
-			MimeMessage emailMessage = new MimeMessage(EmailClient.getSession());
+			MimeMessage emailMessage = new MimeMessage(session);
 			emailMessage.setHeader(HeadersConstants.CONTENT_TYPE, "text/HTML; charset=UTF-8");
 			emailMessage.setFrom(new InternetAddress(email.getFromEmail()));
 			emailMessage.setReplyTo(InternetAddress.parse(email.getFromEmail(), false));
