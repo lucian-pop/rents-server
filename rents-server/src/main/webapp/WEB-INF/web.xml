@@ -13,7 +13,7 @@
 		<servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
 		<init-param>
 			<param-name>jersey.config.server.provider.packages</param-name>
-			<param-value>ro.fizbo.rents.webservice</param-value>
+			<param-value>ro.fizbo.rents.webservice, ro.fizbo.rents.storage.webservice</param-value>
 		</init-param>
 		<init-param>
     		<param-name>javax.ws.rs.Application</param-name>
@@ -26,16 +26,26 @@
 		<servlet-name>jersey</servlet-name>
 		<url-pattern>/ws/*</url-pattern>
 	</servlet-mapping>
-
+	
+	<!-- Enable CORS for the responses that go to fizboapp.co.uk 
+	<filter>
+   		<filter-name>CORS</filter-name>
+    	<filter-class>ro.fizbo.rents.webservice.response.CustomResponseFilter</filter-class>
+    </filter>
+	<filter-mapping>
+    	<filter-name>CORS</filter-name>
+    	<url-pattern>/ws/*</url-pattern>
+	</filter-mapping>-->
+<!--
 	<servlet>
 		<servlet-name>deeplinksfallback</servlet-name>
 		<servlet-class>ro.fizbo.rents.servlet.DeepLinksFallbackServlet</servlet-class>
 	</servlet>
-	
-<!--
+
 	<servlet-mapping>
 		<servlet-name>deeplinksfallback</servlet-name>
 		<url-pattern>/app/*</url-pattern>
-	</servlet-mapping>-->
-
+	</servlet-mapping>
+-->
+  
 </web-app>
